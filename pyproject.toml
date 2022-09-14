@@ -1,0 +1,11 @@
+[project]
+name = "anubis"
+version = "0.1.0"
+dependencies = [
+    "discord.py",
+    "aiohttp",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

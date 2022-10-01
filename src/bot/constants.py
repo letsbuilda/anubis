@@ -11,10 +11,6 @@ class Tokens(NamedTuple):
     github = getenv("GITHUB_TOKEN")
 
 
-class Roles(NamedTuple):
-    admins = int(getenv("BOT_ROLES_ADMINS_ID"))
-
-
 class Replies(NamedTuple):
     positive = (
         "Yep.",

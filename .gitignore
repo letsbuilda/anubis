@@ -8,6 +8,7 @@ build
 
 # Cache
 __pycache__
+*.pyc
 
 # Docs
 docs/build

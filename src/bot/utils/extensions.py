@@ -37,6 +37,7 @@ def walk_extensions(module: types.ModuleType) -> frozenset[str]:
     """
 
     def on_error(name: str) -> NoReturn:
+        """Raise an import error"""
         raise ImportError(name=name)  # pragma: no cover
 
     modules = set()

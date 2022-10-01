@@ -1,10 +1,12 @@
-from typing import TYPE_CHECKING
+import asyncio
+import logging
+import os
 
-from bot import log
+if os.name == "nt":
+    # Change the event loop policy on Windows to avoid exceptions on exit
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-if TYPE_CHECKING:
-    from bot.bot import Bot
-
-log.setup()
-
-instance: "Bot" = None  # Global Bot instance.
+# Some basic logging to get existing loggers to show
+logging.getLogger().addHandler(logging.StreamHandler())
+logging.getLogger().setLevel(logging.INFO)
+logging.getLogger("discord").setLevel(logging.INFO)

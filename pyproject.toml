@@ -2,6 +2,7 @@
 name = "anubis"
 version = "0.1.0"
 dependencies = [
+    "python-dotenv",
     "discord.py",
     "aiohttp",
 ]

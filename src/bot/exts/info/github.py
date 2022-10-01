@@ -1,6 +1,6 @@
+import logging
 import random
 import re
-import typing as t
 from dataclasses import dataclass
 from datetime import datetime
 from urllib.parse import quote
@@ -10,11 +10,9 @@ from aiohttp import ClientResponse
 from discord.ext import commands
 
 from bot.bot import Bot
-from bot.constants import Colours, ERROR_REPLIES, Emojis, NEGATIVE_REPLIES, GITHUB_TOKEN
-from bot.log import get_logger
-# from bot.exts.core.extensions import invoke_help_command
+from bot.constants import Colours, Emojis, Tokens, Replies
 
-log = get_logger(__name__)
+log = logging.getLogger(__name__)
 
 GITHUB_API_URL = "https://api.github.com"
 
@@ -26,11 +24,11 @@ REPOSITORY_ENDPOINT = "https://api.github.com/orgs/{org}/repos?per_page=100&type
 ISSUE_ENDPOINT = "https://api.github.com/repos/{user}/{repository}/issues/{number}"
 PR_ENDPOINT = "https://api.github.com/repos/{user}/{repository}/pulls/{number}"
 
-if GITHUB_TOKEN:
-    REQUEST_HEADERS["Authorization"] = f"token {GITHUB_TOKEN}"
+if Tokens.github:
+    REQUEST_HEADERS["Authorization"] = f"token {Tokens.github}"
 
 CODE_BLOCK_RE = re.compile(
-    r"^`([^`\n]+)`"   # Inline codeblock
+    r"^`([^`\n]+)`"  # Inline codeblock
     r"|```(.+?)```",  # Multiline codeblock
     re.DOTALL | re.MULTILINE
 )
@@ -49,7 +47,7 @@ AUTOMATIC_REGEX = re.compile(
 class FoundIssue:
     """Dataclass representing an issue found by the regex."""
 
-    organisation: t.Optional[str]
+    organisation: str | None
     repository: str
     number: str
 
@@ -73,7 +71,7 @@ class IssueState:
     emoji: str
 
 
-class GithubInfo(commands.Cog):
+class Github(commands.Cog):
     """A Cog that fetches info from GitHub."""
 
     def __init__(self, bot: Bot):
@@ -90,16 +88,14 @@ class GithubInfo(commands.Cog):
         number: int,
         repository: str,
         user: str
-    ) -> t.Union[IssueState, FetchError]:
+    ) -> IssueState | FetchError:
         """
         Retrieve an issue from a GitHub repository.
 
         Returns IssueState on success, FetchError on failure.
         """
-        url = ISSUE_ENDPOINT.format(
-            user=user, repository=repository, number=number)
-        pulls_url = PR_ENDPOINT.format(
-            user=user, repository=repository, number=number)
+        url = ISSUE_ENDPOINT.format(user=user, repository=repository, number=number)
+        pulls_url = PR_ENDPOINT.format(user=user, repository=repository, number=number)
 
         json_data, r = await self.fetch_data(url)
 
@@ -144,7 +140,7 @@ class GithubInfo(commands.Cog):
 
     @staticmethod
     def format_embed(
-        results: t.List[t.Union[IssueState, FetchError]]
+        results: list[IssueState | FetchError]
     ) -> discord.Embed:
         """Take a list of IssueState or FetchError and format a Discord embed for them."""
         description_list = []
@@ -155,8 +151,7 @@ class GithubInfo(commands.Cog):
                     f"{result.emoji} [[{result.repository}] #{result.number} {result.title}]({result.url})"
                 )
             elif isinstance(result, FetchError):
-                description_list.append(
-                    f":x: [{result.return_code}] {result.message}")
+                description_list.append(f":x: [{result.return_code}] {result.message}")
 
         resp = discord.Embed(
             colour=Colours.bright_green,
@@ -171,7 +166,7 @@ class GithubInfo(commands.Cog):
     async def github_group(self, ctx: commands.Context) -> None:
         """Commands for finding information related to GitHub."""
         if ctx.invoked_subcommand is None:
-            pass  # await invoke_help_command(ctx)
+            await self.bot.invoke_help_command(ctx)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:
@@ -195,13 +190,13 @@ class GithubInfo(commands.Cog):
             if not message.guild:
                 return
 
-            log.trace(f"Found {issues = }")
+            log.info(f"Found {issues = }")
             # Remove duplicates
             issues = list(dict.fromkeys(issues))
 
             if len(issues) > MAXIMUM_ISSUES:
                 embed = discord.Embed(
-                    title=random.choice(ERROR_REPLIES),
+                    title=random.choice(Replies.error),
                     color=Colours.soft_red,
                     description=f"Too many issues/PRs! (maximum of {MAXIMUM_ISSUES})"
                 )
@@ -225,7 +220,7 @@ class GithubInfo(commands.Cog):
 
     async def fetch_data(self, url: str) -> tuple[dict[str], ClientResponse]:
         """Retrieve data as a dictionary and the response in a tuple."""
-        log.trace(f"Querying GH issues API: {url}")
+        log.info(f"Querying GH issues API: {url}")
         async with self.bot.http_session.get(url, headers=REQUEST_HEADERS) as r:
             return await r.json(), r
 
@@ -238,7 +233,7 @@ class GithubInfo(commands.Cog):
             # User_data will not have a message key if the user exists
             if "message" in user_data:
                 embed = discord.Embed(
-                    title=random.choice(NEGATIVE_REPLIES),
+                    title=random.choice(Replies.negative),
                     description=f"The profile for `{username}` was not found.",
                     colour=Colours.soft_red
                 )
@@ -247,8 +242,7 @@ class GithubInfo(commands.Cog):
                 return
 
             org_data, _ = await self.fetch_data(user_data["organizations_url"])
-            orgs = [
-                f"[{org['login']}](https://github.com/{org['login']})" for org in org_data]
+            orgs = [f"[{org['login']}](https://github.com/{org['login']})" for org in org_data]
             orgs_to_add = " | ".join(orgs)
 
             gists = user_data["public_gists"]
@@ -266,14 +260,12 @@ class GithubInfo(commands.Cog):
                 description=f"```\n{user_data['bio']}\n```\n" if user_data["bio"] else "",
                 colour=discord.Colour.og_blurple(),
                 url=user_data["html_url"],
-                timestamp=datetime.strptime(
-                    user_data["created_at"], "%Y-%m-%dT%H:%M:%SZ")
+                timestamp=datetime.strptime(user_data["created_at"], "%Y-%m-%dT%H:%M:%SZ")
             )
             embed.set_thumbnail(url=user_data["avatar_url"])
             embed.set_footer(text="Account created at")
 
             if user_data["type"] == "User":
-
                 embed.add_field(
                     name="Followers",
                     value=f"[{user_data['followers']}]({user_data['html_url']}?tab=followers)"
@@ -289,11 +281,10 @@ class GithubInfo(commands.Cog):
             )
 
             if user_data["type"] == "User":
-                embed.add_field(
-                    name="Gists", value=f"[{gists}](https://gist.github.com/{quote(username, safe='')})")
+                embed.add_field(name="Gists", value=f"[{gists}](https://gist.github.com/{quote(username, safe='')})")
 
                 embed.add_field(
-                    name=f"Organization{'s' if len(orgs)!=1 else ''}",
+                    name=f"Organization{'s' if len(orgs) != 1 else ''}",
                     value=orgs_to_add if orgs else "No organizations."
                 )
             embed.add_field(name="Website", value=blog)
@@ -310,7 +301,7 @@ class GithubInfo(commands.Cog):
         repo = "/".join(repo)
         if repo.count("/") != 1:
             embed = discord.Embed(
-                title=random.choice(NEGATIVE_REPLIES),
+                title=random.choice(Replies.negative),
                 description="The repository should look like `user/reponame` or `user reponame`.",
                 colour=Colours.soft_red
             )
@@ -324,7 +315,7 @@ class GithubInfo(commands.Cog):
             # There won't be a message key if this repo exists
             if "message" in repo_data:
                 embed = discord.Embed(
-                    title=random.choice(NEGATIVE_REPLIES),
+                    title=random.choice(Replies.negative),
                     description="The requested repository was not found.",
                     colour=Colours.soft_red
                 )
@@ -354,10 +345,8 @@ class GithubInfo(commands.Cog):
             icon_url=repo_owner["avatar_url"]
         )
 
-        repo_created_at = datetime.strptime(
-            repo_data["created_at"], "%Y-%m-%dT%H:%M:%SZ").strftime("%d/%m/%Y")
-        last_pushed = datetime.strptime(
-            repo_data["pushed_at"], "%Y-%m-%dT%H:%M:%SZ").strftime("%d/%m/%Y at %H:%M")
+        repo_created_at = datetime.strptime(repo_data["created_at"], "%Y-%m-%dT%H:%M:%SZ").strftime("%d/%m/%Y")
+        last_pushed = datetime.strptime(repo_data["pushed_at"], "%Y-%m-%dT%H:%M:%SZ").strftime("%d/%m/%Y at %H:%M")
 
         embed.set_footer(
             text=(
@@ -373,4 +362,4 @@ class GithubInfo(commands.Cog):
 
 async def setup(bot: Bot) -> None:
     """Load the GithubInfo cog."""
-    await bot.add_cog(GithubInfo(bot))
+    await bot.add_cog(Github(bot))

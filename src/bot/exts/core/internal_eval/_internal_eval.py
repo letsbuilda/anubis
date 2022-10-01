@@ -4,11 +4,11 @@ import textwrap
 from typing import Optional
 
 import discord
-from bot.utils.decorators import with_role
+from bot.utils.decorators import with_permission
 from discord.ext import commands
 
 from bot.bot import Bot
-from bot.constants import Roles
+from bot.constants import Permissions
 from ._helpers import EvalContext
 
 __all__ = ["InternalEval"]
@@ -22,7 +22,7 @@ FORMATTED_CODE_REGEX = re.compile(
     r"(?P<code>.*?)"  # extract all code inside the markup
     r"\s*"  # any more whitespace before the end of the code markup
     r"(?P=delim)",  # match the exact same delimiter from the start again
-    re.DOTALL | re.IGNORECASE  # "." also matches newlines, case insensitive
+    re.DOTALL | re.IGNORECASE  # "." also matches newlines, case-insensitive
 )
 
 RAW_CODE_REGEX = re.compile(
@@ -145,14 +145,14 @@ class InternalEval(commands.Cog):
         await self._send_output(ctx, eval_context.format_output())
 
     @commands.group(name="internal", aliases=("int",))
-    @with_role(Roles.admins)
+    @with_permission(Permissions.CAN_INTERNAL_EVAL)
     async def internal_group(self, ctx: commands.Context) -> None:
         """Internal commands. Top secret!"""
         if not ctx.invoked_subcommand:
             await self.bot.invoke_help_command(ctx)
 
     @internal_group.command(name="eval", aliases=("e",))
-    @with_role(Roles.admins)
+    @with_permission(Permissions.CAN_INTERNAL_EVAL)
     async def eval(self, ctx: commands.Context, *, code: str) -> None:
         """Run eval in a REPL-like format."""
         if match := list(FORMATTED_CODE_REGEX.finditer(code)):
@@ -171,7 +171,7 @@ class InternalEval(commands.Cog):
         await self._eval(ctx, code)
 
     @internal_group.command(name="reset", aliases=("clear", "exit", "r", "c"))
-    @with_role(Roles.admins)
+    @with_permission(Permissions.CAN_INTERNAL_EVAL)
     async def reset(self, ctx: commands.Context) -> None:
         """Reset the context and locals of the eval session."""
         self.locals = {}

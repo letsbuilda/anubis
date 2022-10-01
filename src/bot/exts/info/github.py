@@ -10,7 +10,7 @@ from aiohttp import ClientResponse
 from discord.ext import commands
 
 from bot.bot import Bot
-from bot.constants import Colours, Emojis, Tokens, Replies
+from bot.constants import Colours, Emojis, Replies, Tokens
 
 log = logging.getLogger(__name__)
 
@@ -190,6 +190,9 @@ class Github(commands.Cog):
             if not message.guild:
                 return
 
+            from bot.utils.guild_data import guilds
+            guild_github_org: str = guilds[message.guild.id]["github_organization"]
+
             log.info(f"Found {issues = }")
             # Remove duplicates
             issues = list(dict.fromkeys(issues))
@@ -207,7 +210,7 @@ class Github(commands.Cog):
                 result = await self.fetch_issue(
                     int(repo_issue.number),
                     repo_issue.repository,
-                    repo_issue.organisation or "python-discord"
+                    repo_issue.organisation or guild_github_org
                 )
                 if isinstance(result, IssueState):
                     links.append(result)

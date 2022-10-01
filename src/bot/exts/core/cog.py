@@ -1,6 +1,6 @@
 from discord.ext import commands
 
-from . import Bot
+from bot.bot import Bot
 
 
 class Cog(commands.Cog):
@@ -21,11 +21,6 @@ class Cog(commands.Cog):
         for ext in list(self.bot.extensions):
             await self.bot.reload_extension(ext)
         await message.edit(content=":white_check_mark: Done")
-
-    @commands.command()
-    async def ping(self, ctx: commands.Context) -> None:
-        """Test if the bot is online."""
-        await ctx.send("We are live!")
 
 
 async def setup(_bot: Bot) -> None:

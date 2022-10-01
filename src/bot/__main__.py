@@ -7,7 +7,7 @@ import dotenv
 from discord.ext import commands
 
 import botcore
-from . import Bot
+from bot.bot import Bot
 
 dotenv.load_dotenv()
 botcore.utils.apply_monkey_patches()

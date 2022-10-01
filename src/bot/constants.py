@@ -1,3 +1,11 @@
+from os import getenv
+from typing import NamedTuple
+
+
+class Roles(NamedTuple):
+    admins = int(getenv("BOT_ROLES_ADMINS_ID"))
+
+
 class Colours:
     blue = 0x0279FD
     twitter_blue = 0x1DA1F2

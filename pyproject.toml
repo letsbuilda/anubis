@@ -4,6 +4,7 @@ version = "0.1.0"
 dependencies = [
     "python-dotenv",
     "discord.py",
+    "bot-core @ https://github.com/python-discord/bot-core/archive/refs/tags/v8.2.1.zip",
     "aiohttp",
 ]
 

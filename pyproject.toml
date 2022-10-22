@@ -6,6 +6,7 @@ dependencies = [
     "discord.py",
     "bot-core @ https://github.com/python-discord/bot-core/archive/refs/tags/v8.2.1.zip",
     "aiohttp",
+    "sentry-sdk",
 ]
 
 [build-system]

@@ -1,6 +1,15 @@
+from enum import Enum
 from os import getenv
 from typing import NamedTuple
-from enum import Enum
+
+
+class Client(NamedTuple):
+    name = "Anubis"
+    debug = False
+
+
+class Channels(NamedTuple):
+    devlog = 1012202489342345246
 
 
 class Permissions(Enum):

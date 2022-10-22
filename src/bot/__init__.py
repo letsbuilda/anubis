@@ -1,19 +1,26 @@
-import asyncio
+try:
+    from dotenv import load_dotenv
+
+    print("Found .env file, loading environment variables from it.")
+    load_dotenv(override=True)
+except ModuleNotFoundError:
+    pass
+
 import logging
-import sys
+from os import getenv
 
-import botcore
+import sentry_sdk
+from sentry_sdk.integrations.logging import LoggingIntegration
 
-# Some basic logging to get existing loggers to show
-logging.getLogger().addHandler(logging.StreamHandler())
-logging.getLogger().setLevel(logging.INFO)
-logging.getLogger("discord").setLevel(logging.INFO)
+sentry_logging = LoggingIntegration(
+    level=logging.DEBUG,
+    event_level=logging.WARNING
+)
 
-
-class Bot(botcore.BotBase):
-    """Sample Bot implementation."""
-
-    async def setup_hook(self) -> None:
-        """Load extensions on startup."""
-        await super().setup_hook()
-        asyncio.create_task(self.load_extensions(sys.modules[__name__]))
+sentry_sdk.init(
+    dsn=getenv("BOT_SENTRY_DSN"),
+    integrations=[
+        sentry_logging,
+    ],
+    release=f"anubis@{getenv('GIT_SHA', 'development')}"
+)

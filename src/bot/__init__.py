@@ -12,6 +12,8 @@ from os import getenv
 import sentry_sdk
 from sentry_sdk.integrations.logging import LoggingIntegration
 
+from bot import log
+
 sentry_logging = LoggingIntegration(
     level=logging.DEBUG,
     event_level=logging.WARNING
@@ -24,3 +26,5 @@ sentry_sdk.init(
     ],
     release=f"anubis@{getenv('GIT_SHA', 'development')}"
 )
+
+log.setup()

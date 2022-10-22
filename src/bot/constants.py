@@ -6,6 +6,7 @@ from typing import NamedTuple
 class Client(NamedTuple):
     name = "Anubis"
     debug = False
+    guild_id = int(getenv("BOT_GUILD", 954235291588247603))
 
 
 class Logging(NamedTuple):

@@ -6,6 +6,7 @@ import discord
 import dotenv
 from discord.ext import commands
 
+from bot import constants
 from bot.bot import Bot
 
 dotenv.load_dotenv()
@@ -25,7 +26,7 @@ def get_prefix(bot_, message_):
 async def main() -> None:
     """Run the bot."""
     bot = Bot(
-        guild_id=954235291588247603,
+        guild_id=constants.Client.guild_id,
         http_session=aiohttp.ClientSession(),
         allowed_roles=roles,
         command_prefix=get_prefix,

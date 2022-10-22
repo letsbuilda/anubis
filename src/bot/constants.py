@@ -1,6 +1,22 @@
+from enum import Enum
 from os import getenv
 from typing import NamedTuple
-from enum import Enum
+
+
+class Client(NamedTuple):
+    name = "Anubis"
+    debug = False
+    guild_id = int(getenv("BOT_GUILD", 954235291588247603))
+
+
+class Logging(NamedTuple):
+    debug = Client.debug
+    file_logs = getenv("FILE_LOGS", "false").lower() == "true"
+    trace_loggers = getenv("BOT_TRACE_LOGGERS")
+
+
+class Channels(NamedTuple):
+    devlog = 1012202489342345246
 
 
 class Permissions(Enum):

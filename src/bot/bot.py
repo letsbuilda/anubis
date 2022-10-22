@@ -1,52 +1,54 @@
-from types import ModuleType
+import logging
 
-import aiohttp
+import discord
+from botcore import BotBase
+from botcore.utils import scheduling
+from discord import DiscordException, Embed
 from discord.ext import commands
 
-from bot import exts
-from bot.utils.extensions import walk_extensions
+from bot import constants, exts
+
+log = logging.getLogger(__name__)
+
+__all__ = ("Bot", )
 
 
-class Bot(commands.Bot):
-    """Sample Bot implementation."""
+class Bot(BotBase):
+    """Base bot instance."""
 
-    def __init__(
-        self,
-        *args,
-        allowed_roles: list,
-        http_session: aiohttp.ClientSession,
-        **kwargs,
-    ):
-        """
-        Initialise the base bot instance.
-        Args:
-            allowed_roles: A list of role IDs that the bot is allowed to mention.
-            http_session (aiohttp.ClientSession): The session to use for the bot.
-        """
-        super().__init__(
-            *args,
-            allowed_roles=allowed_roles,
-            **kwargs,
-        )
+    name = constants.Client.name
 
-        self.http_session = http_session
+    async def on_command_error(self, context: commands.Context, exception: DiscordException) -> None:
+        """Check command errors for UserInputError and reset the cooldown if thrown."""
+        if isinstance(exception, commands.UserInputError):
+            context.command.reset_cooldown(context)
+        else:
+            await super().on_command_error(context, exception)
 
-        self.all_extensions: frozenset[str] | None = None
+    async def log_to_dev_log(self, title: str, details: str = None, *, icon: str = None) -> None:
+        """Send an embed message to the dev-log channel."""
+        devlog = self.get_channel(constants.Channels.devlog)
 
-    async def load_extensions(self, module: ModuleType) -> None:
-        """
-        Load all the extensions within the given module and save them to ``self.all_extensions``.
-        This should be ran in a task on the event loop to avoid deadlocks caused by ``wait_for`` calls.
-        """
-        # await self.wait_until_guild_available()
-        self.all_extensions = walk_extensions(module)
+        if not icon:
+            icon = self.user.display_avatar.url
 
-        for extension in self.all_extensions:
-            print(f"loading extension {extension=}")
-            await self.load_extension(extension)
+        embed = Embed(description=details)
+        embed.set_author(name=title, icon_url=icon)
+
+        await devlog.send(embed=embed)
 
     async def setup_hook(self) -> None:
         """Default async initialisation method for discord.py."""
         await super().setup_hook()
 
-        await self.load_extensions(exts)
+        # This is not awaited to avoid a deadlock with any cogs that have
+        # wait_until_guild_available in their cog_load method.
+        scheduling.create_task(self.load_extensions(exts))
+
+    async def invoke_help_command(self, ctx: commands.Context) -> None:
+        """Invoke the help command or default help command if help extensions is not loaded."""
+        if "bot.exts.core.help" in ctx.bot.extensions:
+            help_command = ctx.bot.get_command("help")
+            await ctx.invoke(help_command, ctx.command.qualified_name)
+            return
+        await ctx.send_help(ctx.command)

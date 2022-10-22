@@ -9,10 +9,11 @@ class Cog(commands.Cog):
     def __init__(self, _bot: Bot):
         self.bot = _bot
 
-    @commands.Cog.listener()
-    async def on_ready(self) -> None:
-        """Print a message when the client (re)connects."""
-        print("Client is ready.")
+    @commands.command()
+    async def sentry_test(self, ctx: commands.Context) -> None:
+        """Fail to test sentry"""
+        maths = str(1 / 0)
+        await ctx.send(maths)
 
     @commands.command()
     async def reload(self, ctx: commands.Context) -> None:

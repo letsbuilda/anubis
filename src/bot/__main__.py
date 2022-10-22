@@ -6,6 +6,7 @@ import discord
 import dotenv
 from discord.ext import commands
 
+from bot import constants
 from bot.bot import Bot
 
 dotenv.load_dotenv()
@@ -22,18 +23,16 @@ def get_prefix(bot_, message_):
     return commands.when_mentioned_or(*extras)(bot_, message_)
 
 
-bot = Bot(
-    http_session=None,  # type: ignore # We need to instantiate the session in an async context
-    allowed_roles=roles,
-    command_prefix=get_prefix,
-    intents=intents,
-    description="Bot-core test bot.",
-)
-
-
 async def main() -> None:
     """Run the bot."""
-    bot.http_session = aiohttp.ClientSession()
+    bot = Bot(
+        guild_id=constants.Client.guild_id,
+        http_session=aiohttp.ClientSession(),
+        allowed_roles=roles,
+        command_prefix=get_prefix,
+        intents=intents,
+    )
+
     async with bot:
         await bot.start(getenv("BOT_TOKEN"))
 

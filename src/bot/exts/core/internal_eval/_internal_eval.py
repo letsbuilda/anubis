@@ -4,11 +4,12 @@ import textwrap
 from typing import Optional
 
 import discord
-from bot.utils.decorators import with_permission
 from discord.ext import commands
 
 from bot.bot import Bot
-from bot.constants import Permissions
+from bot.database.models import Permissions
+from bot.utils.decorators import with_permission
+
 from ._helpers import EvalContext
 
 __all__ = ["InternalEval"]
@@ -22,14 +23,14 @@ FORMATTED_CODE_REGEX = re.compile(
     r"(?P<code>.*?)"  # extract all code inside the markup
     r"\s*"  # any more whitespace before the end of the code markup
     r"(?P=delim)",  # match the exact same delimiter from the start again
-    re.DOTALL | re.IGNORECASE  # "." also matches newlines, case-insensitive
+    re.DOTALL | re.IGNORECASE,  # "." also matches newlines, case-insensitive
 )
 
 RAW_CODE_REGEX = re.compile(
     r"^(?:[ \t]*\n)*"  # any blank (empty or tabs/spaces only) lines before the code
     r"(?P<code>.*?)"  # extract all the rest as code
     r"\s*$",  # any trailing whitespace until the end of the string
-    re.DOTALL  # "." also matches newlines
+    re.DOTALL,  # "." also matches newlines
 )
 
 MAX_LENGTH = 99980
@@ -43,11 +44,7 @@ class InternalEval(commands.Cog):
         self.locals = {}
 
     @staticmethod
-    def shorten_output(
-        output: str,
-        max_length: int = 1900,
-        placeholder: str = "\n[output truncated]"
-    ) -> str:
+    def shorten_output(output: str, max_length: int = 1900, placeholder: str = "\n[output truncated]") -> str:
         """
         Shorten the `output` so it's shorter than `max_length`.
 
@@ -85,7 +82,9 @@ class InternalEval(commands.Cog):
         data = self.shorten_output(output, max_length=MAX_LENGTH)
         try:
             async with self.bot.http_session.post(
-                "https://paste.pythondiscord.com/documents", data=data, raise_for_status=True
+                "https://paste.pythondiscord.com/documents",
+                data=data,
+                raise_for_status=True,
             ) as resp:
                 data = await resp.json()
 

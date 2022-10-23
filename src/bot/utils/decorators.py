@@ -3,8 +3,10 @@ from typing import Callable
 
 from discord.ext import commands
 from discord.ext.commands import Context
+from sqlalchemy import select
 
-from bot.constants import Permissions
+from bot.database import session
+from bot.database.models import Permissions, RolesPermissions
 
 log = logging.getLogger(__name__)
 
@@ -18,12 +20,16 @@ def with_permission(permission: Permissions) -> Callable:
             )
             return False
 
-        from .guild_data import guilds
-        role_ids: list[int] = guilds[ctx.guild.id]["permissions"][permission.value]
-        for role in ctx.author.roles:
-            if role.id in role_ids:
-                log.debug(f"{ctx.author} has the '{role.name}' role, and passes the check.")
-                return True
+        permissions_roles_query = session.execute(
+            select(RolesPermissions.role_id)
+            .where(RolesPermissions.permission == permission.value)
+            .where(RolesPermissions.guild_id == 956987833028083712)
+        )
+        permissions_roles = permissions_roles_query.scalars().all()
+
+        if any(permissions_role in ctx.author.roles for permissions_role in permissions_roles):
+            log.debug(f"{ctx.author} has the '{permission}' permission, and passes the check.")
+            return True
 
         log.debug(
             f"{ctx.author} does not have the required permission to use "

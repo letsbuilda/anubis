@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 python:slim-bullseye
+FROM --platform=linux/amd64 python:bullseye
 
 # Define Git SHA build argument for sentry
 ARG git_sha="development"

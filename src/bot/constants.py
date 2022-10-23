@@ -1,4 +1,3 @@
-from enum import Enum
 from os import getenv
 from typing import NamedTuple
 
@@ -17,10 +16,6 @@ class Logging(NamedTuple):
 
 class Channels(NamedTuple):
     devlog = 1012202489342345246
-
-
-class Permissions(Enum):
-    CAN_INTERNAL_EVAL = "can_internal_eval"
 
 
 class Tokens(NamedTuple):
@@ -115,7 +110,7 @@ class Emojis:
         6: "\u0036\ufe0f\u20e3",
         7: "\u0037\ufe0f\u20e3",
         8: "\u0038\ufe0f\u20e3",
-        9: "\u0039\ufe0f\u20e3"
+        9: "\u0039\ufe0f\u20e3",
     }
 
     confirmation = "\u2705"

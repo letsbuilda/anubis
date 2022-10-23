@@ -4,13 +4,21 @@ version = "0.1.0"
 dependencies = [
     "python-dotenv",
     "discord.py",
-    "bot-core @ https://github.com/python-discord/bot-core/archive/refs/tags/v8.2.1.zip",
     "aiohttp",
     "sentry-sdk",
     "rapidfuzz",
     "coloredlogs",
+    "psycopg2",
+    "sqlalchemy",
 ]
 
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[tool.black]
+target-version = ["py310"]
+line-length = 120
+
+[tool.isort]
+profile = "black"

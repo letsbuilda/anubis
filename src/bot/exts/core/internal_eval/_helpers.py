@@ -63,10 +63,7 @@ def format_internal_eval_exception(exc_info: ExcInfo, code: str) -> str:
             line = frame.line
             name = frame.name
 
-        output.append(
-            f'  File "{frame.filename}", line {frame.lineno}, in {name}\n'
-            f"    {line}"
-        )
+        output.append(f'  File "{frame.filename}", line {frame.lineno}, in {name}\n' f"    {line}")
 
     output.extend(traceback.format_exception_only(exc_type, exc_value))
     return "\n".join(output)
@@ -230,7 +227,7 @@ class CaptureLastExpression(ast.NodeTransformer):
         right_hand_side = list(ast.iter_child_nodes(node))[0]
 
         assignment = ast.Assign(
-            targets=[ast.Name(id='_value_last_expression', ctx=ast.Store())],
+            targets=[ast.Name(id="_value_last_expression", ctx=ast.Store())],
             value=right_hand_side,
             lineno=node.lineno,
             col_offset=0,

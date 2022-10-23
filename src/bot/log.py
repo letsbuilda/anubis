@@ -27,7 +27,10 @@ def setup() -> None:
 
         # File handler rotates logs every 5 MB
         file_handler = logging.handlers.RotatingFileHandler(
-            log_file, maxBytes=5 * (2 ** 20), backupCount=10, encoding="utf-8",
+            log_file,
+            maxBytes=5 * (2 ** 20),
+            backupCount=10,
+            encoding="utf-8",
         )
         file_handler.setFormatter(log_format)
         root_logger.addHandler(file_handler)

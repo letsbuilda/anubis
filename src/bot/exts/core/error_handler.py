@@ -69,9 +69,7 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, commands.UserInputError):
             self.revert_cooldown_counter(ctx.command, ctx.message)
             usage = f"```\n{ctx.prefix}{parent_command}{ctx.command} {ctx.command.signature}\n```"
-            embed = self.error_embed(
-                f"Your input was invalid: {error}\n\nUsage:{usage}"
-            )
+            embed = self.error_embed(f"Your input was invalid: {error}\n\nUsage:{usage}")
             await ctx.send(embed=embed)
             return
 
@@ -79,7 +77,7 @@ class CommandErrorHandler(commands.Cog):
             mins, secs = divmod(math.ceil(error.retry_after), 60)
             embed = self.error_embed(
                 f"This command is on cooldown:\nPlease retry in {mins} minutes {secs} seconds.",
-                Replies.negative
+                Replies.negative,
             )
             await ctx.send(embed=embed, delete_after=7.5)
             return
@@ -89,12 +87,7 @@ class CommandErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.NoPrivateMessage):
-            await ctx.send(
-                embed=self.error_embed(
-                    "This command can only be used in the server. ",
-                    Replies.negative
-                )
-            )
+            await ctx.send(embed=self.error_embed("This command can only be used in the server. ", Replies.negative))
             return
 
         if isinstance(error, commands.BadArgument):
@@ -114,7 +107,7 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send(
                 embed=self.error_embed(
                     f"There was an error when communicating with the {error.api}",
-                    Replies.negative
+                    Replies.negative,
                 )
             )
             return
@@ -128,10 +121,7 @@ class CommandErrorHandler(commands.Cog):
             return
 
         with push_scope() as scope:
-            scope.user = {
-                "id": ctx.author.id,
-                "username": str(ctx.author)
-            }
+            scope.user = {"id": ctx.author.id, "username": str(ctx.author)}
 
             scope.set_tag("command", ctx.command.qualified_name)
             scope.set_tag("message_id", ctx.message.id)
@@ -168,9 +158,7 @@ class CommandErrorHandler(commands.Cog):
             misspelled_content = ctx.message.content
             e = Embed()
             e.set_author(name="Did you mean:", icon_url=QUESTION_MARK_ICON)
-            e.description = "\n".join(
-                misspelled_content.replace(command_name, cmd, 1) for cmd in command_suggestions
-            )
+            e.description = "\n".join(misspelled_content.replace(command_name, cmd, 1) for cmd in command_suggestions)
             await ctx.send(embed=e, delete_after=7.5)
 
 

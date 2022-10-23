@@ -1,3 +1,4 @@
+import logging
 from types import ModuleType
 
 import aiohttp
@@ -5,7 +6,7 @@ from discord.ext import commands
 
 from bot import constants, exts
 from bot.utils.extensions import walk_extensions
-
+log = logging.getLogger(__name__)
 
 class Bot(commands.Bot):
     """Sample Bot implementation."""
@@ -41,13 +42,16 @@ class Bot(commands.Bot):
         This should be ran in a task on the event loop to avoid deadlocks caused by ``wait_for`` calls.
         """
         self.all_extensions = walk_extensions(module)
+        log.debug(f"{self.all_extensions=}")
 
         for extension in self.all_extensions:
-            print(f"loading extension {extension=}")
+            log.debug(f"loading {extension=}")
             await self.load_extension(extension)
 
     async def setup_hook(self) -> None:
         """Default async initialisation method for discord.py."""
+        log.debug("setup_hook")
         await super().setup_hook()
 
+        log.debug("load_extensions")
         await self.load_extensions(exts)

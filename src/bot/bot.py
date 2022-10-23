@@ -6,7 +6,9 @@ from discord.ext import commands
 
 from bot import constants, exts
 from bot.utils.extensions import walk_extensions
+
 log = logging.getLogger(__name__)
+
 
 class Bot(commands.Bot):
     """Sample Bot implementation."""

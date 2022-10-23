@@ -23,13 +23,14 @@ def with_permission(permission: Permissions) -> Callable:
         permissions_roles_query = session.execute(
             select(RolesPermissions.role_id)
             .where(RolesPermissions.permission == permission.value)
-            .where(RolesPermissions.guild_id == 956987833028083712)
+            .where(RolesPermissions.guild_id == ctx.guild.id)
         )
         permissions_roles = permissions_roles_query.scalars().all()
 
-        if any(permissions_role in ctx.author.roles for permissions_role in permissions_roles):
-            log.debug(f"{ctx.author} has the '{permission}' permission, and passes the check.")
-            return True
+        for role in ctx.author.roles:
+            if role.id in permissions_roles:
+                log.debug(f"{ctx.author} has the '{role.name}' role, and passes the check.")
+                return True
 
         log.debug(
             f"{ctx.author} does not have the required permission to use "

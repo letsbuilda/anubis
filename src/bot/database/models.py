@@ -1,10 +1,9 @@
 """Database models"""
+
 from enum import Enum
 
-from sqlalchemy import BigInteger, Column, Text, select
+from sqlalchemy import BigInteger, Column, Text
 from sqlalchemy.ext.declarative import declarative_base
-
-from bot.database import session
 
 Base = declarative_base()
 
@@ -32,13 +31,3 @@ class RolesPermissions(Base):
     guild_id = Column(BigInteger)
     role_id = Column(BigInteger)
     permission = Column(Text)
-
-
-if __name__ == "__main__":
-    result = session.execute(
-        select(RolesPermissions.role_id)
-        .where(RolesPermissions.permission == "can_internal_eval")
-        .where(RolesPermissions.guild_id == 956987833028083712)
-    )
-
-    print(result.scalars().all())

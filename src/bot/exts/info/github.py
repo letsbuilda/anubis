@@ -8,9 +8,12 @@ from urllib.parse import quote
 import discord
 from aiohttp import ClientResponse
 from discord.ext import commands
+from sqlalchemy import select
 
 from bot.bot import Bot
 from bot.constants import Colours, Emojis, Replies, Tokens
+from bot.database import session
+from bot.database.models import Guild
 
 log = logging.getLogger(__name__)
 
@@ -177,9 +180,11 @@ class Github(commands.Cog):
             if not message.guild:
                 return
 
-            from bot.utils.guild_data import guilds
-
-            guild_github_org: str = guilds[message.guild.id]["github_organization"]
+            github_organization_query = session.execute(
+                select(Guild.github_organization)
+                .where(Guild.guild_id == message.guild.id)
+            )
+            guild_github_org: str = github_organization_query.scalars().first()
 
             log.info(f"Found {issues = }")
             # Remove duplicates

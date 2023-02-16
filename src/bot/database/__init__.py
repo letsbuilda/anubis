@@ -8,7 +8,6 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 engine = create_engine(
     # `create_engine` errors if no URL is supplied, causing tests to fail.
     getenv("BOT_DB_URL", "sqlite:///:memory:"),
-    connect_args={"options": "-c timezone=utc"},
     future=True,
 )
 

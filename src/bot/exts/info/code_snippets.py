@@ -1,3 +1,5 @@
+"""Get snippets of code"""
+
 import logging
 import re
 import textwrap
@@ -63,7 +65,7 @@ class CodeSnippets(Cog):
         async with self.bot.http_session.get(url, raise_for_status=True, **kwargs) as response:
             if response_format == "text":
                 return await response.text()
-            elif response_format == "json":
+            if response_format == "json":
                 return await response.json()
 
     def _find_ref(self, path: str, refs: tuple) -> tuple:
@@ -97,6 +99,7 @@ class CodeSnippets(Cog):
         )
         return self._snippet_to_codeblock(file_contents, file_path, start_line, end_line)
 
+    # pylint: disable-next=too-many-arguments
     async def _fetch_github_gist_snippet(
         self,
         gist_id: str,
@@ -142,6 +145,7 @@ class CodeSnippets(Cog):
         )
         return self._snippet_to_codeblock(file_contents, file_path, start_line, end_line)
 
+    # pylint: disable-next=too-many-arguments
     async def _fetch_bitbucket_snippet(
         self, repo: str, ref: str, file_path: str, start_line: str, end_line: str
     ) -> str:

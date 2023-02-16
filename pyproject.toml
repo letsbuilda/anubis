@@ -2,19 +2,44 @@
 name = "anubis"
 version = "0.1.0"
 dependencies = [
-    "python-dotenv",
-    "discord.py",
-    "aiohttp",
-    "sentry-sdk",
-    "rapidfuzz",
-    "coloredlogs",
-    "psycopg2",
-    "sqlalchemy",
+    "python-dotenv==0.21.1",
+    "discord.py==2.1.1",
+    "aiohttp==3.8.4",
+    "sentry-sdk==1.15.0",
+    "rapidfuzz==2.13.7",
+    "coloredlogs==15.0.1",
+    "psycopg[binary]==3.1.8",
+    "SQLAlchemy==2.0.3",
+]
+
+[project.urls]
+repository = "https://github.com/letsbuilda/anubis"
+documentation = "https://docs.letsbuilda.dev/anubis/"
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "isort",
+    "pylint",
+]
+tests = [
+    "pytest",
+]
+docs = [
+    "sphinx",
+    "furo",
+    "sphinx-autoapi",
+    "toml",
+    "releases",
 ]
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.sphinx]
+copyright = "Darbia"
+author = "Bradley Reynolds"
 
 [tool.black]
 target-version = ["py310"]
@@ -22,3 +47,13 @@ line-length = 120
 
 [tool.isort]
 profile = "black"
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint.messages_control]
+disable = "W1203,R0903,R0911"
+# justifications:
+# W1203 (logging-fstring-interpolation) - developer UX
+# R0903 (too-few-public-methods) - NamedTuple(s)
+# R0911: (too-many-return-statements) - refactor me plz

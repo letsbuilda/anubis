@@ -1,3 +1,5 @@
+"""Bot subclass"""
+
 import logging
 from types import ModuleType
 

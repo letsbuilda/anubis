@@ -1,3 +1,5 @@
+"""Anubis, a fancy Discord bot"""
+
 try:
     from dotenv import load_dotenv
 

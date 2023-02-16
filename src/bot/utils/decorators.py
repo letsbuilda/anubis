@@ -1,3 +1,5 @@
+"""Decorators"""
+
 import logging
 from typing import Callable
 
@@ -12,7 +14,10 @@ log = logging.getLogger(__name__)
 
 
 def with_permission(permission: Permissions) -> Callable:
+    """Check if user has permision"""
+
     async def predicate(ctx: Context) -> bool:
+        """The predicate"""
         if not ctx.guild:  # Return False in a DM
             log.debug(
                 f"{ctx.author} tried to use the '{ctx.command.name}'command from a DM. "

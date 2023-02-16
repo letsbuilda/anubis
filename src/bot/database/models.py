@@ -2,10 +2,12 @@
 
 from enum import Enum
 
-from sqlalchemy import BigInteger, Column, Text
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import BigInteger
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-Base = declarative_base()
+
+class Base(DeclarativeBase):
+    """DeclarativeBase"""
 
 
 class Guild(Base):
@@ -13,9 +15,9 @@ class Guild(Base):
 
     __tablename__ = "guilds"
 
-    guild_id = Column(BigInteger, primary_key=True)
-    name = Column(Text)
-    github_organization = Column(Text)
+    guild_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    name: Mapped[str]
+    github_organization: Mapped[str]
 
 
 class Permissions(Enum):
@@ -27,7 +29,7 @@ class RolesPermissions(Base):
 
     __tablename__ = "roles_permissions"
 
-    roles_permissions_id = Column(BigInteger, primary_key=True)
-    guild_id = Column(BigInteger)
-    role_id = Column(BigInteger)
-    permission = Column(Text)
+    roles_permissions_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    guild_id: Mapped[int] = mapped_column(BigInteger)
+    role_id: Mapped[int] = mapped_column(BigInteger)
+    permission: Mapped[str]

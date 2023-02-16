@@ -181,8 +181,7 @@ class Github(commands.Cog):
                 return
 
             github_organization_query = session.execute(
-                select(Guild.github_organization)
-                .where(Guild.guild_id == message.guild.id)
+                select(Guild.github_organization).where(Guild.guild_id == message.guild.id)
             )
             guild_github_org: str = github_organization_query.scalars().first()
 

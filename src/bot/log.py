@@ -1,3 +1,5 @@
+"""Logging"""
+
 import logging
 import logging.handlers
 import os
@@ -28,7 +30,7 @@ def setup() -> None:
         # File handler rotates logs every 5 MB
         file_handler = logging.handlers.RotatingFileHandler(
             log_file,
-            maxBytes=5 * (2 ** 20),
+            maxBytes=5 * (2**20),
             backupCount=10,
             encoding="utf-8",
         )
@@ -69,6 +71,7 @@ def _monkeypatch_trace(self: logging.Logger, msg: str, *args, **kwargs) -> None:
     logger.trace("Houston, we have an %s", "interesting problem", exc_info=1)
     """
     if self.isEnabledFor(logging.TRACE):
+        # pylint: disable-next=protected-access
         self._log(logging.TRACE, msg, args, **kwargs)
 
 

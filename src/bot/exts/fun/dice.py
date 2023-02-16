@@ -1,3 +1,5 @@
+"""Dice rolling"""
+
 from random import randint
 
 import discord

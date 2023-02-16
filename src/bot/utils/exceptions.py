@@ -1,3 +1,6 @@
+"""Custom Exception(s)"""
+
+
 class APIError(Exception):
     """Raised when an external API (eg. Wikipedia) returns an error response."""
 

@@ -21,6 +21,8 @@ class Guild(Base):
 
 
 class Permissions(Enum):
+    """Permissions enum"""
+
     CAN_INTERNAL_EVAL = "can_internal_eval"
 
 

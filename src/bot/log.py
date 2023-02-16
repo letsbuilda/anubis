@@ -1,3 +1,5 @@
+"""Logging"""
+
 import logging
 import logging.handlers
 import os
@@ -69,6 +71,7 @@ def _monkeypatch_trace(self: logging.Logger, msg: str, *args, **kwargs) -> None:
     logger.trace("Houston, we have an %s", "interesting problem", exc_info=1)
     """
     if self.isEnabledFor(logging.TRACE):
+        # pylint: disable-next=protected-access
         self._log(logging.TRACE, msg, args, **kwargs)
 
 

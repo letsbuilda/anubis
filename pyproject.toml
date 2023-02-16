@@ -50,3 +50,10 @@ profile = "black"
 
 [tool.pylint.format]
 max-line-length = 120
+
+[tool.pylint.messages_control]
+disable = "W1203,R0903,R0911"
+# justifications:
+# W1203 (logging-fstring-interpolation) - developer UX
+# R0903 (too-few-public-methods) - NamedTuple(s)
+# R0911: (too-many-return-statements) - refactor me plz

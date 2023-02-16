@@ -1,3 +1,5 @@
+"""Error handling"""
+
 import logging
 import math
 import random
@@ -26,8 +28,11 @@ class CommandErrorHandler(commands.Cog):
     @staticmethod
     def revert_cooldown_counter(command: commands.Command, message: Message) -> None:
         """Undoes the last cooldown counter for user-error cases."""
+        # pylint: disable-next=protected-access
         if command._buckets.valid:
+            # pylint: disable-next=protected-access
             bucket = command._buckets.get_bucket(message)
+            # pylint: disable-next=protected-access
             bucket._tokens = min(bucket.rate, bucket._tokens + 1)
             logging.debug("Cooldown counter reverted as the command was not used correctly.")
 
@@ -156,10 +161,12 @@ class CommandErrorHandler(commands.Cog):
                 command_suggestions.append(similar_command_name)
 
             misspelled_content = ctx.message.content
-            e = Embed()
-            e.set_author(name="Did you mean:", icon_url=QUESTION_MARK_ICON)
-            e.description = "\n".join(misspelled_content.replace(command_name, cmd, 1) for cmd in command_suggestions)
-            await ctx.send(embed=e, delete_after=7.5)
+            embed = Embed()
+            embed.set_author(name="Did you mean:", icon_url=QUESTION_MARK_ICON)
+            embed.description = "\n".join(
+                misspelled_content.replace(command_name, cmd, 1) for cmd in command_suggestions
+            )
+            await ctx.send(embed=embed, delete_after=7.5)
 
 
 async def setup(bot: Bot) -> None:

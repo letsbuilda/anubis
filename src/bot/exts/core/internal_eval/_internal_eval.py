@@ -1,3 +1,5 @@
+"""Internal eval"""
+
 import logging
 import re
 import textwrap
@@ -82,14 +84,13 @@ class InternalEval(commands.Cog):
         data = self.shorten_output(output, max_length=MAX_LENGTH)
         try:
             async with self.bot.http_session.post(
-                "https://paste.pythondiscord.com/documents",
-                data=data,
-                raise_for_status=True,
+                "https://paste.pythondiscord.com/documents", data=data, raise_for_status=True
             ) as resp:
                 data = await resp.json()
 
             if "key" in data:
                 return f"https://paste.pythondiscord.com/{data['key']}"
+        # pylint: disable-next=broad-except
         except Exception:
             # 400 (Bad Request) means there are too many characters
             log.exception("Failed to upload `internal eval` output to paste service!")
@@ -161,6 +162,7 @@ class InternalEval(commands.Cog):
                 code = "\n".join(block.group("code") for block in blocks)
             else:
                 match = match[0] if len(blocks) == 0 else blocks[0]
+                # pylint: disable-next=unused-variable
                 code, block, lang, delim = match.group("code", "block", "lang", "delim")
 
         else:

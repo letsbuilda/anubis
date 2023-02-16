@@ -1,3 +1,5 @@
+"""Dice rolling"""
+
 from random import randint
 
 from discord.ext import commands

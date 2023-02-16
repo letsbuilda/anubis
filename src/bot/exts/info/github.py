@@ -1,3 +1,5 @@
+"""Get data from GitHub"""
+
 import logging
 import random
 import re
@@ -28,10 +30,7 @@ PR_ENDPOINT = "https://api.github.com/repos/{user}/{repository}/pulls/{number}"
 if Tokens.github:
     REQUEST_HEADERS["Authorization"] = f"token {Tokens.github}"
 
-CODE_BLOCK_RE = re.compile(
-    r"^`([^`\n]+)`" r"|```(.+?)```",  # Inline codeblock  # Multiline codeblock
-    re.DOTALL | re.MULTILINE,
-)
+CODE_BLOCK_RE = re.compile(r"^`([^`\n]+)`|```(.+?)```", re.DOTALL | re.MULTILINE)
 
 # Maximum number of issues in one message
 MAXIMUM_ISSUES = 5
@@ -92,17 +91,17 @@ class Github(commands.Cog):
         url = ISSUE_ENDPOINT.format(user=user, repository=repository, number=number)
         pulls_url = PR_ENDPOINT.format(user=user, repository=repository, number=number)
 
-        json_data, r = await self.fetch_data(url)
+        json_data, response = await self.fetch_data(url)
 
-        if r.status == 403:
-            if r.headers.get("X-RateLimit-Remaining") == "0":
+        if response.status == 403:
+            if response.headers.get("X-RateLimit-Remaining") == "0":
                 log.info(f"Ratelimit reached while fetching {url}")
                 return FetchError(403, "Ratelimit reached, please retry in a few minutes.")
             return FetchError(403, "Cannot access issue.")
-        elif r.status in (404, 410):
-            return FetchError(r.status, "Issue not found.")
-        elif r.status != 200:
-            return FetchError(r.status, "Error while fetching issue.")
+        if response.status in (404, 410):
+            return FetchError(response.status, "Issue not found.")
+        if response.status != 200:
+            return FetchError(response.status, "Error while fetching issue.")
 
         # The initial API request is made to the issues API endpoint, which will return information
         # if the issue or PR is present. However, the scope of information returned for PRs differs
@@ -216,8 +215,8 @@ class Github(commands.Cog):
     async def fetch_data(self, url: str) -> tuple[dict[str], ClientResponse]:
         """Retrieve data as a dictionary and the response in a tuple."""
         log.info(f"Querying GH issues API: {url}")
-        async with self.bot.http_session.get(url, headers=REQUEST_HEADERS) as r:
-            return await r.json(), r
+        async with self.bot.http_session.get(url, headers=REQUEST_HEADERS) as response:
+            return await response.json(), response
 
     @github_group.command(name="user", aliases=("userinfo",))
     async def github_user_info(self, ctx: commands.Context, username: str) -> None:

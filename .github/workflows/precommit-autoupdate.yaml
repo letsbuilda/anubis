@@ -6,4 +6,4 @@ on:
 
 jobs:
   pre-commit-autoupdate:
-    uses: darbiadev/.github/.github/workflows/generic-precommit-autoupdate.yaml@c194ec59628447c17718ee155e52060ef92dc406
+    uses: darbiadev/.github/.github/workflows/generic-precommit-autoupdate.yaml@1fafbd742c15d5b4daa8352b4b8a90b188ba37ea

@@ -1,6 +1,6 @@
 [project]
 name = "anubis"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
     "python-dotenv==0.21.1",
     "discord.py==2.1.1",

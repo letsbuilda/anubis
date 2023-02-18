@@ -40,4 +40,5 @@ async def main() -> None:
         await bot.start(getenv("BOT_TOKEN"))
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

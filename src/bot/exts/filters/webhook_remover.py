@@ -14,8 +14,7 @@ from bot.exts.core.log import Log
 from bot.utils.messages import format_user
 
 WEBHOOK_URL_RE = re.compile(
-    r"((?:https?:\/\/)?(?:ptb\.|canary\.)?discord(?:app)?\.com\/api\/webhooks\/\d+\/)\S+\/?",
-    re.IGNORECASE
+    r"((?:https?:\/\/)?(?:ptb\.|canary\.)?discord(?:app)?\.com\/api\/webhooks\/\d+\/)\S+\/?", re.IGNORECASE
 )
 
 ALERT_MESSAGE_TEMPLATE = (
@@ -78,7 +77,7 @@ class WebhookRemover(Cog):
             title="Discord webhook URL removed!",
             text=text,
             thumbnail=message.author.display_avatar.url,
-            channel_id=Channels.mod_alerts
+            channel_id=Channels.mod_alerts,
         )
 
         # Log to SOC
@@ -93,7 +92,7 @@ class WebhookRemover(Cog):
             title="Discord webhook URL removed!",
             text=text,
             thumbnail=message.author.display_avatar.url,
-            channel_id=Channels.soc_alerts
+            channel_id=Channels.soc_alerts,
         )
 
     @Cog.listener()

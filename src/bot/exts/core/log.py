@@ -1,10 +1,10 @@
 """Cog to log"""
 
+import logging
 from datetime import datetime
 
 import discord
 from discord.ext.commands import Cog, Context
-import logging
 
 from bot.bot import Bot
 from bot.constants import Channels, Roles
@@ -35,9 +35,7 @@ class Log(Cog):
     ) -> Context:
         """Generate log embed and send to logging channel."""
         # Truncate string directly here to avoid removing newlines
-        embed = discord.Embed(
-            description=text[:4093] + "..." if len(text) > 4096 else text
-        )
+        embed = discord.Embed(description=text[:4093] + "..." if len(text) > 4096 else text)
 
         if title and icon_url:
             embed.set_author(name=title, icon_url=icon_url)
@@ -59,14 +57,10 @@ class Log(Cog):
 
         # Truncate content to 2000 characters and append an ellipsis.
         if content and len(content) > 2000:
-            content = content[:2000 - 3] + "..."
+            content = content[: 2000 - 3] + "..."
 
         channel = self.bot.get_channel(channel_id)
-        log_message = await channel.send(
-            content=content,
-            embed=embed,
-            files=files
-        )
+        log_message = await channel.send(content=content, embed=embed, files=files)
 
         if additional_embeds:
             for additional_embed in additional_embeds:

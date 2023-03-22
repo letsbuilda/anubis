@@ -18,9 +18,13 @@ class EnvConfig(BaseSettings):
 
     class Config:
         """Config"""
-        env_file = ".env.server", ".env",
-        env_file_encoding = 'utf-8'
-        env_nested_delimiter = '__'
+
+        env_file = (
+            ".env.server",
+            ".env",
+        )
+        env_file_encoding = "utf-8"
+        env_nested_delimiter = "__"
 
 
 class _Miscellaneous(EnvConfig):
@@ -178,8 +182,12 @@ class _Icons(EnvConfig):
 
     filtering = "https://cdn.discordapp.com/emojis/472472638594482195.png"
 
-    green_checkmark = "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-checkmark-dist.png"
-    green_questionmark = "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-question-mark-dist.png"
+    green_checkmark = (
+        "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-checkmark-dist.png"
+    )
+    green_questionmark = (
+        "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-question-mark-dist.png"
+    )
     guild_update = "https://cdn.discordapp.com/emojis/469954765141442561.png"
 
     hash_blurple = "https://cdn.discordapp.com/emojis/469950142942806017.png"

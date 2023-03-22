@@ -8,7 +8,7 @@ from pathlib import Path
 
 import coloredlogs
 
-from bot.constants import FILE_LOGS, DEBUG_MODE, Bot
+from bot.constants import DEBUG_MODE, FILE_LOGS, Bot
 
 
 def setup() -> None:

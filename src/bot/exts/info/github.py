@@ -13,7 +13,7 @@ from discord.ext import commands
 from sqlalchemy import select
 
 from bot.bot import Bot
-from bot.constants import Colours, Emojis, Tokens, ERROR_REPLIES, NEGATIVE_REPLIES
+from bot.constants import ERROR_REPLIES, NEGATIVE_REPLIES, Colours, Emojis, Tokens
 from bot.database import session
 from bot.database.models import Guild
 

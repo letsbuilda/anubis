@@ -10,7 +10,7 @@ from discord.ext import commands
 from sentry_sdk import push_scope
 
 from bot.bot import Bot
-from bot.constants import Colours, NEGATIVE_REPLIES
+from bot.constants import NEGATIVE_REPLIES, Colours
 from bot.utils.commands import get_command_suggestions
 from bot.utils.exceptions import APIError, MovedCommandError
 

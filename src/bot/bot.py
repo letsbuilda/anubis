@@ -6,7 +6,7 @@ from types import ModuleType
 import aiohttp
 from discord.ext import commands
 
-from bot import constants, exts
+from bot import exts
 from bot.utils.extensions import walk_extensions
 
 log = logging.getLogger(__name__)

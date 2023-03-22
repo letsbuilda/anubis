@@ -37,6 +37,7 @@ class CommandErrorHandler(commands.Cog):
             logging.debug("Cooldown counter reverted as the command was not used correctly.")
 
     @staticmethod
+    # pylint: disable-next=dangerous-default-value
     def error_embed(message: str, title: Iterable | str = NEGATIVE_REPLIES) -> Embed:
         """Build a basic embed with red colour and either a random error title or a title provided."""
         embed = Embed(colour=Colours.soft_red)

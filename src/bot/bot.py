@@ -13,9 +13,7 @@ log = logging.getLogger(__name__)
 
 
 class Bot(commands.Bot):
-    """Sample Bot implementation."""
-
-    name = constants.Client.name
+    """Bot implementation."""
 
     def __init__(
         self,

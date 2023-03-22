@@ -29,7 +29,7 @@ def get_prefix(bot_, message_):
 async def main() -> None:
     """Run the bot."""
     bot = Bot(
-        guild_id=constants.Client.guild_id,
+        guild_id=constants.Bot.guild_id,
         http_session=aiohttp.ClientSession(),
         allowed_roles=roles,
         command_prefix=get_prefix,

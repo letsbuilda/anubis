@@ -13,7 +13,7 @@ from discord.ext import commands
 from sqlalchemy import select
 
 from bot.bot import Bot
-from bot.constants import Colours, Emojis, Replies, Tokens
+from bot.constants import Colours, Emojis, Tokens, ERROR_REPLIES, NEGATIVE_REPLIES
 from bot.database import session
 from bot.database.models import Guild
 
@@ -190,7 +190,7 @@ class Github(commands.Cog):
 
             if len(issues) > MAXIMUM_ISSUES:
                 embed = discord.Embed(
-                    title=random.choice(Replies.error),
+                    title=random.choice(ERROR_REPLIES),
                     color=Colours.soft_red,
                     description=f"Too many issues/PRs! (maximum of {MAXIMUM_ISSUES})",
                 )
@@ -227,7 +227,7 @@ class Github(commands.Cog):
             # User_data will not have a message key if the user exists
             if "message" in user_data:
                 embed = discord.Embed(
-                    title=random.choice(Replies.negative),
+                    title=random.choice(NEGATIVE_REPLIES),
                     description=f"The profile for `{username}` was not found.",
                     colour=Colours.soft_red,
                 )
@@ -298,7 +298,7 @@ class Github(commands.Cog):
         repo = "/".join(repo)
         if repo.count("/") != 1:
             embed = discord.Embed(
-                title=random.choice(Replies.negative),
+                title=random.choice(NEGATIVE_REPLIES),
                 description="The repository should look like `user/reponame` or `user reponame`.",
                 colour=Colours.soft_red,
             )
@@ -312,7 +312,7 @@ class Github(commands.Cog):
             # There won't be a message key if this repo exists
             if "message" in repo_data:
                 embed = discord.Embed(
-                    title=random.choice(Replies.negative),
+                    title=random.choice(NEGATIVE_REPLIES),
                     description="The requested repository was not found.",
                     colour=Colours.soft_red,
                 )

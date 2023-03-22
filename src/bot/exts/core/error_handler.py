@@ -10,7 +10,7 @@ from discord.ext import commands
 from sentry_sdk import push_scope
 
 from bot.bot import Bot
-from bot.constants import Colours, Replies
+from bot.constants import NEGATIVE_REPLIES, Colours
 from bot.utils.commands import get_command_suggestions
 from bot.utils.exceptions import APIError, MovedCommandError
 
@@ -37,7 +37,8 @@ class CommandErrorHandler(commands.Cog):
             logging.debug("Cooldown counter reverted as the command was not used correctly.")
 
     @staticmethod
-    def error_embed(message: str, title: Iterable | str = Replies.error) -> Embed:
+    # pylint: disable-next=dangerous-default-value
+    def error_embed(message: str, title: Iterable | str = NEGATIVE_REPLIES) -> Embed:
         """Build a basic embed with red colour and either a random error title or a title provided."""
         embed = Embed(colour=Colours.soft_red)
         if isinstance(title, str):
@@ -82,17 +83,17 @@ class CommandErrorHandler(commands.Cog):
             mins, secs = divmod(math.ceil(error.retry_after), 60)
             embed = self.error_embed(
                 f"This command is on cooldown:\nPlease retry in {mins} minutes {secs} seconds.",
-                Replies.negative,
+                NEGATIVE_REPLIES,
             )
             await ctx.send(embed=embed, delete_after=7.5)
             return
 
         if isinstance(error, commands.DisabledCommand):
-            await ctx.send(embed=self.error_embed("This command has been disabled.", Replies.negative))
+            await ctx.send(embed=self.error_embed("This command has been disabled.", NEGATIVE_REPLIES))
             return
 
         if isinstance(error, commands.NoPrivateMessage):
-            await ctx.send(embed=self.error_embed("This command can only be used in the server. ", Replies.negative))
+            await ctx.send(embed=self.error_embed("This command can only be used in the server. ", NEGATIVE_REPLIES))
             return
 
         if isinstance(error, commands.BadArgument):
@@ -105,14 +106,14 @@ class CommandErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.CheckFailure):
-            await ctx.send(embed=self.error_embed("You are not authorized to use this command.", Replies.negative))
+            await ctx.send(embed=self.error_embed("You are not authorized to use this command.", NEGATIVE_REPLIES))
             return
 
         if isinstance(error, APIError):
             await ctx.send(
                 embed=self.error_embed(
                     f"There was an error when communicating with the {error.api}",
-                    Replies.negative,
+                    NEGATIVE_REPLIES,
                 )
             )
             return
@@ -122,7 +123,7 @@ class CommandErrorHandler(commands.Cog):
                 f"This command, `{ctx.prefix}{ctx.command.qualified_name}` has moved to `{error.new_command_name}`.\n"
                 f"Please use `{error.new_command_name}` instead."
             )
-            await ctx.send(embed=self.error_embed(description, Replies.negative))
+            await ctx.send(embed=self.error_embed(description, NEGATIVE_REPLIES))
             return
 
         with push_scope() as scope:

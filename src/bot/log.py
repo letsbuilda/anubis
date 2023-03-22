@@ -8,7 +8,7 @@ from pathlib import Path
 
 import coloredlogs
 
-from bot.constants import Logging
+from bot.constants import DEBUG_MODE, FILE_LOGS, Bot
 
 
 def setup() -> None:
@@ -22,7 +22,7 @@ def setup() -> None:
     log_format = logging.Formatter(format_string)
     root_logger = logging.getLogger()
 
-    if Logging.file_logs:
+    if FILE_LOGS:
         # Set up file logging
         log_file = Path("logs/anubis.log")
         log_file.parent.mkdir(exist_ok=True)
@@ -50,7 +50,7 @@ def setup() -> None:
 
     coloredlogs.install(level=logging.TRACE, stream=sys.stdout)
 
-    root_logger.setLevel(logging.DEBUG if Logging.debug else logging.INFO)
+    root_logger.setLevel(logging.DEBUG if DEBUG_MODE else logging.INFO)
     # Silence irrelevant loggers
     logging.getLogger("discord").setLevel(logging.ERROR)
     logging.getLogger("websockets").setLevel(logging.ERROR)
@@ -87,7 +87,7 @@ def _set_trace_loggers() -> None:
     Otherwise if the env var begins with a "*",
     the root logger is set to the trace level and other contents are ignored.
     """
-    level_filter = Logging.trace_loggers
+    level_filter = Bot.trace_loggers
     if level_filter:
         if level_filter.startswith("*"):
             logging.getLogger().setLevel(logging.TRACE)

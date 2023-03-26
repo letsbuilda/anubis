@@ -79,13 +79,13 @@ class WebhookRemover(Cog):
             thumbnail=message.author.display_avatar.url,
             channel_id=Channels.mod_alerts,
         )
-        
+
         # Display Bot icon as thumbnail
         if webhook_metadata["avatar"] == null:
             thumb = f"https://cdn.discordapp.com/avatars/{webhook_metadata['id']}/{webhook_metadata['avatar']}.webp"
         else:
             thumb = message.author.display_avatar.url
-        
+
         # Log to SOC
         text = (
             f"{format_user(message.author)} posted a Discord webhook URL to {message.channel.mention}. {delete_state} "

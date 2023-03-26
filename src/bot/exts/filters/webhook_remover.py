@@ -81,7 +81,7 @@ class WebhookRemover(Cog):
         )
 
         # Display Bot icon as thumbnail
-        if webhook_metadata["avatar"] == null:
+        if webhook_metadata["avatar"] is None:
             thumb = f"https://cdn.discordapp.com/avatars/{webhook_metadata['id']}/{webhook_metadata['avatar']}.webp"
         else:
             thumb = message.author.display_avatar.url

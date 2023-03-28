@@ -65,6 +65,12 @@ class WebhookRemover(Cog):
         else:
             delete_state = "There was an error when deleting the webhook, it might have already been removed."
 
+        # Display Bot icon as thumbnail
+        if webhook_metadata.get("avatar") is not None:
+            thumb = f"https://cdn.discordapp.com/avatars/{webhook_metadata['id']}/{webhook_metadata['avatar']}.webp"
+        else:
+            thumb = message.author.display_avatar.url
+
         # Log to moderators
         text = (
             f"{format_user(message.author)} posted a Discord webhook URL to {message.channel.mention}. {delete_state} "
@@ -76,15 +82,9 @@ class WebhookRemover(Cog):
             colour=Colour(Colours.soft_red),
             title="Discord webhook URL removed!",
             text=text,
-            thumbnail=message.author.display_avatar.url,
+            thumbnail=thumb,
             channel_id=Channels.mod_alerts,
         )
-
-        # Display Bot icon as thumbnail
-        if webhook_metadata["avatar"] is not None:
-            thumb = f"https://cdn.discordapp.com/avatars/{webhook_metadata['id']}/{webhook_metadata['avatar']}.webp"
-        else:
-            thumb = message.author.display_avatar.url
 
         # Log to SOC
         text = (

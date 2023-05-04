@@ -14,7 +14,7 @@ from bot.exts.core.log import Log
 from bot.utils.messages import format_user
 
 WEBHOOK_URL_RE = re.compile(
-    r"((?:https?:\/\/)?(?:ptb\.|canary\.)?discord(?:app)?\.com\/api\/webhooks\/\d+\/)\S+\/?", re.IGNORECASE
+    r"https?:\/\/(ptb\.|canary\.)?discord(app)?\.com\/api(\/v\d{1,2})?\/webhooks\/(\d{17,21})\/([\w-]{68})", re.IGNORECASE
 )
 
 ALERT_MESSAGE_TEMPLATE = (

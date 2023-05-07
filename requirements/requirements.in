@@ -1,0 +1,13 @@
+# Requirements
+# --index-url=http://pypi.example.com/simple
+# --no-cache-dir
+
+python-dotenv
+discord.py
+aiohttp
+sentry-sdk
+rapidfuzz
+coloredlogs
+psycopg[binary]
+SQLAlchemy
+pydantic

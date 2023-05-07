@@ -1,0 +1,5 @@
+# Testing Requirements - pytest, tox, etc.
+# --index-url=http://pypi.example.com/simple
+# --no-cache-dir
+
+pytest

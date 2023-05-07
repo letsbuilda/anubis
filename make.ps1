@@ -19,7 +19,7 @@ COMMANDS
 #>
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("init", "install", "install-dev", "lint", "pylint", "test", "build-dist", "clean", "help")]
+    [ValidateSet("init", "install", "install-dev", "update-deps", "lint", "pylint", "test", "build-dist", "clean", "help")]
     [string]$Command
 )
 
@@ -41,6 +41,15 @@ function Invoke-Install
 function Invoke-Install-Dev
 {
     python -m pip install --upgrade --editable ".[dev, tests, docs]"
+}
+
+function Invoke-Update-Deps
+{
+    python -m pip install --upgrade pip-tools
+    pip-compile --resolver=backtracking requirements/requirements.in
+    pip-compile --resolver=backtracking requirements/requirements-dev.in
+    pip-compile --resolver=backtracking requirements/requirements-tests.in
+    pip-compile --resolver=backtracking requirements/requirements-docs.in
 }
 
 function Invoke-Lint
@@ -92,6 +101,9 @@ switch ($Command)
     }
     "lint"  {
         Invoke-Lint
+    }
+    "update-deps"  {
+        Invoke-Update-Deps
     }
     "pylint"    {
         Invoke-Pylint

@@ -1,0 +1,10 @@
+# Documentation Requirements - Sphinx, releases, etc
+# --index-url=http://pypi.example.com/simple
+# --no-cache-dir
+
+sphinx
+furo
+sphinx-autoapi
+toml
+releases
+urllib3==1.26.15

@@ -8,11 +8,11 @@ on:
 
 jobs:
   pre-commit:
-    uses: darbiadev/.github/.github/workflows/generic-precommit.yaml@570079218747889f03eafe6ef14f855635ecbdee
+    uses: darbiadev/.github/.github/workflows/generic-precommit.yaml@307c66955ab6d811fbeb45f8e49dfe5d51e5d285
 
   lint:
     needs: pre-commit
-    uses: darbiadev/.github/.github/workflows/python-lint.yaml@570079218747889f03eafe6ef14f855635ecbdee
+    uses: darbiadev/.github/.github/workflows/python-lint.yaml@307c66955ab6d811fbeb45f8e49dfe5d51e5d285
 
   test:
     needs: lint
@@ -21,7 +21,7 @@ jobs:
         os: [ ubuntu-latest ]
         python-version: [ "3.10", "3.11" ]
 
-    uses: darbiadev/.github/.github/workflows/python-test.yaml@570079218747889f03eafe6ef14f855635ecbdee
+    uses: darbiadev/.github/.github/workflows/python-test.yaml@307c66955ab6d811fbeb45f8e49dfe5d51e5d285
     with:
       os: ${{ matrix.os }}
       python-version: ${{ matrix.python-version }}

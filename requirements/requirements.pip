@@ -42,8 +42,6 @@ psycopg-binary==3.1.9
     # via psycopg
 pydantic==1.10.7
     # via -r requirements/requirements.in
-pyreadline3==3.4.1
-    # via humanfriendly
 python-dotenv==1.0.0
     # via -r requirements/requirements.in
 rapidfuzz==3.0.0
@@ -57,8 +55,6 @@ typing-extensions==4.5.0
     #   psycopg
     #   pydantic
     #   sqlalchemy
-tzdata==2023.3
-    # via psycopg
 urllib3==1.26.15
     # via sentry-sdk
 yarl==1.9.2

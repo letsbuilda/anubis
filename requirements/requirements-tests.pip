@@ -4,8 +4,6 @@
 #
 #    pip-compile --output-file=requirements/requirements-tests.pip --resolver=backtracking requirements/requirements-tests.in
 #
-colorama==0.4.6
-    # via pytest
 iniconfig==2.0.0
     # via pytest
 packaging==23.1

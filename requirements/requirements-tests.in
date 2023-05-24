@@ -2,4 +2,6 @@
 # --index-url=http://pypi.example.com/simple
 # --no-cache-dir
 
+# Constrain versions installed to be compatible with core dependencies
+--constraint requirements.pip
 pytest

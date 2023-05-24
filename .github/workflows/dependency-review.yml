@@ -16,4 +16,4 @@ jobs:
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v3
         with:
-          config-file: darbiadev/.github/.github/dependency-review-config.yaml@570079218747889f03eafe6ef14f855635ecbdee
+          config-file: darbiadev/.github/.github/dependency-review-config.yaml@307c66955ab6d811fbeb45f8e49dfe5d51e5d285

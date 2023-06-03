@@ -53,7 +53,7 @@ class WebhookRemover(Cog):
             deleted_successfully = response.status == 204
 
         # The webhook should only be actioned if it is the only content of a message.
-        if len(message.content) != len(webhook_url):    
+        if message.content != webhook_url:    
             return
             
         try:

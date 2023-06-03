@@ -52,6 +52,10 @@ class WebhookRemover(Cog):
             # The Discord API Returns a 204 NO CONTENT response on success.
             deleted_successfully = response.status == 204
 
+        # The webhook should only be actioned if it is the only content of a message.
+        if len(message.content) != len(webhook_url):    
+            return
+            
         try:
             await message.delete()
         except NotFound:

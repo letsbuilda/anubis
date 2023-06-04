@@ -25,6 +25,9 @@ ALERT_MESSAGE_TEMPLATE = (
     "mistake, please let us know."
 )
 
+SOC_CATEGORY = 1086886764255395900
+SECURITY_ROLE = 1086881843636359188
+
 log = logging.getLogger(__name__)
 
 
@@ -52,8 +55,10 @@ class WebhookRemover(Cog):
             # The Discord API Returns a 204 NO CONTENT response on success.
             deleted_successfully = response.status == 204
 
-        # The webhook should only be actioned if it is the only content of a message.
-        if message.content != webhook_url:    
+        # The webhook should only be actioned if it is the only content of a message,
+        # and within the defined exemption parameters.
+        user_roles = [role.id for role in message.author.roles]
+        if message.content != webhook_url and message.channel.category.id == SOC_CATEGORY_ID and SECURITY_ROLE in user_roles:
             return
             
         try:

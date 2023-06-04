@@ -75,7 +75,7 @@ Channels = _Channels()
 
 class _Roles(EnvConfig):
     EnvConfig.Config.env_prefix = "roles_"
-    """Channel constants"""
+    """Role constants"""
 
     moderators = 1087224451571142716
     security = 1086881843636359188

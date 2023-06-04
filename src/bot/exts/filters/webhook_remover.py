@@ -56,9 +56,11 @@ class WebhookRemover(Cog):
         # and within the defined exemption parameters.
         user_roles = [role.id for role in message.author.roles]
         if all(
-            message.content != webhook_url,
-            message.channel.category.id == Channels.soc_category,
-            Roles.security in user_roles
+            [
+                message.content != webhook_url,
+                message.channel.category.id == Channels.soc_category,
+                Roles.security in user_roles,
+            ]
         ):
             return
 

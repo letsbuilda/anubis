@@ -66,7 +66,7 @@ class _Channels(EnvConfig):
     dev_log = 1012202489342345246
     mod_log = 1087901347040465006
     soc_log = 1087901419132170260
-    
+
     soc_category = 1086886764255395900
 
 
@@ -79,8 +79,8 @@ class _Roles(EnvConfig):
 
     moderators = 1087224451571142716
     security = 1086881843636359188
-    
-    
+
+
 Roles = _Roles()
 
 

@@ -32,6 +32,8 @@ humanfriendly==10.0
     # via coloredlogs
 idna==3.4
     # via yarl
+imsosorry==1.2.0
+    # via -r requirements.in
 multidict==6.0.4
     # via
     #   aiohttp

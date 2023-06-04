@@ -6,6 +6,8 @@ By default, the values defined in the classes are used, these can be overridden 
 `.env` and `.env.server` files are used to populate env vars, if present.
 """
 
+from os import getenv
+
 from pydantic import BaseSettings, root_validator
 
 
@@ -41,7 +43,6 @@ class _Bot(EnvConfig):
 
     EnvConfig.Config.env_prefix = "bot_"
 
-    guild_id = 954235291588247603
     prefix = "!"
     sentry_dsn = ""
     token = ""
@@ -70,14 +71,26 @@ Channels = _Channels()
 
 
 class _Roles(EnvConfig):
-    EnvConfig.Config.env_prefix = "roles_"
     """Role constants"""
+
+    EnvConfig.Config.env_prefix = "roles_"
 
     moderators = 1087224451571142716
     security = 1086881843636359188
 
 
 Roles = _Roles()
+
+
+class _Guild(EnvConfig):
+    """Guild constants"""
+
+    EnvConfig.Config.env_prefix = "guild_"
+
+    id = 954235291588247603
+
+
+Guild = _Guild()
 
 
 class _Tokens(EnvConfig):
@@ -260,6 +273,9 @@ class _Colours(EnvConfig):
 
 
 Colours = _Colours()
+
+# Git SHA for Sentry
+GIT_SHA = getenv("GIT_SHA", "development")
 
 NEGATIVE_REPLIES = [
     "Noooooo!!",

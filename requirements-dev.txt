@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements-dev.txt --resolver=backtracking requirements-dev.in
 #
-astroid==2.15.4
+astroid==2.15.5
     # via pylint
 black==23.3.0
     # via -r requirements-dev.in
@@ -26,13 +26,13 @@ packaging==23.1
     # via black
 pathspec==0.11.1
     # via black
-platformdirs==3.5.0
+platformdirs==3.5.1
     # via
     #   black
     #   pylint
 pylint==2.17.4
     # via -r requirements-dev.in
-ruff==0.0.269
+ruff==0.0.270
     # via -r requirements-dev.in
 tomlkit==0.11.8
     # via pylint

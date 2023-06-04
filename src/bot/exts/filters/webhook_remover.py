@@ -9,7 +9,7 @@ from discord import Colour, Message, NotFound
 from discord.ext.commands import Cog
 
 from bot.bot import Bot
-from bot.constants import Channels, Colours, Icons
+from bot.constants import Channels, Colours, Icons, Roles
 from bot.exts.core.log import Log
 from bot.utils.messages import format_user
 
@@ -55,7 +55,11 @@ class WebhookRemover(Cog):
         # The webhook should only be actioned if it is the only content of a message,
         # and within the defined exemption parameters.
         user_roles = [role.id for role in message.author.roles]
-        if message.content != webhook_url and message.channel.category.id == SOC_CATEGORY and SECURITY_ROLE in user_roles:
+        if all(
+            message.content != webhook_url,
+            message.channel.category.id == Channels.soc_category,
+            Roles.security in user_roles
+        ):
             return
             
         try:

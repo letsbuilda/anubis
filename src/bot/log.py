@@ -65,7 +65,7 @@ def setup() -> None:
             **coloredlogs.DEFAULT_LEVEL_STYLES,
             "trace": {"color": 246},
             "critical": {"background": "red"},
-            "debug": coloredlogs.DEFAULT_LEVEL_STYLES["info"]
+            "debug": coloredlogs.DEFAULT_LEVEL_STYLES["info"],
         }
 
     if "COLOREDLOGS_LOG_FORMAT" not in os.environ:
@@ -87,15 +87,12 @@ def setup() -> None:
 
 def setup_sentry() -> None:
     """Set up the Sentry logging integrations."""
-    sentry_logging = LoggingIntegration(
-        level=logging.DEBUG,
-        event_level=logging.WARNING
-    )
+    sentry_logging = LoggingIntegration(level=logging.DEBUG, event_level=logging.WARNING)
 
     sentry_sdk.init(
         dsn=constants.Bot.sentry_dsn,
         integrations=[
-            sentry_logging,            
+            sentry_logging,
         ],
         release=f"bot@{constants.GIT_SHA}",
         traces_sample_rate=0.5,

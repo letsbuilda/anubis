@@ -24,7 +24,6 @@ class Bot(BotBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
     async def setup_hook(self) -> None:
         """Default async initialisation method for discord.py."""
         await super().setup_hook()

@@ -4,6 +4,7 @@
 
 python-dotenv
 discord.py
+pydis-core
 aiohttp
 sentry-sdk
 rapidfuzz

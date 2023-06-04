@@ -58,7 +58,7 @@ class WebhookRemover(Cog):
         # The webhook should only be actioned if it is the only content of a message,
         # and within the defined exemption parameters.
         user_roles = [role.id for role in message.author.roles]
-        if message.content != webhook_url and message.channel.category.id == SOC_CATEGORY_ID and SECURITY_ROLE in user_roles:
+        if message.content != webhook_url and message.channel.category.id == SOC_CATEGORY and SECURITY_ROLE in user_roles:
             return
             
         try:

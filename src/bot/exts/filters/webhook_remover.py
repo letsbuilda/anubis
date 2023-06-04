@@ -61,7 +61,7 @@ class WebhookRemover(Cog):
             Roles.security in user_roles
         ):
             return
-            
+
         try:
             await message.delete()
         except NotFound:

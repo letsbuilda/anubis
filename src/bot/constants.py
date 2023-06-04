@@ -75,7 +75,11 @@ class _Roles(EnvConfig):
 
     EnvConfig.Config.env_prefix = "roles_"
 
+    administrators = 1033457487359250524
     moderators = 1087224451571142716
+    core_developers = 1090530634457436180
+    staff = 1038207235437887519
+
     security = 1086881843636359188
 
 
@@ -91,6 +95,41 @@ class _Guild(EnvConfig):
 
 
 Guild = _Guild()
+
+
+class _BaseURLs(EnvConfig):
+    EnvConfig.Config.env_prefix = "urls_"
+
+    # Snekbox endpoints
+    snekbox_eval_api = "http://snekbox.default.svc.cluster.local/eval"
+
+    # Discord API
+    discord_api = "https://discordapp.com/api/v7/"
+
+    # Misc endpoints
+    bot_avatar = "https://raw.githubusercontent.com/python-discord/branding/main/logos/logo_circle/logo_circle.png"
+
+    github_bot_repo = "https://github.com/letsbuilda/anubis"
+
+    paste = "https://paste.pythondiscord.com"
+
+
+BaseURLs = _BaseURLs()
+
+
+class _URLs(_BaseURLs):
+    # Discord API endpoints
+    discord_invite_api: str = "".join([BaseURLs.discord_api, "invites"])
+
+    # Base site vars
+    connect_max_retries = 3
+    connect_cooldown = 5
+
+    paste_service: str = "".join([BaseURLs.paste, "/{key}"])
+    site_logs_view: str = "https://pythondiscord.com/staff/bot/logs"
+
+
+URLs = _URLs()
 
 
 class _Tokens(EnvConfig):

@@ -46,10 +46,10 @@ function Invoke-Install-Dev
 function Invoke-Update-Deps
 {
     python -m pip install --upgrade pip-tools
-    pip-compile --resolver=backtracking requirements/requirements.in --output-file requirements/requirements.pip
-    pip-compile --resolver=backtracking requirements/requirements-dev.in --output-file requirements/requirements-dev.pip
-    pip-compile --resolver=backtracking requirements/requirements-tests.in --output-file requirements/requirements-tests.pip
-    pip-compile --resolver=backtracking requirements/requirements-docs.in --output-file requirements/requirements-docs.pip
+    pip-compile --resolver=backtracking requirements.in --output-file requirements.txt
+    pip-compile --resolver=backtracking requirements-dev.in --output-file requirements-dev.txt
+    pip-compile --resolver=backtracking requirements-tests.in --output-file requirements-tests.txt
+    pip-compile --resolver=backtracking requirements-docs.in --output-file requirements-docs.txt
 }
 
 function Invoke-Lint

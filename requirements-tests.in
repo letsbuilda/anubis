@@ -3,5 +3,5 @@
 # --no-cache-dir
 
 # Constrain versions installed to be compatible with core dependencies
---constraint requirements.pip
+--constraint requirements.txt
 pytest

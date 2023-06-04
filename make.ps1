@@ -8,8 +8,9 @@ USAGE
 
 COMMANDS
     init              install Python build tools
-    install           install local package in production mode
     install-dev       install local package in editable mode
+    update-deps       update the dependencies
+    upgrade-deps      upgrade the dependencies
     lint              run `isort` and `black`
     pylint            run `pylint`
     test              run `pytest`
@@ -19,7 +20,7 @@ COMMANDS
 #>
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("init", "install", "install-dev", "update-deps", "lint", "pylint", "test", "build-dist", "clean", "help")]
+    [ValidateSet("init", "install-dev", "update-deps", "upgrade-deps", "lint", "pylint", "test", "build-dist", "clean", "help")]
     [string]$Command
 )
 
@@ -33,11 +34,6 @@ function Invoke-Init
     python -m pip install --upgrade pip wheel setuptools build
 }
 
-function Invoke-Install
-{
-    python -m pip install --upgrade .
-}
-
 function Invoke-Install-Dev
 {
     python -m pip install --upgrade --editable ".[dev, tests, docs]"
@@ -46,10 +42,19 @@ function Invoke-Install-Dev
 function Invoke-Update-Deps
 {
     python -m pip install --upgrade pip-tools
-    pip-compile --resolver=backtracking requirements/requirements.in --output-file requirements/requirements.pip
-    pip-compile --resolver=backtracking requirements/requirements-dev.in --output-file requirements/requirements-dev.pip
-    pip-compile --resolver=backtracking requirements/requirements-tests.in --output-file requirements/requirements-tests.pip
-    pip-compile --resolver=backtracking requirements/requirements-docs.in --output-file requirements/requirements-docs.pip
+    pip-compile --output-file requirements.txt --resolver=backtracking requirements.in
+    pip-compile --output-file requirements-dev.txt --resolver=backtracking requirements-dev.in
+    pip-compile --output-file requirements-tests.txt --resolver=backtracking requirements-tests.in
+    pip-compile --output-file requirements-docs.txt --resolver=backtracking requirements-docs.in
+}
+
+function Invoke-Upgrade-Deps
+{
+    python -m pip install --upgrade pip-tools
+    pip-compile --output-file requirements.txt --resolver=backtracking --upgrade requirements.in
+    pip-compile --output-file requirements-dev.txt --resolver=backtracking --upgrade requirements-dev.in
+    pip-compile --output-file requirements-tests.txt --resolver=backtracking --upgrade requirements-tests.in
+    pip-compile --output-file requirements-docs.txt --resolver=backtracking --upgrade requirements-docs.in
 }
 
 function Invoke-Lint
@@ -93,9 +98,6 @@ switch ($Command)
     "init"    {
         Invoke-Init
     }
-    "install"  {
-        Invoke-Install
-    }
     "install-dev" {
         Invoke-Install-Dev
     }
@@ -104,6 +106,9 @@ switch ($Command)
     }
     "update-deps"  {
         Invoke-Update-Deps
+    }
+    "upgrade-deps"  {
+        Invoke-Upgrade-Deps
     }
     "pylint"    {
         Invoke-Pylint

@@ -12,12 +12,12 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic.dependencies]
-file = ["requirements/requirements.pip"]
+file = ["requirements.txt"]
 
 [tool.setuptools.dynamic.optional-dependencies]
-dev = {file = ["requirements/requirements-dev.pip"]}
-tests = {file = ["requirements/requirements-tests.pip"]}
-docs = {file = ["requirements/requirements-docs.pip"]}
+dev = {file = ["requirements-dev.txt"]}
+tests = {file = ["requirements-tests.txt"]}
+docs = {file = ["requirements-docs.txt"]}
 
 [tool.sphinx]
 copyright = "Darbia"

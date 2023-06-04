@@ -1,12 +1,11 @@
-# Documentation Requirements - Sphinx, releases, etc
+# Development Requirements - linting, formatting, etc.
 # --index-url=http://pypi.example.com/simple
 # --no-cache-dir
 
 # Constrain versions installed to be compatible with core dependencies
---constraint requirements.pip
+--constraint requirements.txt
 
-sphinx
-furo
-sphinx-autoapi
-toml
-releases
+black
+isort
+pylint
+ruff

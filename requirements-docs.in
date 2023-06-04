@@ -1,7 +1,12 @@
-# Testing Requirements - pytest, tox, etc.
+# Documentation Requirements - Sphinx, releases, etc
 # --index-url=http://pypi.example.com/simple
 # --no-cache-dir
 
 # Constrain versions installed to be compatible with core dependencies
---constraint requirements.pip
-pytest
+--constraint requirements.txt
+
+sphinx
+furo
+sphinx-autoapi
+toml
+releases

@@ -25,9 +25,6 @@ ALERT_MESSAGE_TEMPLATE = (
     "mistake, please let us know."
 )
 
-SOC_CATEGORY = 1086886764255395900
-SECURITY_ROLE = 1086881843636359188
-
 log = logging.getLogger(__name__)
 
 

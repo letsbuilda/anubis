@@ -1,4 +1,4 @@
-from aiohttp import ClientConnectorError
+from aiohttp import ClientConnectorError, ClientSession
 
 import bot
 from bot.constants import URLs
@@ -18,7 +18,9 @@ class PasteTooLongError(Exception):
     """Raised when content is too large to upload to the paste service."""
 
 
-async def send_to_paste_service(contents: str, *, extension: str = "", max_length: int = MAX_PASTE_LENGTH) -> str:
+async def send_to_paste_service(
+    http_session: ClientSession, contents: str, *, extension: str = "", max_length: int = MAX_PASTE_LENGTH
+) -> str:
     """
     Upload `contents` to the paste service.
 
@@ -44,7 +46,7 @@ async def send_to_paste_service(contents: str, *, extension: str = "", max_lengt
     paste_url = URLs.paste_service.format(key="documents")
     for attempt in range(1, FAILED_REQUEST_ATTEMPTS + 1):
         try:
-            async with bot.instance.http_session.post(paste_url, data=contents) as response:
+            async with http_session.post(paste_url, data=contents) as response:
                 response_json = await response.json()
         except ClientConnectorError:
             log.warning(

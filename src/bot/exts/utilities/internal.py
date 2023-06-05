@@ -204,7 +204,7 @@ async def func():  # (None,) -> Any
 
         if len(out) > truncate_index:
             try:
-                paste_link = await send_to_paste_service(out, extension="py")
+                paste_link = await send_to_paste_service(self.bot.http_session, out, extension="py")
             except PasteTooLongError:
                 paste_text = "too long to upload to paste service."
             except PasteUploadError:

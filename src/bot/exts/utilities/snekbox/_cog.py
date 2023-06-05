@@ -6,6 +6,7 @@ from operator import attrgetter
 from textwrap import dedent
 from typing import TYPE_CHECKING, Literal, NamedTuple, Self
 
+from aiohttp import ClientSession
 from discord import (
     AllowedMentions,
     HTTPException,
@@ -210,12 +211,12 @@ class Snekbox(Cog):
             return EvalResult.from_dict(await resp.json())
 
     @staticmethod
-    async def upload_output(output: str) -> str | None:
+    async def upload_output(http_session: ClientSession, output: str) -> str | None:
         """Upload the job's output to a paste service and return a URL to it if successful."""
         log.trace("Uploading full output to paste service...")
 
         try:
-            return await send_to_paste_service(output, extension="txt", max_length=MAX_PASTE_LENGTH)
+            return await send_to_paste_service(http_session, output, extension="txt", max_length=MAX_PASTE_LENGTH)
         except PasteTooLongError:
             return "too long to upload"
         except PasteUploadError:
@@ -260,7 +261,7 @@ class Snekbox(Cog):
             output = output.replace("<!@", "<!@\u200B")  # Zero-width space
 
         if ESCAPE_REGEX.findall(output):
-            paste_link = await self.upload_output(original_output)
+            paste_link = await self.upload_output(self.bot.http_session, original_output)
             return "Code block escape attempt detected; will not output result", paste_link
 
         truncated = False
@@ -283,7 +284,7 @@ class Snekbox(Cog):
             output = f"{output[:max_chars]}\n... (truncated - too long)"
 
         if truncated:
-            paste_link = await self.upload_output(original_output)
+            paste_link = await self.upload_output(self.bot.http_session, original_output)
 
         if output_default and not output:
             output = output_default

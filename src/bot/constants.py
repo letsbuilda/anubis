@@ -93,6 +93,9 @@ class _Guild(EnvConfig):
 
     id = 954235291588247603
 
+    moderation_roles = [Roles.administrators, Roles.moderators]
+    staff_roles = [Roles.administrators, Roles.moderators, Roles.staff]
+
 
 Guild = _Guild()
 
@@ -101,7 +104,7 @@ class _BaseURLs(EnvConfig):
     EnvConfig.Config.env_prefix = "urls_"
 
     # Snekbox endpoints
-    snekbox_eval_api = "http://snekbox.default.svc.cluster.local/eval"
+    snekbox_eval_api = "http://localhost:8060/eval"
 
     # Discord API
     discord_api = "https://discordapp.com/api/v7/"
@@ -215,6 +218,8 @@ class _Emojis(EnvConfig):
     lemon_hyperpleased = "<:lemon_hyperpleased:754441879822663811>"
     lemon_pensive = "<:lemon_pensive:754441880246419486>"
 
+    failed_file = "<:failed_file:1073298441968562226>"
+
 
 Emojis = _Emojis()
 
@@ -315,6 +320,12 @@ Colours = _Colours()
 
 # Git SHA for Sentry
 GIT_SHA = getenv("GIT_SHA", "development")
+
+# Default role combinations
+MODERATION_ROLES = Guild.moderation_roles
+STAFF_ROLES = Guild.staff_roles
+
+TXT_LIKE_FILES = {".txt", ".csv", ".json"}
 
 NEGATIVE_REPLIES = [
     "Noooooo!!",

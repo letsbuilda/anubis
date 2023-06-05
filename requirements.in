@@ -4,11 +4,12 @@
 
 python-dotenv
 discord.py
+pydis-core
 aiohttp
 sentry-sdk
 rapidfuzz
 coloredlogs
-psycopg[binary]
-SQLAlchemy
 pydantic
 imsosorry
+arrow
+tldextract

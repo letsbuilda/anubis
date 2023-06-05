@@ -8,7 +8,7 @@ ARG git_sha="development"
 ENV GIT_SHA=$git_sha
 
 COPY requirments.txt .
-RUN python -m pip install --requirement requirments.txt
+RUN python -m pip install --requirement requirements.txt
 
 COPY pyproject.toml src/ .
 RUN python -m pip install .

@@ -91,7 +91,7 @@ class _Guild(EnvConfig):
 
     EnvConfig.Config.env_prefix = "guild_"
 
-    id = 954235291588247603
+    id = 1033456860864466995
 
     moderation_roles = [Roles.administrators, Roles.moderators]
     staff_roles = [Roles.administrators, Roles.moderators, Roles.staff]

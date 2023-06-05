@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, cast
 import coloredlogs
 import sentry_sdk
 from sentry_sdk.integrations.logging import LoggingIntegration
-from sentry_sdk.integrations.redis import RedisIntegration
 
 from bot import constants
 

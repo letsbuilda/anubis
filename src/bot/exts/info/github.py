@@ -10,7 +10,6 @@ from urllib.parse import quote
 import discord
 from aiohttp import ClientResponse
 from discord.ext import commands
-from sqlalchemy import select
 
 from bot.bot import Bot
 from bot.constants import ERROR_REPLIES, NEGATIVE_REPLIES, Colours, Emojis, Tokens

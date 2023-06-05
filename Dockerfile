@@ -7,7 +7,7 @@ USER bot
 ARG git_sha="development"
 ENV GIT_SHA=$git_sha
 
-COPY requirments.txt .
+COPY requirements.txt .
 RUN python -m pip install --requirement requirements.txt
 
 COPY pyproject.toml src/ .

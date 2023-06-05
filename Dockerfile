@@ -7,10 +7,12 @@ USER bot
 ARG git_sha="development"
 ENV GIT_SHA=$git_sha
 
+WORKDIR /home/bot
+
 COPY requirements.txt .
 RUN python -m pip install --requirement requirements.txt
 
-COPY pyproject.toml src/ .
+COPY --chown=bot:bot . .
 RUN python -m pip install .
 
 CMD ["python", "-m", "bot"]

@@ -4,7 +4,7 @@ import re
 from functools import partial
 from operator import attrgetter
 from textwrap import dedent
-from typing import TYPE_CHECKING, Literal, NamedTuple, Self
+from typing import Literal, NamedTuple, Self
 
 from aiohttp import ClientSession
 from discord import (
@@ -23,7 +23,7 @@ from pydis_core.utils import interactions
 from pydis_core.utils.regex import FORMATTED_CODE_REGEX, RAW_CODE_REGEX
 
 from bot.bot import Bot
-from bot.constants import MODERATION_ROLES, TXT_LIKE_FILES, Channels, Emojis, URLs
+from bot.constants import MODERATION_ROLES, TXT_LIKE_FILES, Emojis, URLs
 from bot.log import get_logger
 from bot.utils import send_to_paste_service
 from bot.utils.lock import LockedResourceError, lock_arg
@@ -371,7 +371,7 @@ class Snekbox(Cog):
                         budget_lines -= format_text.count("\n") + 1
                         budget_chars -= len(file_text)
 
-            filter_cog: "Filtering" | None = self.bot.get_cog("Filtering")
+            filter_cog = self.bot.get_cog("Filtering")
             blocked_exts = set()
             # Include failed files in the scan.
             failed_files = [FileAttachment(name, b"") for name in result.failed_files]

@@ -1,6 +1,5 @@
 from aiohttp import ClientConnectorError, ClientSession
 
-import bot
 from bot.constants import URLs
 from bot.log import get_logger
 

@@ -126,6 +126,11 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send(embed=self.error_embed(description, NEGATIVE_REPLIES))
             return
 
+        if isinstance(error, commands.MaxConcurrencyReached):
+            embed = self.error_embed("This command can only be used 1 time per channel concurrently.")
+            await ctx.send(embed=embed)
+            return
+
         with push_scope() as scope:
             scope.user = {"id": ctx.author.id, "username": str(ctx.author)}
 

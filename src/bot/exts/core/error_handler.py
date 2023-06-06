@@ -127,7 +127,7 @@ class CommandErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.MaxConcurrencyReached):
-            embed = self.error_embed(f"This command can only be used 1 time per channel concurrently.")
+            embed = self.error_embed("This command can only be used 1 time per channel concurrently.")
             await ctx.send(embed=embed)
             return
 

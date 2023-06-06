@@ -3,7 +3,6 @@
 from asyncio import TimeoutError
 from collections import defaultdict
 
-import discord
 from discord import Colour, Embed, Message
 from discord.ext import commands
 from discord.ext.commands import BucketType, Context
@@ -59,6 +58,7 @@ class Race:
         scoreboard_list = [(self.players[userID], self.scores[userID]) for userID in self.players]
         scoreboard_list = sorted(scoreboard_list, key=lambda pair: pair[1], reverse=True)
         prev = None
+        offset = 0
         for i, pair in enumerate(scoreboard_list):
             username = pair[0]
             score = pair[1]

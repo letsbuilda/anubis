@@ -83,12 +83,12 @@ requests-file==1.5.1
     # via tldextract
 sentry-sdk==1.25.0
     # via -r requirements.in
-sqlalchemy==2.0.15
-    # via -r requirements.in
 six==1.16.0
     # via
     #   python-dateutil
     #   requests-file
+sqlalchemy==2.0.15
+    # via -r requirements.in
 statsd==4.0.1
     # via pydis-core
 tldextract==3.4.4

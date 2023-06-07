@@ -9,7 +9,7 @@ aiohttp
 sentry-sdk
 rapidfuzz
 coloredlogs
-psycopg[binary]
+psycopg
 SQLAlchemy
 pydantic
 imsosorry

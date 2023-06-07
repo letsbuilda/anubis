@@ -9,6 +9,8 @@ aiohttp
 sentry-sdk
 rapidfuzz
 coloredlogs
+psycopg[binary]
+SQLAlchemy
 pydantic
 imsosorry
 arrow

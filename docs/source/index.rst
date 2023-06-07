@@ -1,7 +1,7 @@
-anubis
+Anubis
 =======
 
-A Discord bot
+Our community Discord bot.
 
 Prose
 -----

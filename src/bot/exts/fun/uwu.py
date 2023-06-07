@@ -1,5 +1,7 @@
 """The ancient arts of Uwuification"""
 
+from functools import partial
+
 import discord
 from discord.ext import commands
 from discord.ext.commands import Cog, Context, clean_content

@@ -13,6 +13,8 @@ from discord.ext import commands
 
 from bot.bot import Bot
 from bot.constants import ERROR_REPLIES, NEGATIVE_REPLIES, Colours, Emojis, Tokens
+from bot.database import session
+from bot.database.models import Guild
 
 log = logging.getLogger(__name__)
 
@@ -176,6 +178,11 @@ class Github(commands.Cog):
             if not message.guild:
                 return
 
+            github_organization_query = session.execute(
+                select(Guild.github_organization).where(Guild.guild_id == message.guild.id)
+            )
+            guild_github_org: str = github_organization_query.scalars().first()
+
             log.info(f"Found {issues = }")
             # Remove duplicates
             issues = list(dict.fromkeys(issues))
@@ -193,7 +200,7 @@ class Github(commands.Cog):
                 result = await self.fetch_issue(
                     int(repo_issue.number),
                     repo_issue.repository,
-                    repo_issue.organisation or "letsbuilda",
+                    repo_issue.organisation or guild_github_org,
                 )
                 if isinstance(result, IssueState):
                     links.append(result)

@@ -4,18 +4,15 @@ For the full list of built-in configuration values, see the documentation:
 https://www.sphinx-doc.org/en/master/usage/configuration.html
 """
 
-from pathlib import Path
-try:
-    from tomllib import loads as toml_loads
-except ImportError:
-    from toml import loads as toml_loads
+from importlib.metadata import metadata
 
-project_config = toml_loads(Path("../../pyproject.toml").read_text())
-project: str = project_config["project"]["name"]
-release: str = project_config["project"]["version"]
-REPO_LINK: str = project_config["project"]["urls"]["repository"]
-copyright: str = project_config["tool"]["sphinx"]["copyright"]  # noqa: A001
-author: str = project_config["tool"]["sphinx"]["author"]
+project_metadata = metadata("anubis")
+project: str = project_metadata["Name"]
+release: str = project_metadata["Version"]
+REPO_LINK: str = project_metadata["Project-URL"].replace("repository, ", "")
+copyright: str = "Lets build a ..."
+author: str = "Lets build a ... Community"
+
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named "sphinx.ext.*") or your custom
@@ -64,9 +61,9 @@ def linkcode_resolve(domain, info):
     if not info["module"]:
         return None
 
-    import importlib  # pylint: disable=import-outside-toplevel
-    import inspect  # pylint: disable=import-outside-toplevel
-    import types  # pylint: disable=import-outside-toplevel
+    import importlib
+    import inspect
+    import types
 
     mod = importlib.import_module(info["module"])
 

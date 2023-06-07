@@ -32,10 +32,6 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.dynamic.dependencies]
 file = ["requirements.txt"]
 
-[tool.sphinx]
-copyright = "Darbia"
-author = "Bradley Reynolds"
-
 [tool.black]
 target-version = ["py310"]
 line-length = 120

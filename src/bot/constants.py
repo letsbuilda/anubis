@@ -44,6 +44,7 @@ class _Bot(EnvConfig):
     EnvConfig.Config.env_prefix = "bot_"
 
     prefix = "!"
+    database_url = "postgresql+asyncpg://postgres:postgres@localhost:5432"
     sentry_dsn = ""
     token = ""
     trace_loggers = "*"

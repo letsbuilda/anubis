@@ -1,13 +1,13 @@
 """Database functions"""
 
-from os import getenv
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+from bot.constants import Bot
+
+
 engine = create_engine(
-    # `create_engine` errors if no URL is supplied, causing tests to fail.
-    getenv("BOT_DB_URL", "sqlite:///:memory:"),
+    Bot.database_url,
     future=True,
 )
 

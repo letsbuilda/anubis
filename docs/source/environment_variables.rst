@@ -19,5 +19,5 @@ Sentry
 .. csv-table:: Sentry environment variables
    :header: "Name", "Description"
 
-   "``IDINET_SENTRY_DSN``", "DSN"
-   "``IDINET_SENTRY_ENV``", "uh..... I forgot"
+   "``BOT_SENTRY_DSN``", "Sentry connection DSN"
+   "``BOT_SENTRY_ENV``", "Sentry environment"

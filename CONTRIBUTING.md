@@ -19,7 +19,7 @@ Create your own fork of this repo that you will make your changes on.
 
 ### Local setup
 
-Create a test guild. 
+Create a test guild.
 
 The required enviroment variables are in (link).
 

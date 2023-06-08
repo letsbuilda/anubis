@@ -63,7 +63,7 @@ pycares==4.3.0
     # via aiodns
 pycparser==2.21
     # via cffi
-pydantic==1.10.8
+pydantic==1.10.9
     # via -r requirements.in
 pydis-core==9.6.0
     # via -r requirements.in

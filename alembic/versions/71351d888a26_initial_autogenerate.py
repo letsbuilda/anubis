@@ -1,7 +1,7 @@
 """initial_autogenerate
 
 Revision ID: 71351d888a26
-Revises: 
+Revises:
 Create Date: 2023-06-08 20:15:48.033756
 
 """

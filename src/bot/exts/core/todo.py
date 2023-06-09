@@ -41,7 +41,7 @@ class Todo(commands.Cog):
 
         embed = Embed(
             title=f"{ctx.author.name}'s Todo List",
-            colour=Colours.bright_green,
+            colour=ctx.author.color,
             description=description,
         )
         await ctx.send(embed=embed)

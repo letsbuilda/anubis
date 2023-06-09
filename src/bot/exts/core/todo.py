@@ -5,7 +5,6 @@ from discord.ext import commands
 from sqlalchemy.dialects.postgresql import insert
 
 from bot.bot import Bot
-from bot.constants import Colours
 from bot.database.models import Users
 
 

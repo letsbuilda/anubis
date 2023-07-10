@@ -226,7 +226,7 @@ async def func():  # (None,) -> Any
             await ctx.send_help(ctx.command)
 
     @internal_group.command(name="eval", aliases=("e",))
-    @has_any_role((Roles.administrators,))
+    @has_any_role(Roles.administrators)
     async def eval(self, ctx: Context, *, code: str) -> None:
         """Run eval in a REPL-like format."""
         code = code.strip("`")

@@ -2,18 +2,31 @@
 # --index-url=http://pypi.example.com/simple
 # --no-cache-dir
 
-python-dotenv
+# Core
 discord.py
 pydis-core
 aiohttp
+pydantic[dotenv]==1.10.10
+
+# Logging
 sentry-sdk
 rapidfuzz
 coloredlogs
+
+# Database
 psycopg[binary]
 SQLAlchemy
-pydantic
-imsosorry
-arrow
+
+# Utilities
+# utils/helpers
 tldextract
+
+# Extensions
+# exts/utilities/internal
+arrow
+# exts/utilities/snekbox
 regex
+# exts/fun/typeracer
 wonderwords
+# exts/fun/uwu
+imsosorry

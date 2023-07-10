@@ -1,4 +1,4 @@
-"""Bot subclass"""
+"""Bot subclass."""
 
 from pydis_core import BotBase
 from pydis_core.utils import scheduling
@@ -13,7 +13,7 @@ log = get_logger("bot")
 class StartupError(Exception):
     """Exception class for startup errors."""
 
-    def __init__(self, base: Exception):
+    def __init__(self, base: Exception) -> None:
         super().__init__()
         self.exception = base
 
@@ -21,7 +21,7 @@ class StartupError(Exception):
 class Bot(BotBase):
     """A subclass of `pydis_core.BotBase` that implements bot-specific functions."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
     async def setup_hook(self) -> None:

@@ -1,4 +1,4 @@
-"""Dice rolling"""
+"""Dice rolling."""
 
 from random import randint
 
@@ -12,7 +12,7 @@ from bot.bot import Bot
 class Dice(commands.Cog):
     """Roll dice."""
 
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
     @app_commands.command(name="roll")

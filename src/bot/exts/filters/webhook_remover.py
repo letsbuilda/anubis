@@ -1,4 +1,4 @@
-"""Cog to delete Discord webhooks"""
+"""Cog to delete Discord webhooks."""
 
 import json
 import logging
@@ -31,7 +31,7 @@ log = logging.getLogger(__name__)
 class WebhookRemover(Cog):
     """Scan messages to detect Discord webhooks links."""
 
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
     @property
@@ -40,7 +40,7 @@ class WebhookRemover(Cog):
         return self.bot.get_cog("Log")
 
     async def delete_and_respond(self, message: Message, matches: Match[str]) -> None:
-        """Delete `message` and send a warning that it contained a Discord webhook"""
+        """Delete `message` and send a warning that it contained a Discord webhook."""
         webhook_url = matches[0]
         redacted_url = matches[1] + "xxx"
 
@@ -60,7 +60,7 @@ class WebhookRemover(Cog):
                 message.content != webhook_url,
                 message.channel.category.id == Channels.soc_category,
                 Roles.security in user_roles,
-            ]
+            ],
         ):
             return
 

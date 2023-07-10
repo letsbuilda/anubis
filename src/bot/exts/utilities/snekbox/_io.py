@@ -45,8 +45,7 @@ def normalize_discord_file_name(name: str) -> str:
     name = RE_ANSI.sub("_", name)
     name = RE_BACKSLASH.sub("_", name)
     # Replace any disallowed character with an underscore
-    name = RE_DISCORD_FILE_NAME_DISALLOWED.sub("_", name)
-    return name
+    return RE_DISCORD_FILE_NAME_DISALLOWED.sub("_", name)
 
 
 @dataclass(frozen=True)
@@ -76,12 +75,14 @@ class FileAttachment:
         """Create a FileAttachment from a dict response."""
         size = data.get("size")
         if (size and size > size_limit) or (len(data["content"]) > size_limit):
-            raise ValueError("File size exceeds limit")
+            msg = "File size exceeds limit"
+            raise ValueError(msg)
 
         content = b64decode(data["content"])
 
         if len(content) > size_limit:
-            raise ValueError("File size exceeds limit")
+            msg = "File size exceeds limit"
+            raise ValueError(msg)
 
         return cls(data["path"], content)
 

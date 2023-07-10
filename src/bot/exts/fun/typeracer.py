@@ -1,4 +1,4 @@
-"""Typeracer game"""
+"""Typeracer game."""
 
 from asyncio import TimeoutError
 from collections import defaultdict
@@ -12,9 +12,9 @@ from bot.bot import Bot
 
 
 class Race:
-    """Class to manage each typerace"""
+    """Class to manage each typerace."""
 
-    def __init__(self, ctx: Context, number_of_words: int):
+    def __init__(self, ctx: Context, number_of_words: int) -> None:
         self.ctx = ctx
         self.word_generator = RandomWord()
         self.word_list = self.word_generator.random_words(number_of_words)
@@ -85,7 +85,7 @@ class Race:
 class Typeracer(commands.Cog):
     """Play typeracer."""
 
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
     @commands.command(name="typeracer")
@@ -97,7 +97,8 @@ class Typeracer(commands.Cog):
         Max number of words is 30.
         """
         if number_of_words < 1 or number_of_words > 30:
-            raise commands.UserInputError("Number of words must be between 1 and 30.")
+            msg = "Number of words must be between 1 and 30."
+            raise commands.UserInputError(msg)
 
         race = Race(ctx, number_of_words)
         await ctx.send("*The race has started!\nThe word to type is...*")

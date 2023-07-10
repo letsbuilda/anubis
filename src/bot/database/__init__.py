@@ -1,4 +1,4 @@
-"""Database functions"""
+"""Database functions."""
 
 from os import getenv
 
@@ -15,5 +15,5 @@ session: scoped_session = scoped_session(
     sessionmaker(
         bind=engine,
         future=True,
-    )
+    ),
 )

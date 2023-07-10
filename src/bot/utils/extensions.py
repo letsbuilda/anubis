@@ -14,7 +14,8 @@ def unqualify(name: str) -> str:
     Args:
         name: The module name to unqualify.
 
-    Returns:
+    Returns
+    -------
         The unqualified module name.
     """
     return name.rsplit(".", maxsplit=1)[-1]
@@ -32,12 +33,13 @@ def walk_extensions(module: types.ModuleType) -> frozenset[str]:
     Args:
         module (types.ModuleType): The module to look for extensions in.
 
-    Returns:
+    Returns
+    -------
         A set of strings that can be passed directly to :obj:`discord.ext.commands.Bot.load_extension`.
     """
 
     def on_error(name: str) -> NoReturn:
-        """Raise an import error"""
+        """Raise an import error."""
         raise ImportError(name=name)  # pragma: no cover
 
     modules = set()

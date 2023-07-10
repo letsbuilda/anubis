@@ -1,4 +1,4 @@
-"""Get data from GitHub"""
+"""Get data from GitHub."""
 
 import logging
 import random
@@ -35,7 +35,7 @@ MAXIMUM_ISSUES = 5
 # Regex used when looking for automatic linking in messages
 # regex101 of current regex https://regex101.com/r/V2ji8M/6
 AUTOMATIC_REGEX = re.compile(
-    r"((?P<org>[a-zA-Z0-9][a-zA-Z0-9\-]{1,39})\/)?(?P<repo>[\w\-\.]{1,100})#(?P<number>[0-9]+)"
+    r"((?P<org>[a-zA-Z0-9][a-zA-Z0-9\-]{1,39})\/)?(?P<repo>[\w\-\.]{1,100})#(?P<number>[0-9]+)",
 )
 
 
@@ -70,7 +70,7 @@ class IssueState:
 class Github(commands.Cog):
     """A Cog that fetches info from GitHub."""
 
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
         self.repos = []
 
@@ -105,10 +105,7 @@ class Github(commands.Cog):
         # from issues: if the 'issues' key is present in the response then we can pull the data we
         # need from the initial API call.
         if "issues" in json_data["html_url"]:
-            if json_data.get("state") == "open":
-                emoji = Emojis.issue_open
-            else:
-                emoji = Emojis.issue_closed
+            emoji = Emojis.issue_open if json_data.get("state") == "open" else Emojis.issue_closed
 
         # If the 'issues' key is not contained in the API response and there is no error code, then
         # we know that a PR has been requested and a call to the pulls API endpoint is necessary
@@ -137,7 +134,7 @@ class Github(commands.Cog):
         for result in results:
             if isinstance(result, IssueState):
                 description_list.append(
-                    f"{result.emoji} [[{result.repository}] #{result.number} {result.title}]({result.url})"
+                    f"{result.emoji} [[{result.repository}] #{result.number} {result.title}]({result.url})",
                 )
             elif isinstance(result, FetchError):
                 description_list.append(f":x: [{result.return_code}] {result.message}")
@@ -343,7 +340,7 @@ class Github(commands.Cog):
                 f"• {repo_data['stargazers_count']} ⭐ "
                 f"• Created At {repo_created_at} "
                 f"• Last Commit {last_pushed}"
-            )
+            ),
         )
 
         await ctx.send(embed=embed)

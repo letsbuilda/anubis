@@ -1,4 +1,4 @@
-"""Get snippets of code"""
+"""Get snippets of code."""
 
 import logging
 import re
@@ -17,13 +17,13 @@ log = logging.getLogger(__name__)
 
 GITHUB_RE = re.compile(
     r"https://github\.com/(?P<repo>[a-zA-Z0-9-]+/[\w.-]+)/blob/"
-    r"(?P<path>[^#>]+)(\?[^#>]+)?(#L(?P<start_line>\d+)(([-~:]|(\.\.))L(?P<end_line>\d+))?)"
+    r"(?P<path>[^#>]+)(\?[^#>]+)?(#L(?P<start_line>\d+)(([-~:]|(\.\.))L(?P<end_line>\d+))?)",
 )
 
 GITHUB_GIST_RE = re.compile(
     r"https://gist\.github\.com/([a-zA-Z0-9-]+)/(?P<gist_id>[a-zA-Z0-9]+)/*"
     r"(?P<revision>[a-zA-Z0-9]*)/*#file-(?P<file_path>[^#>]+?)(\?[^#>]+)?"
-    r"(-L(?P<start_line>\d+)([-~:]L(?P<end_line>\d+))?)"
+    r"(-L(?P<start_line>\d+)([-~:]L(?P<end_line>\d+))?)",
 )
 
 GITHUB_HEADERS = {"Accept": "application/vnd.github.v3.raw"}
@@ -33,12 +33,12 @@ if Tokens.github:
 
 GITLAB_RE = re.compile(
     r"https://gitlab\.com/(?P<repo>[\w.-]+/[\w.-]+)/\-/blob/(?P<path>[^#>]+)"
-    r"(\?[^#>]+)?(#L(?P<start_line>\d+)(-(?P<end_line>\d+))?)"
+    r"(\?[^#>]+)?(#L(?P<start_line>\d+)(-(?P<end_line>\d+))?)",
 )
 
 BITBUCKET_RE = re.compile(
     r"https://bitbucket\.org/(?P<repo>[a-zA-Z0-9-]+/[\w.-]+)/src/(?P<ref>[0-9a-zA-Z]+)"
-    r"/(?P<file_path>[^#>]+)(\?[^#>]+)?(#lines-(?P<start_line>\d+)(:(?P<end_line>\d+))?)"
+    r"/(?P<file_path>[^#>]+)(\?[^#>]+)?(#lines-(?P<start_line>\d+)(:(?P<end_line>\d+))?)",
 )
 
 
@@ -49,7 +49,7 @@ class CodeSnippets(Cog):
     Matches each message against a regex and prints the contents of all matched snippets.
     """
 
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot) -> None:
         """Initializes the cog's bot."""
         self.bot = bot
 
@@ -67,6 +67,7 @@ class CodeSnippets(Cog):
                 return await response.text()
             if response_format == "json":
                 return await response.json()
+            return None
 
     def _find_ref(self, path: str, refs: tuple) -> tuple:
         """Loops through all branches and tags to find the required ref."""
@@ -131,7 +132,8 @@ class CodeSnippets(Cog):
 
         # Searches the GitLab API for the specified branch
         branches = await self._fetch_response(
-            f"https://gitlab.com/api/v4/projects/{enc_repo}/repository/branches", "json"
+            f"https://gitlab.com/api/v4/projects/{enc_repo}/repository/branches",
+            "json",
         )
         tags = await self._fetch_response(f"https://gitlab.com/api/v4/projects/{enc_repo}/repository/tags", "json")
         refs = branches + tags
@@ -147,7 +149,12 @@ class CodeSnippets(Cog):
 
     # pylint: disable-next=too-many-arguments
     async def _fetch_bitbucket_snippet(
-        self, repo: str, ref: str, file_path: str, start_line: str, end_line: str
+        self,
+        repo: str,
+        ref: str,
+        file_path: str,
+        start_line: str,
+        end_line: str,
     ) -> str:
         """Fetches a snippet from a BitBucket repo."""
         file_contents = await self._fetch_response(
@@ -217,7 +224,7 @@ class CodeSnippets(Cog):
                     snippet = await handler(**match.groupdict())
                     all_snippets.append((match.start(), snippet))
                 except ClientResponseError as error:
-                    error_message = error.message  # noqa: B306
+                    error_message = error.message
                     log.log(
                         logging.DEBUG if error.status == 404 else logging.ERROR,
                         f"Failed to fetch code snippet from {match[0]!r}: {error.status} "
@@ -225,7 +232,7 @@ class CodeSnippets(Cog):
                     )
 
         # Sorts the list of snippets by their match index and joins them into a single message
-        return "\n".join(map(lambda x: x[1], sorted(all_snippets)))
+        return "\n".join(x[1] for x in sorted(all_snippets))
 
     @Cog.listener()
     async def on_message(self, message: discord.Message) -> None:

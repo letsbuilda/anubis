@@ -1,4 +1,4 @@
-"""The ancient arts of Uwuification"""
+"""The ancient arts of Uwuification."""
 
 import discord
 from discord.ext import commands
@@ -12,7 +12,7 @@ from bot.utils import helpers, messages
 class Uwu(Cog):
     """Cog for the uwu command."""
 
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
     @commands.command(
@@ -40,7 +40,8 @@ class Uwu(Cog):
 
         if text is None:
             # If we weren't able to get the content of a replied message
-            raise commands.UserInputError("Your message must have content or you must reply to a message.")
+            msg = "Your message must have content or you must reply to a message."
+            raise commands.UserInputError(msg)
 
         await clean_content(fix_channel_mentions=True).convert(ctx, text)
 

@@ -137,8 +137,7 @@ class EvalResult:
         text = ", ".join(names)
         # Since the file names are provided by user
         text = escape_markdown(text)
-        text = escape_mentions(text)
-        return text
+        return escape_mentions(text)
 
     def get_message(self, job: EvalJob) -> str:
         """Return a user-friendly message corresponding to the process's return code."""

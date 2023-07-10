@@ -175,7 +175,7 @@ class PythonVersionSwitcherButton(ui.Button):
 class Snekbox(Cog):
     """Safe evaluation of Python code using Snekbox."""
 
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
         self.jobs = {}
 
@@ -361,7 +361,11 @@ class Snekbox(Cog):
                 # otherwise, use budget
                 else:
                     format_text, link_text = await self.format_output(
-                        file_text, budget_lines, budget_chars, line_nums=False, output_default="[Empty]"
+                        file_text,
+                        budget_lines,
+                        budget_chars,
+                        line_nums=False,
+                        output_default="[Empty]",
                     )
                     # With any link, use it (don't use budget)
                     if link_text:
@@ -386,7 +390,7 @@ class Snekbox(Cog):
             blocked.extend(self._filter_files(ctx, failed_files, blocked_exts).blocked)
             # Add notice if any files were blocked
             if blocked:
-                blocked_sorted = sorted(set(f.suffix for f in blocked))
+                blocked_sorted = sorted({f.suffix for f in blocked})
                 # Only no extension
                 if len(blocked_sorted) == 1 and blocked_sorted[0] == "":
                     blocked_msg = "Files with no extension can't be uploaded."
@@ -425,7 +429,9 @@ class Snekbox(Cog):
         with contextlib.suppress(NotFound):
             try:
                 _, new_message = await self.bot.wait_for(
-                    "message_edit", check=_predicate_message_edit, timeout=REDO_TIMEOUT
+                    "message_edit",
+                    check=_predicate_message_edit,
+                    timeout=REDO_TIMEOUT,
                 )
                 await ctx.message.add_reaction(REDO_EMOJI)
                 await self.bot.wait_for("reaction_add", check=_predicate_emoji_reaction, timeout=10)
@@ -489,7 +495,7 @@ class Snekbox(Cog):
                 response = await self.send_job(ctx, job)
             except LockedResourceError:
                 await ctx.send(
-                    f"{ctx.author.mention} You've already got a job running - " "please wait for it to finish!"
+                    f"{ctx.author.mention} You've already got a job running - " "please wait for it to finish!",
                 )
                 return
 
@@ -506,7 +512,11 @@ class Snekbox(Cog):
     @command(name="eval", aliases=("e",), usage="[python_version] <code, ...>")
     @guild_only()
     async def eval_command(
-        self, ctx: Context, python_version: SupportedPythonVersions | None, *, code: CodeblockConverter
+        self,
+        ctx: Context,
+        python_version: SupportedPythonVersions | None,
+        *,
+        code: CodeblockConverter,
     ) -> None:
         """
         Run Python code and get the results.
@@ -534,7 +544,11 @@ class Snekbox(Cog):
     @command(name="timeit", aliases=("ti",), usage="[python_version] [setup_code] <code, ...>")
     @guild_only()
     async def timeit_command(
-        self, ctx: Context, python_version: SupportedPythonVersions | None, *, code: CodeblockConverter
+        self,
+        ctx: Context,
+        python_version: SupportedPythonVersions | None,
+        *,
+        code: CodeblockConverter,
     ) -> None:
         """
         Profile Python Code to find execution time.

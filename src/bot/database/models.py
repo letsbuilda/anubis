@@ -1,4 +1,4 @@
-"""Database models"""
+"""Database models."""
 
 from enum import Enum
 
@@ -9,11 +9,11 @@ from bot.database import engine
 
 
 class Base(DeclarativeBase):
-    """DeclarativeBase"""
+    """DeclarativeBase."""
 
 
 class Guild(Base):
-    """A Discord guild"""
+    """A Discord guild."""
 
     __tablename__ = "guilds"
 
@@ -23,13 +23,13 @@ class Guild(Base):
 
 
 class Permissions(Enum):
-    """Permissions enum"""
+    """Permissions enum."""
 
     CAN_INTERNAL_EVAL = "can_internal_eval"
 
 
 class RolesPermissions(Base):
-    """RolesPermissions"""
+    """RolesPermissions."""
 
     __tablename__ = "roles_permissions"
 

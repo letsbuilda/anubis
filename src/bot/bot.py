@@ -5,6 +5,7 @@ from pydis_core.utils import scheduling
 from sentry_sdk import push_scope
 
 from bot import exts
+from bot.database import session
 from bot.log import get_logger
 
 log = get_logger("bot")
@@ -22,6 +23,7 @@ class Bot(BotBase):
     """A subclass of `pydis_core.BotBase` that implements bot-specific functions."""
 
     def __init__(self, *args, **kwargs):
+        self.db = session
         super().__init__(*args, **kwargs)
 
     async def setup_hook(self) -> None:

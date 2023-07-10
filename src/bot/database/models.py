@@ -1,9 +1,12 @@
 """Database models"""
 
 from enum import Enum
+from typing import List
 
 from sqlalchemy import BigInteger
+from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.types import PickleType
 
 from bot.database import engine
 
@@ -37,6 +40,15 @@ class RolesPermissions(Base):
     guild_id: Mapped[int] = mapped_column(BigInteger)
     role_id: Mapped[int] = mapped_column(BigInteger)
     permission: Mapped[str]
+
+
+class Users(Base):
+    """Users"""
+
+    __tablename__ = "users"
+
+    user_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    todo_list: Mapped[List[str]] = mapped_column(MutableList.as_mutable(PickleType), default=list)
 
 
 if __name__ == "__main__":

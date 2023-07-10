@@ -1,3 +1,5 @@
+"""Services."""
+
 from aiohttp import ClientConnectorError, ClientSession
 
 from bot.constants import URLs

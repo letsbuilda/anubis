@@ -28,14 +28,14 @@ class EvalJob:
     version: "SupportedPythonVersions" = "3.11"
 
     @classmethod
-    def from_code(cls, code: str, path: str = "main.py") -> Self:
+    def from_code(cls: type[Self], code: str, path: str = "main.py") -> Self:
         """Create an EvalJob from a code string."""
         return cls(
             args=[path],
             files=[FileAttachment(path, code.encode())],
         )
 
-    def as_version(self, version: "SupportedPythonVersions") -> Self:
+    def as_version(self: Self, version: "SupportedPythonVersions") -> Self:
         """Return a copy of the job with a different Python version."""
         return EvalJob(
             args=self.args,
@@ -44,7 +44,7 @@ class EvalJob:
             version=version,
         )
 
-    def to_dict(self) -> dict[str, list[str | dict[str, str]]]:
+    def to_dict(self: Self) -> dict[str, list[str | dict[str, str]]]:
         """Convert the job to a dict."""
         return {
             "args": self.args,
@@ -62,17 +62,17 @@ class EvalResult:
     failed_files: list[str] = field(default_factory=list)
 
     @property
-    def has_output(self) -> bool:
+    def has_output(self: Self) -> bool:
         """True if the result has any output (stdout, files, or failed files)."""
         return bool(self.stdout.strip() or self.files or self.failed_files)
 
     @property
-    def has_files(self) -> bool:
+    def has_files(self: Self) -> bool:
         """True if the result has any files or failed files."""
         return bool(self.files or self.failed_files)
 
     @property
-    def status_emoji(self) -> str:
+    def status_emoji(self: Self) -> str:
         """Return an emoji corresponding to the status code or lack of output in result."""
         if not self.has_output:
             return ":warning:"
@@ -82,7 +82,7 @@ class EvalResult:
         return ":x:"
 
     @property
-    def error_message(self) -> str:
+    def error_message(self: Self) -> str:
         """Return an error message corresponding to the process's return code."""
         error = ""
         if self.returncode is None:
@@ -92,7 +92,7 @@ class EvalResult:
         return error
 
     @property
-    def files_error_message(self) -> str:
+    def files_error_message(self: Self) -> str:
         """Return an error message corresponding to the failed files."""
         if not self.failed_files:
             return ""
@@ -115,7 +115,7 @@ class EvalResult:
 
         return msg
 
-    def get_failed_files_str(self, char_max: int = 85) -> str:
+    def get_failed_files_str(self: Self, char_max: int = 85) -> str:
         """
         Return a string containing the names of failed files, truncated char_max.
 
@@ -139,7 +139,7 @@ class EvalResult:
         text = escape_markdown(text)
         return escape_mentions(text)
 
-    def get_message(self, job: EvalJob) -> str:
+    def get_message(self: Self, job: EvalJob) -> str:
         """Return a user-friendly message corresponding to the process's return code."""
         msg = f"Your {job.version} {job.name} job"
 
@@ -159,7 +159,7 @@ class EvalResult:
         return msg
 
     @classmethod
-    def from_dict(cls, data: dict[str, str | int | list[dict[str, str]]]) -> Self:
+    def from_dict(cls: type[Self], data: dict[str, str | int | list[dict[str, str]]]) -> Self:
         """Create an EvalResult from a dict."""
         res = cls(
             stdout=data["stdout"],

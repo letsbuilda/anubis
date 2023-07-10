@@ -21,7 +21,7 @@ class GlobalNameConflictError(Exception):
     """Raised when there's a conflict between the globals used to resolve annotations of wrapped and its wrapper."""
 
 
-def get_arg_value(name_or_pos: Argument, arguments: BoundArgs) -> Any:
+def get_arg_value(name_or_pos: Argument, arguments: BoundArgs) -> Any:  # noqa: ANN401 - uh....
     """
     Return a value from `arguments` based on a name or position.
 
@@ -37,17 +37,17 @@ def get_arg_value(name_or_pos: Argument, arguments: BoundArgs) -> Any:
 
         try:
             name, value = arg_values[arg_pos]
-            return value
-        except IndexError:
+            return value  # noqa: TRY300 - try/except/else is ugly
+        except IndexError as exception:
             msg = f"Argument position {arg_pos} is out of bounds."
-            raise ValueError(msg)
+            raise ValueError(msg) from exception
     elif isinstance(name_or_pos, str):
         arg_name = name_or_pos
         try:
             return arguments[arg_name]
-        except KeyError:
+        except KeyError as exception:
             msg = f"Argument {arg_name!r} doesn't exist."
-            raise ValueError(msg)
+            raise ValueError(msg) from exception
     else:
         msg = "'arg' must either be an int (positional index) or a str (keyword)."
         raise TypeError(msg)
@@ -69,7 +69,7 @@ def get_arg_value_wrapper(
     Return the decorator returned by `decorator_func`.
     """
 
-    def wrapper(args: BoundArgs) -> Any:
+    def wrapper(args: BoundArgs) -> Callable:
         value = get_arg_value(name_or_pos, args)
         if func:
             value = func(value)
@@ -118,10 +118,11 @@ def update_wrapper_globals(
     shared_globals = set(wrapper.__code__.co_names) & set(annotation_global_names)
     shared_globals &= set(wrapped.__globals__) & set(wrapper.__globals__) - ignored_conflict_names
     if shared_globals:
-        msg = f"wrapper and the wrapped function share the following global names used by annotations: {', '.join(shared_globals)}. Resolve the conflicts or add the name to the `ignored_conflict_names` set to suppress this error if this is intentional."
-        raise GlobalNameConflictError(
-            msg,
+        msg = (
+            f"wrapper and the wrapped function share the following global names used by annotations: {', '.join(shared_globals)}."  # noqa: E501 - strings
+            "Resolve the conflicts or add the name to the `ignored_conflict_names` set to suppress this error if this is intentional."  # noqa: E501 - strings
         )
+        raise GlobalNameConflictError(msg)
 
     new_globals = wrapper.__globals__.copy()
     new_globals.update((k, v) for k, v in wrapped.__globals__.items() if k not in wrapper.__code__.co_names)

@@ -1,5 +1,7 @@
 """The ancient arts of Uwuification."""
 
+from typing import Self
+
 import discord
 from discord.ext import commands
 from discord.ext.commands import Cog, Context, clean_content
@@ -12,7 +14,7 @@ from bot.utils import helpers, messages
 class Uwu(Cog):
     """Cog for the uwu command."""
 
-    def __init__(self, bot: Bot) -> None:
+    def __init__(self: Self, bot: Bot) -> None:
         self.bot = bot
 
     @commands.command(
@@ -22,7 +24,7 @@ class Uwu(Cog):
             "uwuify",
         ),
     )
-    async def uwu_command(self, ctx: Context, *, text: str | None = None) -> None:
+    async def uwu_command(self: Self, ctx: Context, *, text: str | None = None) -> None:
         """
         Echo an uwuified version the passed text.
 

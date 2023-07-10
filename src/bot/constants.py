@@ -7,6 +7,7 @@ By default, the values defined in the classes are used, these can be overridden 
 """
 
 from os import getenv
+from typing import Self
 
 from pydantic import BaseSettings, root_validator
 
@@ -91,10 +92,10 @@ class _Guild(EnvConfig):
 
     EnvConfig.Config.env_prefix = "guild_"
 
-    id = 1033456860864466995
+    id = 1033456860864466995  # noqa: A003 - variable is nested
 
-    moderation_roles = [Roles.administrators, Roles.moderators]
-    staff_roles = [Roles.administrators, Roles.moderators, Roles.staff]
+    moderation_roles = (Roles.administrators, Roles.moderators)
+    staff_roles = (Roles.administrators, Roles.moderators, Roles.staff)
 
 
 Guild = _Guild()
@@ -170,13 +171,14 @@ class _Emojis(EnvConfig):
     # These icons are from GitHub's repo https://github.com/primer/octicons/
     issue_open = "<:IssueOpen:852596024777506817>"
     issue_closed = "<:IssueClosed:927326162861039626>"
-    issue_draft = "<:IssueDraft:852596025147523102>"  # Not currently used by GitHub, but here for future.
+    # Not currently used by GitHub, but here for future.
+    issue_draft = "<:IssueDraft:852596025147523102>"
     pull_request_open = "<:PROpen:852596471505223781>"
     pull_request_closed = "<:PRClosed:852596024732286976>"
     pull_request_draft = "<:PRDraft:852596025045680218>"
     pull_request_merged = "<:PRMerged:852596100301193227>"
 
-    number_emojis = {
+    number_emojis = {  # noqa: RUF012 - uh...
         1: "\u0031\ufe0f\u20e3",
         2: "\u0032\ufe0f\u20e3",
         3: "\u0033\ufe0f\u20e3",
@@ -268,7 +270,7 @@ class _Icons(EnvConfig):
     superstarify = "https://cdn.discordapp.com/emojis/636288153044516874.png"
     unsuperstarify = "https://cdn.discordapp.com/emojis/636288201258172446.png"
 
-    token_removed = "https://cdn.discordapp.com/emojis/470326273298792469.png"
+    token_removed = "https://cdn.discordapp.com/emojis/470326273298792469.png"  # noqa: S105 - false positive
 
     user_ban = "https://cdn.discordapp.com/emojis/469952898026045441.png"
     user_timeout = "https://cdn.discordapp.com/emojis/472472640100106250.png"
@@ -308,8 +310,7 @@ class _Colours(EnvConfig):
     gold = 0xE6C200
 
     @root_validator(pre=True)
-    # pylint: disable-next=no-self-argument
-    def parse_hex_values(cls, values):
+    def parse_hex_values(cls: type[Self], values: dict[str, int]) -> dict[str, int]:  # noqa: N805 - check this
         """Verify that colors are valid hex."""
         for key, value in values.items():
             values[key] = int(value, 16)

@@ -1,7 +1,8 @@
 """Cog to log."""
 
 import logging
-from datetime import datetime
+from datetime import UTC, datetime
+from typing import Self
 
 import discord
 from discord.ext.commands import Cog, Context
@@ -15,19 +16,18 @@ log = logging.getLogger(__name__)
 class Log(Cog):
     """Logging for server events and staff actions."""
 
-    def __init__(self, bot: Bot) -> None:
+    def __init__(self: Self, bot: Bot) -> None:
         self.bot = bot
 
-    # pylint: disable-next=too-many-locals,too-many-arguments
     async def send_log_message(
-        self,
+        self: Self,
         icon_url: str | None,
         colour: discord.Colour | int,
         title: str | None,
         text: str,
         thumbnail: str | discord.Asset | None = None,
         channel_id: int = Channels.mod_log,
-        ping_mods: bool = False,
+        ping_mods: bool = False,  # noqa: FBT001,FBT002 - is literally fine
         files: list[discord.File] | None = None,
         content: str | None = None,
         additional_embeds: list[discord.Embed] | None = None,
@@ -42,7 +42,7 @@ class Log(Cog):
             embed.set_author(name=title, icon_url=icon_url)
 
         embed.colour = colour
-        embed.timestamp = timestamp_override or datetime.utcnow()
+        embed.timestamp = timestamp_override or datetime.now(tz=UTC)
 
         if footer:
             embed.set_footer(text=footer)

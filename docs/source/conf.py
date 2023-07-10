@@ -64,9 +64,9 @@ def linkcode_resolve(domain, info):
     if not info["module"]:
         return None
 
-    import importlib  # pylint: disable=import-outside-toplevel
-    import inspect  # pylint: disable=import-outside-toplevel
-    import types  # pylint: disable=import-outside-toplevel
+    import importlib
+    import inspect
+    import types
 
     mod = importlib.import_module(info["module"])
 

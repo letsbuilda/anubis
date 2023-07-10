@@ -47,22 +47,22 @@ if not hasattr(sys, "_setup_finished"):
     class Writer(deque):
         '''A single-item deque wrapper for sys.stdout that will return the last line when read() is called.'''
 
-        def __init__(self):
+        def __init__(self:Self):
             super().__init__(maxlen=1)
 
-        def write(self, string):
+        def write(self:Self, string):
             '''Append the line to the queue if it is not empty.'''
             if string.strip():
                 self.append(string)
 
-        def read(self):
+        def read(self:Self):
             '''This method will be called when print() is called.
 
             The queue is emptied as we don't need the output later.
             '''
             return self.pop()
 
-        def flush(self):
+        def flush(self:Self):
             '''This method will be called eventually, but we don't need to do anything here.'''
             pass
 
@@ -104,7 +104,11 @@ class CodeblockConverter(Converter):
     """Attempts to extract code from a codeblock, if provided."""
 
     @classmethod
-    async def convert(cls, ctx: Context, code: str) -> list[str]:
+    async def convert(
+        cls: type[Self],
+        ctx: Context,  # noqa: ARG003 - arguments are passed in by library
+        code: str,
+    ) -> list[str]:
         """
         Extract code from the Markdown, format it, and insert it into the code template.
 
@@ -141,7 +145,7 @@ class PythonVersionSwitcherButton(ui.Button):
     """A button that allows users to re-run their eval command in a different Python version."""
 
     def __init__(
-        self,
+        self: Self,
         version_to_switch_to: SupportedPythonVersions,
         snekbox_cog: Self,
         ctx: Context,
@@ -154,7 +158,7 @@ class PythonVersionSwitcherButton(ui.Button):
         self.ctx = ctx
         self.job = job
 
-    async def callback(self, interaction: Interaction) -> None:
+    async def callback(self: Self, interaction: Interaction) -> None:
         """
         Tell snekbox to re-run the user's code in the alternative Python version.
 
@@ -175,22 +179,22 @@ class PythonVersionSwitcherButton(ui.Button):
 class Snekbox(Cog):
     """Safe evaluation of Python code using Snekbox."""
 
-    def __init__(self, bot: Bot) -> None:
+    def __init__(self: Self, bot: Bot) -> None:
         self.bot = bot
         self.jobs = {}
 
     def build_python_version_switcher_view(
-        self,
+        self: Self,
         current_python_version: SupportedPythonVersions,
         ctx: Context,
-        job: EvalJob,
+        job: EvalJob,  # noqa: ARG002 - temporary
     ) -> interactions.ViewWithUserAndRoleCheck:
         """Return a view that allows the user to change what version of Python their code is run on."""
         alt_python_version: SupportedPythonVersions
-        if current_python_version == "3.10":
+        if current_python_version == "3.10":  # noqa: SIM108 - no
             alt_python_version = "3.11"
         else:
-            alt_python_version = "3.10"  # noqa: F841
+            alt_python_version = "3.10"  # noqa: F841 - temporary
 
         view = interactions.ViewWithUserAndRoleCheck(
             allowed_users=(ctx.author.id,),
@@ -198,12 +202,12 @@ class Snekbox(Cog):
         )
         # Temp disabled until snekbox multi-version support is complete
         # https://github.com/python-discord/snekbox/issues/158
-        # view.add_item(PythonVersionSwitcherButton(alt_python_version, self, ctx, job))
+        # view.add_item(PythonVersionSwitcherButton(alt_python_version, self:Self, ctx, job))
         view.add_item(interactions.DeleteMessageButton())
 
         return view
 
-    async def post_job(self, job: EvalJob) -> EvalResult:
+    async def post_job(self: Self, job: EvalJob) -> EvalResult:
         """Send a POST request to the Snekbox API to evaluate code and return the results."""
         data = job.to_dict()
 
@@ -237,11 +241,11 @@ class Snekbox(Cog):
         return args
 
     async def format_output(
-        self,
+        self: Self,
         output: str,
         max_lines: int = MAX_OUTPUT_BLOCK_LINES,
         max_chars: int = MAX_OUTPUT_BLOCK_CHARS,
-        line_nums: bool = True,
+        line_nums: bool = True,  # noqa: FBT001,FBT002 - is literally fine
         output_default: str = "[No output]",
     ) -> tuple[str, str | None]:
         """
@@ -291,7 +295,7 @@ class Snekbox(Cog):
 
         return output, paste_link
 
-    def _filter_files(self, ctx: Context, files: list[FileAttachment], blocked_exts: set[str]) -> FilteredFiles:
+    def _filter_files(self: Self, ctx: Context, files: list[FileAttachment], blocked_exts: set[str]) -> FilteredFiles:
         """Filter to restrict files to allowed extensions. Return a named tuple of allowed and blocked files lists."""
         # Filter files into allowed and blocked
         blocked = []
@@ -312,7 +316,7 @@ class Snekbox(Cog):
         return FilteredFiles(allowed, blocked)
 
     @lock_arg("snekbox.send_job", "ctx", attrgetter("author.id"), raise_error=True)
-    async def send_job(self, ctx: Context, job: EvalJob) -> Message:
+    async def send_job(self: Self, ctx: Context, job: EvalJob) -> Message:
         """
         Evaluate code, format it, and send the output to the corresponding channel.
 
@@ -416,7 +420,7 @@ class Snekbox(Cog):
             log.info(f"{ctx.author}'s {job.name} job had a return code of {result.returncode}")
         return response
 
-    async def continue_job(self, ctx: Context, response: Message, job_name: str) -> EvalJob | None:
+    async def continue_job(self: Self, ctx: Context, response: Message, job_name: str) -> EvalJob | None:
         """
         Check if the job's session should continue.
 
@@ -462,7 +466,7 @@ class Snekbox(Cog):
 
         return None
 
-    async def get_code(self, message: Message, command: Command) -> str | None:
+    async def get_code(self: Self, message: Message, command: Command) -> str | None:
         """
         Return the code from `message` to be evaluated.
 
@@ -483,11 +487,11 @@ class Snekbox(Cog):
         return code
 
     async def run_job(
-        self,
+        self: Self,
         ctx: Context,
         job: EvalJob,
     ) -> None:
-        """Handles checks, stats and re-evaluation of a snekbox job."""
+        """Handle checks, stats and re-evaluation of a snekbox job."""
         log.info(f"Received code from {ctx.author} for evaluation:\n{job}")
 
         while True:
@@ -495,7 +499,7 @@ class Snekbox(Cog):
                 response = await self.send_job(ctx, job)
             except LockedResourceError:
                 await ctx.send(
-                    f"{ctx.author.mention} You've already got a job running - " "please wait for it to finish!",
+                    f"{ctx.author.mention} You've already got a job running - please wait for it to finish!",
                 )
                 return
 
@@ -512,7 +516,7 @@ class Snekbox(Cog):
     @command(name="eval", aliases=("e",), usage="[python_version] <code, ...>")
     @guild_only()
     async def eval_command(
-        self,
+        self: Self,
         ctx: Context,
         python_version: SupportedPythonVersions | None,
         *,
@@ -544,7 +548,7 @@ class Snekbox(Cog):
     @command(name="timeit", aliases=("ti",), usage="[python_version] [setup_code] <code, ...>")
     @guild_only()
     async def timeit_command(
-        self,
+        self: Self,
         ctx: Context,
         python_version: SupportedPythonVersions | None,
         *,

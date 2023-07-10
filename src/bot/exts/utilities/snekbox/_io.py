@@ -55,23 +55,23 @@ class FileAttachment:
     filename: str
     content: bytes
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         """Return the content as a string."""
         content = f"{self.content[:10]}..." if len(self.content) > 10 else self.content
         return f"FileAttachment(path={self.filename!r}, content={content})"
 
     @property
-    def suffix(self) -> str:
+    def suffix(self: Self) -> str:
         """Return the file suffix."""
         return PurePosixPath(self.filename).suffix
 
     @property
-    def name(self) -> str:
+    def name(self: Self) -> str:
         """Return the file name."""
         return PurePosixPath(self.filename).name
 
     @classmethod
-    def from_dict(cls, data: dict, size_limit: int = FILE_SIZE_LIMIT) -> Self:
+    def from_dict(cls: type[Self], data: dict, size_limit: int = FILE_SIZE_LIMIT) -> Self:
         """Create a FileAttachment from a dict response."""
         size = data.get("size")
         if (size and size > size_limit) or (len(data["content"]) > size_limit):
@@ -86,7 +86,7 @@ class FileAttachment:
 
         return cls(data["path"], content)
 
-    def to_dict(self) -> dict[str, str]:
+    def to_dict(self: Self) -> dict[str, str]:
         """Convert the attachment to a json dict."""
         content = self.content
         if isinstance(content, str):
@@ -97,7 +97,7 @@ class FileAttachment:
             "content": b64encode(content).decode("ascii"),
         }
 
-    def to_file(self) -> File:
+    def to_file(self: Self) -> File:
         """Convert to a discord.File."""
         name = normalize_discord_file_name(self.name)
         return File(BytesIO(self.content), filename=name)

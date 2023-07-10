@@ -48,6 +48,17 @@ max-line-length = 120
 
 [tool.ruff]
 select = ["ALL"]
+ignore = [
+  "ERA001", # (Found commented-out code) - Porting features a piece at a time
+  "G004", # (Logging statement uses f-string) - Developer UX
+  "S311", # (Standard pseudo-random generators are not suitable for cryptographic purposes) - all false positives
+  "PERF203", # (`try`-`except` within a loop incurs performance overhead) - try/except/else is ugly
+  "PLR0913", # (Too many arguments to function call) - eh...
+  "C901", # (`` is too complex) - uh...
+  "DTZ007", # (The use of `datetime.datetime.strptime()` without %z must be followed by `.replace(tzinfo=)` or `.astimezone()`) - eh...
+  "SLF001", # (Private member accessed) - I don't have a better solution
+  "PLR2004", # (Magic value used in comparison, consider replacing `` with a constant variable) - Be responsible
+]
 line-length = 120
 
 [tool.ruff.pydocstyle]

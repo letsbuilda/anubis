@@ -5,13 +5,10 @@ from os import getenv
 
 import aiohttp
 import discord
-import dotenv
 from discord.ext import commands
 
 from bot import constants
 from bot.bot import Bot
-
-dotenv.load_dotenv()
 
 roles = getenv("ALLOWED_ROLES")
 roles = [int(role) for role in roles.split(",")] if roles else []
@@ -20,24 +17,18 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 
-def get_prefix(bot_, message_):
-    """Get bot command prefixes."""
-    extras = getenv("PREFIXES", "!").split(",")
-    return commands.when_mentioned_or(*extras)(bot_, message_)
-
-
 async def main() -> None:
     """Run the bot."""
     bot = Bot(
         guild_id=constants.Guild.id,
         http_session=aiohttp.ClientSession(),
         allowed_roles=roles,
-        command_prefix=get_prefix,
+        command_prefix=commands.when_mentioned,
         intents=intents,
     )
 
     async with bot:
-        await bot.start(getenv("BOT_TOKEN"))
+        await bot.start(constants.Bot.token)
 
 
 if __name__ == "__main__":

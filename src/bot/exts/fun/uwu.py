@@ -1,8 +1,7 @@
 """The ancient arts of Uwuification."""
 
-from typing import Self
-
 from functools import partial
+from typing import Self
 
 import discord
 from discord.ext import commands

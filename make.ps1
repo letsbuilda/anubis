@@ -12,7 +12,6 @@ COMMANDS
     update-deps       update the dependencies
     upgrade-deps      upgrade the dependencies
     lint              run `isort` and `black`
-    pylint            run `pylint`
     test              run `pytest`
     build-dist        run `python -m build`
     clean             delete generated content
@@ -20,7 +19,7 @@ COMMANDS
 #>
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("init", "install-dev", "update-deps", "upgrade-deps", "lint", "pylint", "test", "build-dist", "clean", "help")]
+    [ValidateSet("init", "install-dev", "update-deps", "upgrade-deps", "lint", "test", "build-dist", "clean", "help")]
     [string]$Command
 )
 
@@ -52,13 +51,8 @@ function Invoke-Upgrade-Deps
 
 function Invoke-Lint
 {
-    python -m isort src/
     python -m black src/
-}
-
-function Invoke-Pylint
-{
-    python -m pylint src/
+    python -m ruff --fix src/
 }
 
 function Invoke-Test
@@ -102,9 +96,6 @@ switch ($Command)
     }
     "upgrade-deps"  {
         Invoke-Upgrade-Deps
-    }
-    "pylint"    {
-        Invoke-Pylint
     }
     "test"    {
         Invoke-Test

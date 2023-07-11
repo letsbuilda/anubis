@@ -1,9 +1,11 @@
-"""Cog to delete Discord webhooks"""
+"""Cog to delete Discord webhooks."""
 
 import json
 import logging
 import re
+from http import HTTPStatus
 from re import Match
+from typing import Self
 
 from discord import Colour, Message, NotFound
 from discord.ext.commands import Cog
@@ -31,26 +33,25 @@ log = logging.getLogger(__name__)
 class WebhookRemover(Cog):
     """Scan messages to detect Discord webhooks links."""
 
-    def __init__(self, bot: Bot):
+    def __init__(self: Self, bot: Bot) -> None:
         self.bot = bot
 
     @property
-    def log(self) -> Log | None:
+    def log(self: Self) -> Log | None:
         """Get current instance of `Log`."""
         return self.bot.get_cog("Log")
 
-    async def delete_and_respond(self, message: Message, matches: Match[str]) -> None:
-        """Delete `message` and send a warning that it contained a Discord webhook"""
+    async def delete_and_respond(self: Self, message: Message, matches: Match[str]) -> None:
+        """Delete `message` and send a warning that it contained a Discord webhook."""
         webhook_url = matches[0]
         redacted_url = matches[1] + "xxx"
 
         async with self.bot.http_session.get(webhook_url) as response:
             webhook_metadata = await response.json()
-            print(f"{webhook_metadata=}")
 
         async with self.bot.http_session.delete(webhook_url) as response:
             # The Discord API Returns a 204 NO CONTENT response on success.
-            deleted_successfully = response.status == 204
+            deleted_successfully = response.status == HTTPStatus.NO_CONTENT
 
         # The webhook should only be actioned if it is the only content of a message,
         # and within the defined exemption parameters.
@@ -60,7 +61,7 @@ class WebhookRemover(Cog):
                 message.content != webhook_url,
                 message.channel.category.id == Channels.soc_category,
                 Roles.security in user_roles,
-            ]
+            ],
         ):
             return
 
@@ -115,7 +116,7 @@ class WebhookRemover(Cog):
         )
 
     @Cog.listener()
-    async def on_message(self, message: Message) -> None:
+    async def on_message(self: Self, message: Message) -> None:
         """Check if a Discord webhook URL is in `message`."""
         # Ignore DMs; can't delete messages in there anyway.
         if not message.guild or message.author.bot:
@@ -125,7 +126,7 @@ class WebhookRemover(Cog):
             await self.delete_and_respond(message, matches)
 
     @Cog.listener()
-    async def on_message_edit(self, _before: Message, after: Message) -> None:
+    async def on_message_edit(self: Self, _before: Message, after: Message) -> None:
         """Check if a Discord webhook URL is in the edited message `after`."""
         await self.on_message(after)
 

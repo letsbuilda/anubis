@@ -1,9 +1,10 @@
-"""Get snippets of code"""
+"""Get snippets of code."""
 
 import logging
 import re
 import textwrap
-from typing import Any
+from http import HTTPStatus
+from typing import Self
 from urllib.parse import quote_plus
 
 import discord
@@ -17,13 +18,13 @@ log = logging.getLogger(__name__)
 
 GITHUB_RE = re.compile(
     r"https://github\.com/(?P<repo>[a-zA-Z0-9-]+/[\w.-]+)/blob/"
-    r"(?P<path>[^#>]+)(\?[^#>]+)?(#L(?P<start_line>\d+)(([-~:]|(\.\.))L(?P<end_line>\d+))?)"
+    r"(?P<path>[^#>]+)(\?[^#>]+)?(#L(?P<start_line>\d+)(([-~:]|(\.\.))L(?P<end_line>\d+))?)",
 )
 
 GITHUB_GIST_RE = re.compile(
     r"https://gist\.github\.com/([a-zA-Z0-9-]+)/(?P<gist_id>[a-zA-Z0-9]+)/*"
     r"(?P<revision>[a-zA-Z0-9]*)/*#file-(?P<file_path>[^#>]+?)(\?[^#>]+)?"
-    r"(-L(?P<start_line>\d+)([-~:]L(?P<end_line>\d+))?)"
+    r"(-L(?P<start_line>\d+)([-~:]L(?P<end_line>\d+))?)",
 )
 
 GITHUB_HEADERS = {"Accept": "application/vnd.github.v3.raw"}
@@ -33,12 +34,12 @@ if Tokens.github:
 
 GITLAB_RE = re.compile(
     r"https://gitlab\.com/(?P<repo>[\w.-]+/[\w.-]+)/\-/blob/(?P<path>[^#>]+)"
-    r"(\?[^#>]+)?(#L(?P<start_line>\d+)(-(?P<end_line>\d+))?)"
+    r"(\?[^#>]+)?(#L(?P<start_line>\d+)(-(?P<end_line>\d+))?)",
 )
 
 BITBUCKET_RE = re.compile(
     r"https://bitbucket\.org/(?P<repo>[a-zA-Z0-9-]+/[\w.-]+)/src/(?P<ref>[0-9a-zA-Z]+)"
-    r"/(?P<file_path>[^#>]+)(\?[^#>]+)?(#lines-(?P<start_line>\d+)(:(?P<end_line>\d+))?)"
+    r"/(?P<file_path>[^#>]+)(\?[^#>]+)?(#lines-(?P<start_line>\d+)(:(?P<end_line>\d+))?)",
 )
 
 
@@ -49,8 +50,8 @@ class CodeSnippets(Cog):
     Matches each message against a regex and prints the contents of all matched snippets.
     """
 
-    def __init__(self, bot: Bot):
-        """Initializes the cog's bot."""
+    def __init__(self: Self, bot: Bot) -> None:
+        """Initialize the cog's bot."""
         self.bot = bot
 
         self.pattern_handlers = [
@@ -60,16 +61,17 @@ class CodeSnippets(Cog):
             (BITBUCKET_RE, self._fetch_bitbucket_snippet),
         ]
 
-    async def _fetch_response(self, url: str, response_format: str, **kwargs) -> Any:
-        """Makes http requests using aiohttp."""
+    async def _fetch_response(self: Self, url: str, response_format: str, **kwargs: dict) -> str | dict | None:
+        """Make http requests using aiohttp."""
         async with self.bot.http_session.get(url, raise_for_status=True, **kwargs) as response:
             if response_format == "text":
                 return await response.text()
             if response_format == "json":
                 return await response.json()
+            return None
 
-    def _find_ref(self, path: str, refs: tuple) -> tuple:
-        """Loops through all branches and tags to find the required ref."""
+    def _find_ref(self: Self, path: str, refs: tuple) -> tuple:
+        """Loop through all branches and tags to find the required ref."""
         # Base case: there is no slash in the branch name
         ref, file_path = path.split("/", 1)
         # In case there are slashes in the branch name, we loop through all branches and tags
@@ -80,8 +82,8 @@ class CodeSnippets(Cog):
                 break
         return ref, file_path
 
-    async def _fetch_github_snippet(self, repo: str, path: str, start_line: str, end_line: str) -> str:
-        """Fetches a snippet from a GitHub repo."""
+    async def _fetch_github_snippet(self: Self, repo: str, path: str, start_line: str, end_line: str) -> str:
+        """Fetch a snippet from a GitHub repo."""
         # Search the GitHub API for the specified branch
         branches = await self._fetch_response(
             f"https://api.github.com/repos/{repo}/branches",
@@ -99,16 +101,15 @@ class CodeSnippets(Cog):
         )
         return self._snippet_to_codeblock(file_contents, file_path, start_line, end_line)
 
-    # pylint: disable-next=too-many-arguments
     async def _fetch_github_gist_snippet(
-        self,
+        self: Self,
         gist_id: str,
         revision: str,
         file_path: str,
         start_line: str,
         end_line: str,
     ) -> str:
-        """Fetches a snippet from a GitHub gist."""
+        """Fetch a snippet from a GitHub gist."""
         gist_json = await self._fetch_response(
             f'https://api.github.com/gists/{gist_id}{f"/{revision}" if len(revision) > 0 else ""}',
             "json",
@@ -125,13 +126,14 @@ class CodeSnippets(Cog):
                 return self._snippet_to_codeblock(file_contents, gist_file, start_line, end_line)
         return ""
 
-    async def _fetch_gitlab_snippet(self, repo: str, path: str, start_line: str, end_line: str) -> str:
-        """Fetches a snippet from a GitLab repo."""
+    async def _fetch_gitlab_snippet(self: Self, repo: str, path: str, start_line: str, end_line: str) -> str:
+        """Fetch a snippet from a GitLab repo."""
         enc_repo = quote_plus(repo)
 
         # Searches the GitLab API for the specified branch
         branches = await self._fetch_response(
-            f"https://gitlab.com/api/v4/projects/{enc_repo}/repository/branches", "json"
+            f"https://gitlab.com/api/v4/projects/{enc_repo}/repository/branches",
+            "json",
         )
         tags = await self._fetch_response(f"https://gitlab.com/api/v4/projects/{enc_repo}/repository/tags", "json")
         refs = branches + tags
@@ -145,18 +147,22 @@ class CodeSnippets(Cog):
         )
         return self._snippet_to_codeblock(file_contents, file_path, start_line, end_line)
 
-    # pylint: disable-next=too-many-arguments
     async def _fetch_bitbucket_snippet(
-        self, repo: str, ref: str, file_path: str, start_line: str, end_line: str
+        self: Self,
+        repo: str,
+        ref: str,
+        file_path: str,
+        start_line: str,
+        end_line: str,
     ) -> str:
-        """Fetches a snippet from a BitBucket repo."""
+        """Fetch a snippet from a BitBucket repo."""
         file_contents = await self._fetch_response(
             f"https://bitbucket.org/{quote_plus(repo)}/raw/{quote_plus(ref)}/{quote_plus(file_path)}",
             "text",
         )
         return self._snippet_to_codeblock(file_contents, file_path, start_line, end_line)
 
-    def _snippet_to_codeblock(self, file_contents: str, file_path: str, start_line: str, end_line: str) -> str:
+    def _snippet_to_codeblock(self: Self, file_contents: str, file_path: str, start_line: str, end_line: str) -> str:
         """
         Given the entire file contents and target lines, creates a code block.
 
@@ -207,7 +213,7 @@ class CodeSnippets(Cog):
         # Returns an empty codeblock if the snippet is empty
         return f"{ret}``` ```"
 
-    async def _parse_snippets(self, content: str) -> str:
+    async def _parse_snippets(self: Self, content: str) -> str:
         """Parse message content and return a string with a code block for each URL found."""
         all_snippets = []
 
@@ -217,19 +223,19 @@ class CodeSnippets(Cog):
                     snippet = await handler(**match.groupdict())
                     all_snippets.append((match.start(), snippet))
                 except ClientResponseError as error:
-                    error_message = error.message  # noqa: B306
+                    error_message = error.message
                     log.log(
-                        logging.DEBUG if error.status == 404 else logging.ERROR,
+                        logging.DEBUG if error.status == HTTPStatus.NOT_FOUND else logging.ERROR,
                         f"Failed to fetch code snippet from {match[0]!r}: {error.status} "
                         f"{error_message} for GET {error.request_info.real_url.human_repr()}",
                     )
 
         # Sorts the list of snippets by their match index and joins them into a single message
-        return "\n".join(map(lambda x: x[1], sorted(all_snippets)))
+        return "\n".join(x[1] for x in sorted(all_snippets))
 
     @Cog.listener()
-    async def on_message(self, message: discord.Message) -> None:
-        """Checks if the message has a snippet link, removes the embed, then sends the snippet contents."""
+    async def on_message(self: Self, message: discord.Message) -> None:
+        """Check if the message has a snippet link, removes the embed, then sends the snippet contents."""
         if message.author.bot:
             return
 

@@ -7,15 +7,16 @@ By default, the values defined in the classes are used, these can be overridden 
 """
 
 from os import getenv
+from typing import Self
 
 from pydantic import BaseSettings, root_validator
 
 
 class EnvConfig(BaseSettings):
-    """EnvConfig"""
+    """EnvConfig."""
 
     class Config:
-        """Config"""
+        """Config."""
 
         env_file = (
             ".env.server",
@@ -26,7 +27,7 @@ class EnvConfig(BaseSettings):
 
 
 class _Miscellaneous(EnvConfig):
-    """Miscellaneous configuration"""
+    """Miscellaneous configuration."""
 
     debug = True
     file_logs = False
@@ -39,7 +40,7 @@ DEBUG_MODE = Miscellaneous.debug
 
 
 class _Bot(EnvConfig):
-    """Bot data"""
+    """Bot data."""
 
     EnvConfig.Config.env_prefix = "bot_"
 
@@ -71,7 +72,7 @@ Channels = _Channels()
 
 
 class _Roles(EnvConfig):
-    """Role constants"""
+    """Role constants."""
 
     EnvConfig.Config.env_prefix = "roles_"
 
@@ -87,14 +88,14 @@ Roles = _Roles()
 
 
 class _Guild(EnvConfig):
-    """Guild constants"""
+    """Guild constants."""
 
     EnvConfig.Config.env_prefix = "guild_"
 
-    id = 1033456860864466995
+    id = 1033456860864466995  # noqa: A003 - variable is nested
 
-    moderation_roles = [Roles.administrators, Roles.moderators]
-    staff_roles = [Roles.administrators, Roles.moderators, Roles.staff]
+    moderation_roles = (Roles.administrators, Roles.moderators)
+    staff_roles = (Roles.administrators, Roles.moderators, Roles.staff)
 
 
 Guild = _Guild()
@@ -122,13 +123,13 @@ BaseURLs = _BaseURLs()
 
 class _URLs(_BaseURLs):
     # Discord API endpoints
-    discord_invite_api: str = "".join([BaseURLs.discord_api, "invites"])
+    discord_invite_api: str = f"{BaseURLs.discord_api}invites"
 
     # Base site vars
     connect_max_retries = 3
     connect_cooldown = 5
 
-    paste_service: str = "".join([BaseURLs.paste, "/{key}"])
+    paste_service: str = f"{BaseURLs.paste}/{{key}}"
     site_logs_view: str = "https://pythondiscord.com/staff/bot/logs"
 
 
@@ -136,7 +137,7 @@ URLs = _URLs()
 
 
 class _Tokens(EnvConfig):
-    """Authentication tokens for external services"""
+    """Authentication tokens for external services."""
 
     EnvConfig.Config.env_prefix = "tokens_"
 
@@ -147,7 +148,7 @@ Tokens = _Tokens()
 
 
 class _Emojis(EnvConfig):
-    """Named emoji constants"""
+    """Named emoji constants."""
 
     EnvConfig.Config.env_prefix = "emojis_"
 
@@ -170,13 +171,14 @@ class _Emojis(EnvConfig):
     # These icons are from GitHub's repo https://github.com/primer/octicons/
     issue_open = "<:IssueOpen:852596024777506817>"
     issue_closed = "<:IssueClosed:927326162861039626>"
-    issue_draft = "<:IssueDraft:852596025147523102>"  # Not currently used by GitHub, but here for future.
+    # Not currently used by GitHub, but here for future.
+    issue_draft = "<:IssueDraft:852596025147523102>"
     pull_request_open = "<:PROpen:852596471505223781>"
     pull_request_closed = "<:PRClosed:852596024732286976>"
     pull_request_draft = "<:PRDraft:852596025045680218>"
     pull_request_merged = "<:PRMerged:852596100301193227>"
 
-    number_emojis = {
+    number_emojis = {  # noqa: RUF012 - uh...
         1: "\u0031\ufe0f\u20e3",
         2: "\u0032\ufe0f\u20e3",
         3: "\u0033\ufe0f\u20e3",
@@ -231,10 +233,10 @@ class _Icons(EnvConfig):
     crown_green = "https://cdn.discordapp.com/emojis/469964154719961088.png"
     crown_red = "https://cdn.discordapp.com/emojis/469964154879344640.png"
 
-    defcon_denied = "https://cdn.discordapp.com/emojis/472475292078964738.png"  # noqa: E704
-    defcon_shutdown = "https://cdn.discordapp.com/emojis/470326273952972810.png"  # noqa: E704
-    defcon_unshutdown = "https://cdn.discordapp.com/emojis/470326274213150730.png"  # noqa: E704
-    defcon_update = "https://cdn.discordapp.com/emojis/472472638342561793.png"  # noqa: E704
+    defcon_denied = "https://cdn.discordapp.com/emojis/472475292078964738.png"
+    defcon_shutdown = "https://cdn.discordapp.com/emojis/470326273952972810.png"
+    defcon_unshutdown = "https://cdn.discordapp.com/emojis/470326274213150730.png"
+    defcon_update = "https://cdn.discordapp.com/emojis/472472638342561793.png"
 
     filtering = "https://cdn.discordapp.com/emojis/472472638594482195.png"
 
@@ -268,7 +270,7 @@ class _Icons(EnvConfig):
     superstarify = "https://cdn.discordapp.com/emojis/636288153044516874.png"
     unsuperstarify = "https://cdn.discordapp.com/emojis/636288201258172446.png"
 
-    token_removed = "https://cdn.discordapp.com/emojis/470326273298792469.png"
+    token_removed = "https://cdn.discordapp.com/emojis/470326273298792469.png"  # noqa: S105 - false positive
 
     user_ban = "https://cdn.discordapp.com/emojis/469952898026045441.png"
     user_timeout = "https://cdn.discordapp.com/emojis/472472640100106250.png"
@@ -287,7 +289,7 @@ Icons = _Icons()
 
 
 class _Colours(EnvConfig):
-    """Named color constants"""
+    """Named color constants."""
 
     EnvConfig.Config.env_prefix = "colours_"
 
@@ -308,9 +310,8 @@ class _Colours(EnvConfig):
     gold = 0xE6C200
 
     @root_validator(pre=True)
-    # pylint: disable-next=no-self-argument
-    def parse_hex_values(cls, values):
-        """Verify that colors are valid hex"""
+    def parse_hex_values(cls: type[Self], values: dict[str, int]) -> dict[str, int]:  # noqa: N805 - check this
+        """Verify that colors are valid hex."""
         for key, value in values.items():
             values[key] = int(value, 16)
         return values

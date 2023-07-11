@@ -1,9 +1,11 @@
+"""Logging."""
+
 import logging
 import os
 import sys
 from logging import Logger, handlers
 from pathlib import Path
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Self, cast
 
 import coloredlogs
 import sentry_sdk
@@ -14,16 +16,13 @@ from bot import constants
 TRACE_LEVEL = 5
 
 
-if TYPE_CHECKING:
-    LoggerClass = Logger
-else:
-    LoggerClass = logging.getLoggerClass()
+LoggerClass = Logger if TYPE_CHECKING else logging.getLoggerClass()
 
 
 class CustomLogger(LoggerClass):
     """Custom implementation of the `Logger` class with an added `trace` method."""
 
-    def trace(self, msg: str, *args, **kwargs) -> None:
+    def trace(self: Self, msg: str, *args: list, **kwargs: dict) -> None:
         """
         Log 'msg % args' with severity 'TRACE'.
 
@@ -37,7 +36,7 @@ class CustomLogger(LoggerClass):
 
 
 def get_logger(name: str | None = None) -> CustomLogger:
-    """Utility to make mypy recognise that logger is of type `CustomLogger`."""
+    """Make mypy recognise that logger is of type `CustomLogger`."""
     return cast(CustomLogger, logging.getLogger(name))
 
 

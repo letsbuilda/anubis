@@ -1,6 +1,7 @@
-"""Dice rolling"""
+"""Dice rolling."""
 
 from random import randint
+from typing import Self
 
 import discord
 from discord import app_commands
@@ -12,11 +13,11 @@ from bot.bot import Bot
 class Dice(commands.Cog):
     """Roll dice."""
 
-    def __init__(self, bot: Bot):
+    def __init__(self: Self, bot: Bot) -> None:
         self.bot = bot
 
     @app_commands.command(name="roll")
-    async def roll(self, interaction: discord.Interaction, number_of_dice: int, number_of_sides: int) -> None:
+    async def roll(self: Self, interaction: discord.Interaction, number_of_dice: int, number_of_sides: int) -> None:
         """Roll dice."""
         rolls = ", ".join([str(randint(1, number_of_sides)) for _ in range(number_of_dice)])
         await interaction.response.send_message(rolls)

@@ -1,10 +1,12 @@
-"""Get data from GitHub"""
+"""Get data from GitHub."""
 
 import logging
 import random
 import re
 from dataclasses import dataclass
 from datetime import datetime
+from http import HTTPStatus
+from typing import Self
 from urllib.parse import quote
 
 import discord
@@ -35,7 +37,7 @@ MAXIMUM_ISSUES = 5
 # Regex used when looking for automatic linking in messages
 # regex101 of current regex https://regex101.com/r/V2ji8M/6
 AUTOMATIC_REGEX = re.compile(
-    r"((?P<org>[a-zA-Z0-9][a-zA-Z0-9\-]{1,39})\/)?(?P<repo>[\w\-\.]{1,100})#(?P<number>[0-9]+)"
+    r"((?P<org>[a-zA-Z0-9][a-zA-Z0-9\-]{1,39})\/)?(?P<repo>[\w\-\.]{1,100})#(?P<number>[0-9]+)",
 )
 
 
@@ -70,7 +72,7 @@ class IssueState:
 class Github(commands.Cog):
     """A Cog that fetches info from GitHub."""
 
-    def __init__(self, bot: Bot):
+    def __init__(self: Self, bot: Bot) -> None:
         self.bot = bot
         self.repos = []
 
@@ -79,7 +81,7 @@ class Github(commands.Cog):
         """Remove any codeblock in a message."""
         return CODE_BLOCK_RE.sub("", message)
 
-    async def fetch_issue(self, number: int, repository: str, user: str) -> IssueState | FetchError:
+    async def fetch_issue(self: Self, number: int, repository: str, user: str) -> IssueState | FetchError:
         """
         Retrieve an issue from a GitHub repository.
 
@@ -90,14 +92,14 @@ class Github(commands.Cog):
 
         json_data, response = await self.fetch_data(url)
 
-        if response.status == 403:
+        if response.status == HTTPStatus.FORBIDDEN:
             if response.headers.get("X-RateLimit-Remaining") == "0":
                 log.info(f"Ratelimit reached while fetching {url}")
-                return FetchError(403, "Ratelimit reached, please retry in a few minutes.")
-            return FetchError(403, "Cannot access issue.")
-        if response.status in (404, 410):
+                return FetchError(HTTPStatus.FORBIDDEN, "Ratelimit reached, please retry in a few minutes.")
+            return FetchError(HTTPStatus.FORBIDDEN, "Cannot access issue.")
+        if response.status in (HTTPStatus.NOT_FOUND, HTTPStatus.GONE):
             return FetchError(response.status, "Issue not found.")
-        if response.status != 200:
+        if response.status != HTTPStatus.OK:
             return FetchError(response.status, "Error while fetching issue.")
 
         # The initial API request is made to the issues API endpoint, which will return information
@@ -105,10 +107,7 @@ class Github(commands.Cog):
         # from issues: if the 'issues' key is present in the response then we can pull the data we
         # need from the initial API call.
         if "issues" in json_data["html_url"]:
-            if json_data.get("state") == "open":
-                emoji = Emojis.issue_open
-            else:
-                emoji = Emojis.issue_closed
+            emoji = Emojis.issue_open if json_data.get("state") == "open" else Emojis.issue_closed
 
         # If the 'issues' key is not contained in the API response and there is no error code, then
         # we know that a PR has been requested and a call to the pulls API endpoint is necessary
@@ -137,7 +136,7 @@ class Github(commands.Cog):
         for result in results:
             if isinstance(result, IssueState):
                 description_list.append(
-                    f"{result.emoji} [[{result.repository}] #{result.number} {result.title}]({result.url})"
+                    f"{result.emoji} [[{result.repository}] #{result.number} {result.title}]({result.url})",
                 )
             elif isinstance(result, FetchError):
                 description_list.append(f":x: [{result.return_code}] {result.message}")
@@ -149,13 +148,13 @@ class Github(commands.Cog):
 
     @commands.group(name="github", aliases=("gh", "git"))
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def github_group(self, ctx: commands.Context) -> None:
+    async def github_group(self: Self, ctx: commands.Context) -> None:
         """Commands for finding information related to GitHub."""
         if ctx.invoked_subcommand is None:
             await self.bot.invoke_help_command(ctx)
 
     @commands.Cog.listener()
-    async def on_message(self, message: discord.Message) -> None:
+    async def on_message(self: Self, message: discord.Message) -> None:
         """
         Automatic issue linking.
 
@@ -204,15 +203,15 @@ class Github(commands.Cog):
         resp = self.format_embed(links)
         await message.channel.send(embed=resp)
 
-    async def fetch_data(self, url: str) -> tuple[dict[str], ClientResponse]:
+    async def fetch_data(self: Self, url: str) -> tuple[dict[str], ClientResponse]:
         """Retrieve data as a dictionary and the response in a tuple."""
         log.info(f"Querying GH issues API: {url}")
         async with self.bot.http_session.get(url, headers=REQUEST_HEADERS) as response:
             return await response.json(), response
 
     @github_group.command(name="user", aliases=("userinfo",))
-    async def github_user_info(self, ctx: commands.Context, username: str) -> None:
-        """Fetches a user's GitHub information."""
+    async def github_user_info(self: Self, ctx: commands.Context, username: str) -> None:
+        """Fetch a user's GitHub information."""
         async with ctx.typing():
             user_data, _ = await self.fetch_data(f"{GITHUB_API_URL}/users/{username}")
 
@@ -281,9 +280,9 @@ class Github(commands.Cog):
         await ctx.send(embed=embed)
 
     @github_group.command(name="repository", aliases=("repo",))
-    async def github_repo_info(self, ctx: commands.Context, *repo: str) -> None:
+    async def github_repo_info(self: Self, ctx: commands.Context, *repo: str) -> None:
         """
-        Fetches a repositories' GitHub information.
+        Fetch a repositories' GitHub information.
 
         The repository should look like `user/reponame` or `user reponame`.
         """
@@ -343,7 +342,7 @@ class Github(commands.Cog):
                 f"• {repo_data['stargazers_count']} ⭐ "
                 f"• Created At {repo_created_at} "
                 f"• Last Commit {last_pushed}"
-            )
+            ),
         )
 
         await ctx.send(embed=embed)

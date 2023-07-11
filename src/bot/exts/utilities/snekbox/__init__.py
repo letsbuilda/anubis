@@ -1,3 +1,5 @@
+"""Snekbox."""
+
 from bot.bot import Bot
 
 from ._cog import CodeblockConverter, Snekbox

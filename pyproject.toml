@@ -1,36 +1,23 @@
 [project]
 name = "anubis"
 version = "2.0.0"
-dynamic = ["dependencies"]
+dynamic = ["dependencies", "optional-dependencies"]
 
 [project.urls]
 repository = "https://github.com/letsbuilda/anubis"
 documentation = "https://docs.letsbuilda.dev/anubis/"
-
-[project.optional-dependencies]
-dev = [
-    "pip-tools",
-    "pre-commit",
-    "black",
-    "isort",
-    "ruff",
-]
-tests = [
-    "pytest",
-]
-docs = [
-    "sphinx",
-    "furo",
-    "sphinx-autoapi",
-    "releases",
-]
 
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic.dependencies]
-file = ["requirements.txt"]
+file = ["requirements/requirements.txt"]
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = { file = ["requirements/requirements-dev.txt"] }
+tests = { file = ["requirements/requirements-tests.txt"] }
+docs = { file = ["requirements/requirements-docs.txt"] }
 
 [tool.sphinx]
 copyright = "Darbia"

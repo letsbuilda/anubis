@@ -76,14 +76,12 @@ def linkcode_resolve(domain: str, info: dict) -> str:
 
     if isinstance(
         val,
-        (
-            types.ModuleType,
-            types.MethodType,
-            types.FunctionType,
-            types.TracebackType,
-            types.FrameType,
-            types.CodeType,
-        ),
+        types.ModuleType
+        | types.MethodType
+        | types.FunctionType
+        | types.TracebackType
+        | types.FrameType
+        | types.CodeType,
     ):
         try:
             lines, first = inspect.getsourcelines(val)

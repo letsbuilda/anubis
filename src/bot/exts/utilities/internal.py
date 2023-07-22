@@ -49,7 +49,11 @@ class Internal(Cog):
         self.socket_event_total += 1
         self.socket_events[event_type] += 1
 
-    def _format(self: Self, inp: str, out: Any) -> tuple[str, discord.Embed | None]:  # noqa: ANN401 - double check this
+    def _format(  # noqa: PLR0912 - double check this
+        self: Self,
+        inp: str,
+        out: Any,  # noqa: ANN401 - double check this
+    ) -> tuple[str, discord.Embed | None]:
         """Format the eval output into a string & attempt to format it into an Embed."""
         self._ = out
 

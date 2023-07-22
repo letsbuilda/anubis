@@ -19,10 +19,6 @@ dev = { file = ["requirements/requirements-dev.txt"] }
 tests = { file = ["requirements/requirements-tests.txt"] }
 docs = { file = ["requirements/requirements-docs.txt"] }
 
-[tool.sphinx]
-copyright = "Darbia"
-author = "Bradley Reynolds"
-
 [tool.black]
 target-version = ["py310"]
 line-length = 120

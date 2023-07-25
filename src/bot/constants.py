@@ -41,6 +41,7 @@ class _Bot(EnvConfig, env_prefix="bot_"):
     """Bot data."""
 
     prefix: str = "!"
+    database_dsn: str = "postgresql://postgres:postgres@localhost:5432/anubis"
     sentry_dsn: str = ""
     token: str = ""
     trace_loggers: str = "*"
@@ -71,7 +72,7 @@ class _Roles(EnvConfig, env_prefix="roles_"):
 
     administrators: int = 1033457487359250524
     moderators: int = 1087224451571142716
-    core_developers:int = 1090530634457436180
+    core_developers: int = 1090530634457436180
     staff: int = 1038207235437887519
 
     security: int = 1086881843636359188
@@ -85,8 +86,8 @@ class _Guild(EnvConfig, env_prefix="guild_"):
 
     id: int = 1033456860864466995  # noqa: A003 - variable is nested
 
-    moderation_roles: tuple[int,...] = (Roles.administrators, Roles.moderators)
-    staff_roles: tuple[int,...] = (Roles.administrators, Roles.moderators, Roles.staff)
+    moderation_roles: tuple[int, ...] = (Roles.administrators, Roles.moderators)
+    staff_roles: tuple[int, ...] = (Roles.administrators, Roles.moderators, Roles.staff)
 
 
 Guild = _Guild()
@@ -225,10 +226,10 @@ class _Icons(EnvConfig, env_prefix="icons_"):
 
     filtering: str = "https://cdn.discordapp.com/emojis/472472638594482195.png"
 
-    green_checkmark:str = (
+    green_checkmark: str = (
         "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-checkmark-dist.png"
     )
-    green_questionmark:str = (
+    green_questionmark: str = (
         "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-question-mark-dist.png"
     )
     guild_update: str = "https://cdn.discordapp.com/emojis/469954765141442561.png"

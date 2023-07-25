@@ -42,12 +42,22 @@ class _Bot(EnvConfig, env_prefix="bot_"):
 
     prefix: str = "!"
     database_dsn: str = "postgresql+psycopg://postgres:postgres@localhost:5432/anubis"
-    sentry_dsn: str = ""
     token: str = ""
     trace_loggers: str = "*"
 
 
 Bot = _Bot()
+
+
+class _Sentry(EnvConfig, env_prefix="sentry_"):
+    """Sentry configuration."""
+
+    dsn: str = ""
+    environment: str = "production"
+    release_prefix: str = "bot"
+
+
+Sentry = _Sentry()
 
 
 class _Channels(EnvConfig, env_prefix="channels_"):

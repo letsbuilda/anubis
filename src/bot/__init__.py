@@ -1,21 +1,21 @@
 """Anubis, a fancy Discord bot."""
 
 import logging
-from os import getenv
 
 import sentry_sdk
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 from bot import log
+from bot.constants import GIT_SHA, Sentry
 
 sentry_logging = LoggingIntegration(level=logging.DEBUG, event_level=logging.WARNING)
 
 sentry_sdk.init(
-    dsn=getenv("BOT_SENTRY_DSN"),
+    dsn=Sentry.dsn,
     integrations=[
         sentry_logging,
     ],
-    release=f"anubis@{getenv('GIT_SHA', 'development')}",
+    release=f"{Sentry.release_prefix}@{GIT_SHA}",
     traces_sample_rate=0.5,
     profiles_sample_rate=0.5,
 )

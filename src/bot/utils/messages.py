@@ -1,6 +1,7 @@
 """Message utilities."""
 
 import contextlib
+from collections.abc import Callable
 
 import discord
 from discord import Embed, Message
@@ -48,3 +49,33 @@ async def get_text_and_embed(ctx: Context, text: str) -> tuple[str, Embed | None
                 embed = msg.embeds[0]
 
     return text, embed
+
+
+def convert_embed(
+    func: Callable[
+        [
+            str,
+        ],
+        str,
+    ],
+    embed: Embed,
+) -> Embed:
+    """
+    Convert the text in an embed using a given conversion function, then return the embed.
+
+    Only modifies the following fields: title, description, footer, fields
+    """
+    embed_dict = embed.to_dict()
+
+    embed_dict["title"] = func(embed_dict.get("title", ""))
+    embed_dict["description"] = func(embed_dict.get("description", ""))
+
+    if "footer" in embed_dict:
+        embed_dict["footer"]["text"] = func(embed_dict["footer"].get("text", ""))
+
+    if "fields" in embed_dict:
+        for field in embed_dict["fields"]:
+            field["name"] = func(field.get("name", ""))
+            field["value"] = func(field.get("value", ""))
+
+    return Embed.from_dict(embed_dict)

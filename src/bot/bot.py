@@ -3,7 +3,6 @@
 from typing import Self
 
 from pydis_core import BotBase
-from pydis_core.utils import scheduling
 from sentry_sdk import push_scope
 
 from bot import exts
@@ -30,9 +29,7 @@ class Bot(BotBase):
         """Default async initialisation method for discord.py."""  # noqa: D401
         await super().setup_hook()
 
-        # This is not awaited to avoid a deadlock with any cogs that have
-        # wait_until_guild_available in their cog_load method.
-        scheduling.create_task(self.load_extensions(exts))
+        await self.load_extensions(exts)
 
     async def on_error(self: Self, event: str, *args: list, **kwargs: dict) -> None:
         """Log errors raised in event listeners rather than printing them to stderr."""

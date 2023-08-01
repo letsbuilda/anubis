@@ -44,7 +44,7 @@ pyproject-hooks==1.0.0
     # via build
 pyyaml==6.0.1
     # via pre-commit
-ruff==0.0.280
+ruff==0.0.281
     # via -r requirements/requirements-dev.in
 virtualenv==20.24.2
     # via pre-commit

@@ -316,7 +316,7 @@ class Snekbox(Cog):
         return FilteredFiles(allowed, blocked)
 
     @lock_arg("snekbox.send_job", "ctx", attrgetter("author.id"), raise_error=True)
-    async def send_job(self: Self, ctx: Context, job: EvalJob) -> Message:
+    async def send_job(self: Self, ctx: Context, job: EvalJob) -> Message:  # noqa: PLR0915
         """
         Evaluate code, format it, and send the output to the corresponding channel.
 

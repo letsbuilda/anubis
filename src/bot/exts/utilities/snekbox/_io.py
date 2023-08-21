@@ -25,7 +25,7 @@ RE_BACKSLASH = regex.compile(r"\\.")
 RE_DISCORD_FILE_NAME_DISALLOWED = regex.compile(r"[^a-zA-Z0-9._-]+")
 
 
-def sizeof_fmt(num: int | float, suffix: str = "B") -> str:
+def sizeof_fmt(num: float, suffix: str = "B") -> str:
     """Return a human-readable file size."""
     num = float(num)
     for unit in ("", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"):

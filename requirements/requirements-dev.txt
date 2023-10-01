@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=requirements/requirements-dev.txt requirements/requirements-dev.in
 #
-black==23.7.0
+black==23.9.1
     # via -r requirements/requirements-dev.in
 build==0.10.0
     # via pip-tools
@@ -38,7 +38,7 @@ platformdirs==3.10.0
     # via
     #   black
     #   virtualenv
-pre-commit==3.3.3
+pre-commit==3.4.0
     # via -r requirements/requirements-dev.in
 pyproject-hooks==1.0.0
     # via build

@@ -1,4 +1,4 @@
-FROM python:3.11-slim@sha256:17d62d681d9ecef20aae6c6605e9cf83b0ba3dc247013e2f43e1b5a045ad4901
+FROM python:3.11-slim@sha256:edaf703dce209d774af3ff768fc92b1e3b60261e7602126276f9ceb0e3a96874
 
 # Define Git SHA build argument for sentry
 ARG git_sha="development"

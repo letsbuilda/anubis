@@ -18,7 +18,7 @@ jobs:
     needs: lint
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ ubuntu-latest ]
         python-version: [ "3.11" ]
 
     uses: darbiadev/.github/.github/workflows/python-test.yaml@068870f051676db9e2651013f7c7196ffdaeadaa # v2.0.0

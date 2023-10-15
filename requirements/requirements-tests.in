@@ -2,3 +2,4 @@
 --constraint requirements.txt
 
 pytest
+pytest-randomly

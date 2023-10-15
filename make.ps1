@@ -11,7 +11,7 @@ COMMANDS
     install-dev       install local package in editable mode
     update-deps       update the dependencies
     upgrade-deps      upgrade the dependencies
-    lint              run `isort` and `black`
+    lint              run `pre-commit` and `black` and `ruff`
     test              run `pytest`
     build-dist        run `python -m build`
     clean             delete generated content
@@ -42,20 +42,20 @@ function Invoke-Update-Deps
 {
     python -m pip install --upgrade --editable ".[dev, tests, docs]"
     python -m pip install --upgrade pip-tools
-    pip-compile --resolver=backtracking requirements/requirements.in --output-file requirements/requirements.txt
-    pip-compile --resolver=backtracking requirements/requirements-dev.in --output-file requirements/requirements-dev.txt
-    pip-compile --resolver=backtracking requirements/requirements-tests.in --output-file requirements/requirements-tests.txt
-    pip-compile --resolver=backtracking requirements/requirements-docs.in --output-file requirements/requirements-docs.txt
+    pip-compile --output-file requirements/requirements.txt requirements/requirements.in
+    pip-compile --output-file requirements/requirements-dev.txt requirements/requirements-dev.in
+    pip-compile --output-file requirements/requirements-tests.txtrequirements/requirements-tests.in
+    pip-compile --output-file requirements/requirements-docs.txt requirements/requirements-docs.in
 }
 
 function Invoke-Upgrade-Deps
 {
     python -m pip install --upgrade pip-tools pre-commit
     pre-commit autoupdate
-    pip-compile --resolver=backtracking --upgrade requirements/requirements.in --output-file requirements/requirements.txt
-    pip-compile --resolver=backtracking --upgrade requirements/requirements-dev.in --output-file requirements/requirements-dev.txt
-    pip-compile --resolver=backtracking --upgrade requirements/requirements-tests.in --output-file requirements/requirements-tests.txt
-    pip-compile --resolver=backtracking --upgrade requirements/requirements-docs.in --output-file requirements/requirements-docs.txt
+    pip-compile --upgrade --output-file requirements/requirements.txt requirements/requirements.in
+    pip-compile --upgrade --output-file requirements/requirements-dev.txt requirements/requirements-dev.in
+    pip-compile --upgrade --output-file requirements/requirements-tests.txtrequirements/requirements-tests.in
+    pip-compile --upgrade --output-file requirements/requirements-docs.txt requirements/requirements-docs.in
 }
 
 function Invoke-Lint

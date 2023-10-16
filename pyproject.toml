@@ -26,7 +26,6 @@ line-length = 120
 [tool.ruff]
 target-version = "py311"
 line-length = 120
-select = ["ALL"]
 ignore = [
   "ERA001", # (Found commented-out code) - Porting features a piece at a time
   "G004", # (Logging statement uses f-string) - Developer UX

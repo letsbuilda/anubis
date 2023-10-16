@@ -2,16 +2,30 @@
 
 import contextlib
 from collections.abc import Callable
+from random import random
 
 import discord
 from discord import Embed, Message
 from discord.ext import commands
 from discord.ext.commands import Context, MessageConverter
 
+from bot.constants import NEGATIVE_REPLIES
+
 
 def format_user(user: discord.abc.User) -> str:
     """Return a string for `user` which has their mention and ID."""
     return f"{user.mention} (`{user.id}`)"
+
+
+async def send_denial(ctx: Context, reason: str) -> discord.Message:
+    """Send an embed denying the user with the given reason."""
+    embed = discord.Embed(
+        title=random.choice(NEGATIVE_REPLIES),
+        description=reason,
+        colour=discord.Colour.red(),
+    )
+
+    return await ctx.send(embed=embed)
 
 
 async def get_discord_message(ctx: Context, text: str) -> Message | str:

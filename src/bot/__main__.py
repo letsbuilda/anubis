@@ -5,6 +5,7 @@ import asyncio
 import aiohttp
 import discord
 from discord.ext import commands
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from bot import constants
 from bot.bot import Bot
@@ -19,6 +20,7 @@ async def main() -> None:
         guild_id=constants.Guild.id,
         http_session=aiohttp.ClientSession(),
         allowed_roles=list({discord.Object(id_) for id_ in constants.MODERATION_ROLES}),
+        engine=create_async_engine(constants.Bot.database_dsn),
         command_prefix=commands.when_mentioned,
         intents=intents,
     )

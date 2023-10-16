@@ -16,6 +16,7 @@ coloredlogs
 # Database
 psycopg[binary]
 SQLAlchemy
+alembic
 
 # Utilities
 # utils/helpers

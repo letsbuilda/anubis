@@ -1,9 +1,13 @@
 """Bot subclass."""
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from typing import Self
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
 from pydis_core import BotBase
 from sentry_sdk import push_scope
+from sqlalchemy.ext.asyncio.session import async_sessionmaker
 
 from bot import exts
 from bot.log import get_logger
@@ -22,8 +26,24 @@ class StartupError(Exception):
 class Bot(BotBase):
     """A subclass of `pydis_core.BotBase` that implements bot-specific functions."""
 
-    def __init__(self: Self, *args: list, **kwargs: dict) -> None:
+    def __init__(self: Self, *args: list, engine: AsyncEngine, **kwargs: dict) -> None:
+        self._engine = engine
+        self._sessionmaker = async_sessionmaker(bind=engine)
+
         super().__init__(*args, **kwargs)
+
+    @asynccontextmanager
+    async def get_session(self) -> AsyncIterator[AsyncSession]:
+        """Return a session in async context manager style.
+
+        Will automatically commit changes to database and close session at end of context
+        """
+        session = self._sessionmaker()
+        try:
+            yield session
+        finally:
+            await session.commit()
+            await session.close()
 
     async def setup_hook(self: Self) -> None:
         """Default async initialisation method for discord.py."""  # noqa: D401

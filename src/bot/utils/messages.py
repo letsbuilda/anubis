@@ -16,6 +16,7 @@ def format_user(user: discord.abc.User) -> str:
     """Return a string for `user` which has their mention and ID."""
     return f"{user.mention} (`{user.id}`)"
 
+
 async def send_denial(ctx: Context, reason: str) -> discord.Message:
     """Send an embed denying the user with the given reason."""
     embed = discord.Embed(
@@ -25,6 +26,7 @@ async def send_denial(ctx: Context, reason: str) -> discord.Message:
     )
 
     return await ctx.send(embed=embed)
+
 
 async def get_discord_message(ctx: Context, text: str) -> Message | str:
     """

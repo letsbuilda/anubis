@@ -287,7 +287,7 @@ class Reminders(Cog):
 
             await session.flush()
 
-            formatted_expiry = discord.utils.format_dt(expiration, style='F')
+            formatted_expiry = discord.utils.format_dt(expiration, style="F")
             mention_string = f"Your reminder will arrive on {formatted_expiry}"
             if mentions:
                 mention_string += f" and will mention {len(mentions)} other(s)"

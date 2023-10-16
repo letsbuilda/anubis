@@ -16,6 +16,7 @@ class Guild(Base):
 
     guild_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
 
+
 class Reminder(MappedAsDataclass, Base):
     """Represents a Reminder in the database."""
 

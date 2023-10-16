@@ -45,7 +45,6 @@ class Bot(BotBase):
             await session.commit()
             await session.close()
 
-
     async def setup_hook(self: Self) -> None:
         """Default async initialisation method for discord.py."""  # noqa: D401
         await super().setup_hook()

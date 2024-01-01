@@ -12,9 +12,9 @@ jobs:
 
     steps:
       - name: "Checkout Repository"
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - name: "Dependency Review"
-        uses: actions/dependency-review-action@6c5ccdad469c9f8a2996bfecaec55a631a347034 # v3.1.0
+        uses: actions/dependency-review-action@01bc87099ba56df1e897b6874784491ea6309bc4 # v3.1.4
         with:
           config-file: darbiadev/.github/.github/dependency-review-config.yaml@5f704c2b5aa4a48d52e37e40ba540b15620e45b5 # v1.1.2

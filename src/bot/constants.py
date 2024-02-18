@@ -94,7 +94,7 @@ Roles = _Roles()
 class _Guild(EnvConfig, env_prefix="guild_"):
     """Guild constants."""
 
-    id: int = 1033456860864466995  # noqa: A003 - variable is nested
+    id: int = 1033456860864466995  # - variable is nested
 
     moderation_roles: tuple[int, ...] = (Roles.administrators, Roles.moderators)
     staff_roles: tuple[int, ...] = (Roles.administrators, Roles.moderators, Roles.staff)
@@ -150,14 +150,14 @@ Tokens = _Tokens()
 class _Emojis(EnvConfig, env_prefix="emojis_"):
     """Named emoji constants."""
 
-    cross_mark: str = "\u274C"
-    star: str = "\u2B50"
-    christmas_tree: str = "\U0001F384"
+    cross_mark: str = "\u274c"
+    star: str = "\u2b50"
+    christmas_tree: str = "\U0001f384"
     check: str = "\u2611"
-    envelope: str = "\U0001F4E8"
+    envelope: str = "\U0001f4e8"
     trashcan: str = "<:trashcan:637136429717389331>"
     ok_hand: str = ":ok_hand:"
-    hand_raised: str = "\U0001F64B"
+    hand_raised: str = "\U0001f64b"
 
     dice_1: str = "<:dice_1:755891608859443290>"
     dice_2: str = "<:dice_2:755891608741740635>"
@@ -176,7 +176,7 @@ class _Emojis(EnvConfig, env_prefix="emojis_"):
     pull_request_draft: str = "<:PRDraft:852596025045680218>"
     pull_request_merged: str = "<:PRMerged:852596100301193227>"
 
-    number_emojis: dict[int, str] = {  # noqa: RUF012 - uh...
+    number_emojis: dict[int, str] = {  # - uh...
         1: "\u0031\ufe0f\u20e3",
         2: "\u0032\ufe0f\u20e3",
         3: "\u0033\ufe0f\u20e3",
@@ -236,19 +236,17 @@ class _Icons(EnvConfig, env_prefix="icons_"):
 
     filtering: str = "https://cdn.discordapp.com/emojis/472472638594482195.png"
 
-    green_checkmark: str = (
-        "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-checkmark-dist.png"
-    )
-    green_questionmark: str = (
-        "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-question-mark-dist.png"
-    )
+    green_checkmark: str = "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-checkmark-dist.png"
+    green_questionmark: str = "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-question-mark-dist.png"
     guild_update: str = "https://cdn.discordapp.com/emojis/469954765141442561.png"
 
     hash_blurple: str = "https://cdn.discordapp.com/emojis/469950142942806017.png"
     hash_green: str = "https://cdn.discordapp.com/emojis/469950144918585344.png"
     hash_red: str = "https://cdn.discordapp.com/emojis/469950145413251072.png"
 
-    message_bulk_delete: str = "https://cdn.discordapp.com/emojis/469952898994929668.png"
+    message_bulk_delete: str = (
+        "https://cdn.discordapp.com/emojis/469952898994929668.png"
+    )
     message_delete: str = "https://cdn.discordapp.com/emojis/472472641320648704.png"
     message_edit: str = "https://cdn.discordapp.com/emojis/472472638976163870.png"
 
@@ -266,7 +264,9 @@ class _Icons(EnvConfig, env_prefix="icons_"):
     superstarify: str = "https://cdn.discordapp.com/emojis/636288153044516874.png"
     unsuperstarify: str = "https://cdn.discordapp.com/emojis/636288201258172446.png"
 
-    token_removed: str = "https://cdn.discordapp.com/emojis/470326273298792469.png"  # - false positive
+    token_removed: str = (
+        "https://cdn.discordapp.com/emojis/470326273298792469.png"  # - false positive
+    )
 
     user_ban: str = "https://cdn.discordapp.com/emojis/469952898026045441.png"
     user_timeout: str = "https://cdn.discordapp.com/emojis/472472640100106250.png"

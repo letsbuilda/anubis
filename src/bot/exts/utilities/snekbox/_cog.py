@@ -1,4 +1,3 @@
-import asyncio
 import contextlib
 import re
 from functools import partial
@@ -34,7 +33,7 @@ from ._io import FileAttachment
 
 log = get_logger(__name__)
 
-ESCAPE_REGEX = re.compile("[`\u202E\u200B]{3,}")
+ESCAPE_REGEX = re.compile("[`\u202e\u200b]{3,}")
 
 # The timeit command should only output the very last line, so all other output should be suppressed.
 # This will be used as the setup code along with any setup code provided.
@@ -129,7 +128,9 @@ class CodeblockConverter(Converter):
                 code, block, lang, delim = match.group("code", "block", "lang", "delim")
                 codeblocks = [dedent(code)]
                 if block:
-                    info = (f"'{lang}' highlighted" if lang else "plain") + " code block"
+                    info = (
+                        f"'{lang}' highlighted" if lang else "plain"
+                    ) + " code block"
                 else:
                     info = f"{delim}-enclosed inline code"
         else:
@@ -152,7 +153,9 @@ class PythonVersionSwitcherButton(ui.Button):
         job: EvalJob,
     ) -> None:
         self.version_to_switch_to = version_to_switch_to
-        super().__init__(label=f"Run in {self.version_to_switch_to}", style=enums.ButtonStyle.primary)
+        super().__init__(
+            label=f"Run in {self.version_to_switch_to}", style=enums.ButtonStyle.primary
+        )
 
         self.snekbox_cog = snekbox_cog
         self.ctx = ctx
@@ -173,7 +176,9 @@ class PythonVersionSwitcherButton(ui.Button):
             # The log arg on send_job will stop the actual job from running.
             await interaction.message.delete()
 
-        await self.snekbox_cog.run_job(self.ctx, self.job.as_version(self.version_to_switch_to))
+        await self.snekbox_cog.run_job(
+            self.ctx, self.job.as_version(self.version_to_switch_to)
+        )
 
 
 class Snekbox(Cog):
@@ -211,7 +216,9 @@ class Snekbox(Cog):
         """Send a POST request to the Snekbox API to evaluate code and return the results."""
         data = job.to_dict()
 
-        async with self.bot.http_session.post(URLs.snekbox_eval_api, json=data, raise_for_status=True) as resp:
+        async with self.bot.http_session.post(
+            URLs.snekbox_eval_api, json=data, raise_for_status=True
+        ) as resp:
             return EvalResult.from_dict(await resp.json())
 
     @staticmethod
@@ -220,7 +227,9 @@ class Snekbox(Cog):
         log.trace("Uploading full output to paste service...")
 
         try:
-            return await send_to_paste_service(http_session, output, extension="txt", max_length=MAX_PASTE_LENGTH)
+            return await send_to_paste_service(
+                http_session, output, extension="txt", max_length=MAX_PASTE_LENGTH
+            )
         except PasteTooLongError:
             return "too long to upload"
         except PasteUploadError:
@@ -259,14 +268,19 @@ class Snekbox(Cog):
         paste_link = None
 
         if "<@" in output:
-            output = output.replace("<@", "<@\u200B")  # Zero-width space
+            output = output.replace("<@", "<@\u200b")  # Zero-width space
 
         if "<!@" in output:
-            output = output.replace("<!@", "<!@\u200B")  # Zero-width space
+            output = output.replace("<!@", "<!@\u200b")  # Zero-width space
 
         if ESCAPE_REGEX.findall(output):
-            paste_link = await self.upload_output(self.bot.http_session, original_output)
-            return "Code block escape attempt detected; will not output result", paste_link
+            paste_link = await self.upload_output(
+                self.bot.http_session, original_output
+            )
+            return (
+                "Code block escape attempt detected; will not output result",
+                paste_link,
+            )
 
         truncated = False
         lines = output.splitlines()
@@ -280,7 +294,9 @@ class Snekbox(Cog):
         if len(lines) > max_lines:
             truncated = True
             if len(output) >= max_chars:
-                output = f"{output[:max_chars]}\n... (truncated - too long, too many lines)"
+                output = (
+                    f"{output[:max_chars]}\n... (truncated - too long, too many lines)"
+                )
             else:
                 output = f"{output}\n... (truncated - too many lines)"
         elif len(output) >= max_chars:
@@ -288,14 +304,18 @@ class Snekbox(Cog):
             output = f"{output[:max_chars]}\n... (truncated - too long)"
 
         if truncated:
-            paste_link = await self.upload_output(self.bot.http_session, original_output)
+            paste_link = await self.upload_output(
+                self.bot.http_session, original_output
+            )
 
         if output_default and not output:
             output = output_default
 
         return output, paste_link
 
-    def _filter_files(self: Self, ctx: Context, files: list[FileAttachment], blocked_exts: set[str]) -> FilteredFiles:
+    def _filter_files(
+        self: Self, ctx: Context, files: list[FileAttachment], blocked_exts: set[str]
+    ) -> FilteredFiles:
         """Filter to restrict files to allowed extensions. Return a named tuple of allowed and blocked files lists."""
         # Filter files into allowed and blocked
         blocked = []
@@ -337,8 +357,13 @@ class Snekbox(Cog):
 
             # This is done to make sure the last line of output contains the error
             # and the error is not manually printed by the author with a syntax error.
-            if result.stdout.rstrip().endswith("EOFError: EOF when reading a line") and result.returncode == 1:
-                msg += "\n:warning: Note: `input` is not supported by the bot :warning:\n"
+            if (
+                result.stdout.rstrip().endswith("EOFError: EOF when reading a line")
+                and result.returncode == 1
+            ):
+                msg += (
+                    "\n:warning: Note: `input` is not supported by the bot :warning:\n"
+                )
 
             # Skip output if it's empty and there are file uploads
             if result.stdout or not result.has_files:
@@ -385,9 +410,13 @@ class Snekbox(Cog):
             failed_files = [FileAttachment(name, b"") for name in result.failed_files]
             total_files = result.files + failed_files
             if filter_cog:
-                block_output, blocked_exts = await filter_cog.filter_snekbox_output(msg, total_files, ctx.message)
+                block_output, blocked_exts = await filter_cog.filter_snekbox_output(
+                    msg, total_files, ctx.message
+                )
                 if block_output:
-                    return await ctx.send("Attempt to circumvent filter detected. Moderator team has been alerted.")
+                    return await ctx.send(
+                        "Attempt to circumvent filter detected. Moderator team has been alerted."
+                    )
 
             # Filter file extensions
             allowed, blocked = self._filter_files(ctx, result.files, blocked_exts)
@@ -401,9 +430,7 @@ class Snekbox(Cog):
                 # Both
                 elif "" in blocked_sorted:
                     blocked_str = ", ".join(ext for ext in blocked_sorted if ext)
-                    blocked_msg = (
-                        f"Files with no extension or disallowed extensions can't be uploaded: **{blocked_str}**"
-                    )
+                    blocked_msg = f"Files with no extension or disallowed extensions can't be uploaded: **{blocked_str}**"
                 else:
                     blocked_str = ", ".join(blocked_sorted)
                     blocked_msg = f"Files with disallowed extensions can't be uploaded: **{blocked_str}**"
@@ -412,15 +439,23 @@ class Snekbox(Cog):
 
             # Upload remaining non-text files
             files = [f.to_file() for f in allowed if f not in text_files]
-            allowed_mentions = AllowedMentions(everyone=False, roles=False, users=[ctx.author])
+            allowed_mentions = AllowedMentions(
+                everyone=False, roles=False, users=[ctx.author]
+            )
             view = self.build_python_version_switcher_view(job.version, ctx, job)
-            response = await ctx.send(msg, allowed_mentions=allowed_mentions, view=view, files=files)
+            response = await ctx.send(
+                msg, allowed_mentions=allowed_mentions, view=view, files=files
+            )
             view.message = response
 
-            log.info(f"{ctx.author}'s {job.name} job had a return code of {result.returncode}")
+            log.info(
+                f"{ctx.author}'s {job.name} job had a return code of {result.returncode}"
+            )
         return response
 
-    async def continue_job(self: Self, ctx: Context, response: Message, job_name: str) -> EvalJob | None:
+    async def continue_job(
+        self: Self, ctx: Context, response: Message, job_name: str
+    ) -> EvalJob | None:
         """
         Check if the job's session should continue.
 
@@ -438,7 +473,9 @@ class Snekbox(Cog):
                     timeout=REDO_TIMEOUT,
                 )
                 await ctx.message.add_reaction(REDO_EMOJI)
-                await self.bot.wait_for("reaction_add", check=_predicate_emoji_reaction, timeout=10)
+                await self.bot.wait_for(
+                    "reaction_add", check=_predicate_emoji_reaction, timeout=10
+                )
 
                 # Ensure the response that's about to be edited is still the most recent.
                 # This could have already been updated via a button press to switch to an alt Python version.
@@ -453,7 +490,7 @@ class Snekbox(Cog):
                 if code is None:
                     return None
 
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 with contextlib.suppress(HTTPException):
                     await ctx.message.clear_reaction(REDO_EMOJI)
                 return None
@@ -545,7 +582,11 @@ class Snekbox(Cog):
         job = EvalJob.from_code("\n".join(code)).as_version(python_version)
         await self.run_job(ctx, job)
 
-    @command(name="timeit", aliases=("ti",), usage="[python_version] [setup_code] <code, ...>")
+    @command(
+        name="timeit",
+        aliases=("ti",),
+        usage="[python_version] [setup_code] <code, ...>",
+    )
     @guild_only()
     async def timeit_command(
         self: Self,
@@ -584,4 +625,8 @@ def predicate_message_edit(ctx: Context, old_msg: Message, new_msg: Message) -> 
 
 def predicate_emoji_reaction(ctx: Context, reaction: Reaction, user: User) -> bool:
     """Return True if the reaction REDO_EMOJI was added by the context message author on this message."""
-    return reaction.message.id == ctx.message.id and user.id == ctx.author.id and str(reaction) == REDO_EMOJI
+    return (
+        reaction.message.id == ctx.message.id
+        and user.id == ctx.author.id
+        and str(reaction) == REDO_EMOJI
+    )

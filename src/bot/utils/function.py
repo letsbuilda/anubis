@@ -36,7 +36,7 @@ def get_arg_value(name_or_pos: Argument, arguments: BoundArgs) -> Any:  # noqa: 
         arg_pos = name_or_pos
 
         try:
-            name, value = arg_values[arg_pos]
+            _name, value = arg_values[arg_pos]
             return value  # noqa: TRY300 - try/except/else is ugly
         except IndexError as exception:
             msg = f"Argument position {arg_pos} is out of bounds."
@@ -112,11 +112,15 @@ def update_wrapper_globals(
     as this can cause incorrect objects being used by discordpy's converters.
     """
     annotation_global_names = (
-        ann.split(".", maxsplit=1)[0] for ann in wrapped.__annotations__.values() if isinstance(ann, str)
+        ann.split(".", maxsplit=1)[0]
+        for ann in wrapped.__annotations__.values()
+        if isinstance(ann, str)
     )
     # Conflicting globals from both functions' modules that are also used in the wrapper and in wrapped's annotations.
     shared_globals = set(wrapper.__code__.co_names) & set(annotation_global_names)
-    shared_globals &= set(wrapped.__globals__) & set(wrapper.__globals__) - ignored_conflict_names
+    shared_globals &= (
+        set(wrapped.__globals__) & set(wrapper.__globals__) - ignored_conflict_names
+    )
     if shared_globals:
         msg = (
             f"wrapper and the wrapped function share the following global names used by annotations: {', '.join(shared_globals)}."  # noqa: E501 - strings
@@ -125,7 +129,11 @@ def update_wrapper_globals(
         raise GlobalNameConflictError(msg)
 
     new_globals = wrapper.__globals__.copy()
-    new_globals.update((k, v) for k, v in wrapped.__globals__.items() if k not in wrapper.__code__.co_names)
+    new_globals.update(
+        (k, v)
+        for k, v in wrapped.__globals__.items()
+        if k not in wrapper.__code__.co_names
+    )
     return types.FunctionType(
         code=wrapper.__code__,
         globals=new_globals,
@@ -146,7 +154,9 @@ def command_wraps(
 
     def decorator(wrapper: types.FunctionType) -> types.FunctionType:
         return functools.update_wrapper(
-            update_wrapper_globals(wrapper, wrapped, ignored_conflict_names=ignored_conflict_names),
+            update_wrapper_globals(
+                wrapper, wrapped, ignored_conflict_names=ignored_conflict_names
+            ),
             wrapped,
             assigned,
             updated,

@@ -17,9 +17,16 @@ class Dice(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="roll")
-    async def roll(self: Self, interaction: discord.Interaction, number_of_dice: int, number_of_sides: int) -> None:
+    async def roll(
+        self: Self,
+        interaction: discord.Interaction,
+        number_of_dice: int,
+        number_of_sides: int,
+    ) -> None:
         """Roll dice."""
-        rolls = ", ".join([str(randint(1, number_of_sides)) for _ in range(number_of_dice)])
+        rolls = ", ".join([
+            str(randint(1, number_of_sides)) for _ in range(number_of_dice)
+        ])
         await interaction.response.send_message(rolls)
 
 

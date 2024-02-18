@@ -70,7 +70,7 @@ class Internal(Cog):
 
         # Create the input dialog
         for i, line in enumerate(lines):
-            if i == 0:  # noqa: SIM108 - spread out for docs
+            if i == 0:  # - spread out for docs
                 # Start dialog
                 start = f"In [{self.ln}]: "
 
@@ -119,11 +119,17 @@ class Internal(Cog):
             res = (res, out)
 
         else:
-            if isinstance(out, str) and out.startswith("Traceback (most recent call last):\n"):
+            if isinstance(out, str) and out.startswith(
+                "Traceback (most recent call last):\n"
+            ):
                 # Leave out the traceback message
                 out = "\n" + "\n".join(out.split("\n")[1:])
 
-            pretty = out if isinstance(out, str) else pprint.pformat(out, compact=True, width=60)
+            pretty = (
+                out
+                if isinstance(out, str)
+                else pprint.pformat(out, compact=True, width=60)
+            )
 
             if pretty != str(out):
                 # We're using the pretty version, start on the next line
@@ -206,7 +212,9 @@ async def func():  # (None,) -> Any
 
         if len(out) > truncate_index:
             try:
-                paste_link = await send_to_paste_service(self.bot.http_session, out, extension="py")
+                paste_link = await send_to_paste_service(
+                    self.bot.http_session, out, extension="py"
+                )
             except PasteTooLongError:
                 paste_text = "too long to upload to paste service."
             except PasteUploadError:
@@ -214,7 +222,10 @@ async def func():  # (None,) -> Any
             else:
                 paste_text = f"full contents at {paste_link}"
 
-            await ctx.send(f"```py\n{out[:truncate_index]}\n```... response truncated; {paste_text}", embed=embed)
+            await ctx.send(
+                f"```py\n{out[:truncate_index]}\n```... response truncated; {paste_text}",
+                embed=embed,
+            )
             return None
 
         await ctx.send(f"```py\n{out}```", embed=embed)
@@ -229,7 +240,9 @@ async def func():  # (None,) -> Any
 
     @internal_group.command(name="eval", aliases=("e",))
     @has_any_role(Roles.administrators)
-    async def eval(self: Self, ctx: Context, *, code: str) -> None:  # noqa: A003 - uh... good point
+    async def eval(
+        self: Self, ctx: Context, *, code: str
+    ) -> None:  # - uh... good point
         """Run eval in a REPL-like format."""
         code = code.strip("`")
         if re.match("py(thon)?\n", code):
@@ -239,7 +252,7 @@ async def func():  # (None,) -> Any
             not re.search(  # Check if it's an expression
                 r"^(return|import|for|while|def|class|from|exit|[a-zA-Z0-9]+\s*=)",
                 code,
-                re.M,
+                re.MULTILINE,
             )
             and len(code.split("\n")) == 1
         ):

@@ -32,7 +32,9 @@ class CommandErrorHandler(commands.Cog):
         if command._buckets.valid:
             bucket = command._buckets.get_bucket(message)
             bucket._tokens = min(bucket.rate, bucket._tokens + 1)
-            logging.debug("Cooldown counter reverted as the command was not used correctly.")
+            logging.debug(
+                "Cooldown counter reverted as the command was not used correctly."
+            )
 
     @staticmethod
     def error_embed(message: str, title: Iterable | str = NEGATIVE_REPLIES) -> Embed:
@@ -53,7 +55,9 @@ class CommandErrorHandler(commands.Cog):
     ) -> None:
         """Activates when a command raises an error."""
         if getattr(error, "handled", False):
-            logging.debug(f"Command {ctx.command} had its error already handled locally; ignoring.")
+            logging.debug(
+                f"Command {ctx.command} had its error already handled locally; ignoring."
+            )
             return
 
         parent_command = ""
@@ -76,7 +80,9 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, commands.UserInputError):
             self.revert_cooldown_counter(ctx.command, ctx.message)
             usage = f"```\n{ctx.prefix}{parent_command}{ctx.command} {ctx.command.signature}\n```"
-            embed = self.error_embed(f"Your input was invalid: {error}\n\nUsage:{usage}")
+            embed = self.error_embed(
+                f"Your input was invalid: {error}\n\nUsage:{usage}"
+            )
             await ctx.send(embed=embed)
             return
 
@@ -90,11 +96,19 @@ class CommandErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.DisabledCommand):
-            await ctx.send(embed=self.error_embed("This command has been disabled.", NEGATIVE_REPLIES))
+            await ctx.send(
+                embed=self.error_embed(
+                    "This command has been disabled.", NEGATIVE_REPLIES
+                )
+            )
             return
 
         if isinstance(error, commands.NoPrivateMessage):
-            await ctx.send(embed=self.error_embed("This command can only be used in the server. ", NEGATIVE_REPLIES))
+            await ctx.send(
+                embed=self.error_embed(
+                    "This command can only be used in the server. ", NEGATIVE_REPLIES
+                )
+            )
             return
 
         if isinstance(error, commands.BadArgument):
@@ -107,7 +121,11 @@ class CommandErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.CheckFailure):
-            await ctx.send(embed=self.error_embed("You are not authorized to use this command.", NEGATIVE_REPLIES))
+            await ctx.send(
+                embed=self.error_embed(
+                    "You are not authorized to use this command.", NEGATIVE_REPLIES
+                )
+            )
             return
 
         if isinstance(error, APIError):
@@ -128,7 +146,9 @@ class CommandErrorHandler(commands.Cog):
             return
 
         if isinstance(error, commands.MaxConcurrencyReached):
-            embed = self.error_embed("This command can only be used 1 time per channel concurrently.")
+            embed = self.error_embed(
+                "This command can only be used 1 time per channel concurrently."
+            )
             await ctx.send(embed=embed)
             return
 
@@ -146,17 +166,23 @@ class CommandErrorHandler(commands.Cog):
 
             log.exception(f"Unhandled command error: {error!s}", exc_info=error)
 
-    async def send_command_suggestion(self: Self, ctx: commands.Context, command_name: str) -> None:
+    async def send_command_suggestion(
+        self: Self, ctx: commands.Context, command_name: str
+    ) -> None:
         """Send user similar commands if any can be found."""
         command_suggestions = []
-        if similar_command_names := get_command_suggestions(list(self.bot.all_commands.keys()), command_name):
+        if similar_command_names := get_command_suggestions(
+            list(self.bot.all_commands.keys()), command_name
+        ):
             for similar_command_name in similar_command_names:
                 similar_command = self.bot.get_command(similar_command_name)
 
                 if not similar_command:
                     continue
 
-                log_msg = "Cancelling attempt to suggest a command due to failed checks."
+                log_msg = (
+                    "Cancelling attempt to suggest a command due to failed checks."
+                )
                 try:
                     if not await similar_command.can_run(ctx):
                         log.debug(log_msg)
@@ -171,7 +197,8 @@ class CommandErrorHandler(commands.Cog):
             embed = Embed()
             embed.set_author(name="Did you mean:", icon_url=QUESTION_MARK_ICON)
             embed.description = "\n".join(
-                misspelled_content.replace(command_name, cmd, 1) for cmd in command_suggestions
+                misspelled_content.replace(command_name, cmd, 1)
+                for cmd in command_suggestions
             )
             await ctx.send(embed=embed, delete_after=7.5)
 

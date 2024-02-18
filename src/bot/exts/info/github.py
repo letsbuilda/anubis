@@ -81,7 +81,9 @@ class Github(commands.Cog):
         """Remove any codeblock in a message."""
         return CODE_BLOCK_RE.sub("", message)
 
-    async def fetch_issue(self: Self, number: int, repository: str, user: str) -> IssueState | FetchError:
+    async def fetch_issue(
+        self: Self, number: int, repository: str, user: str
+    ) -> IssueState | FetchError:
         """
         Retrieve an issue from a GitHub repository.
 
@@ -95,9 +97,12 @@ class Github(commands.Cog):
         if response.status == HTTPStatus.FORBIDDEN:
             if response.headers.get("X-RateLimit-Remaining") == "0":
                 log.info(f"Ratelimit reached while fetching {url}")
-                return FetchError(HTTPStatus.FORBIDDEN, "Ratelimit reached, please retry in a few minutes.")
+                return FetchError(
+                    HTTPStatus.FORBIDDEN,
+                    "Ratelimit reached, please retry in a few minutes.",
+                )
             return FetchError(HTTPStatus.FORBIDDEN, "Cannot access issue.")
-        if response.status in (HTTPStatus.NOT_FOUND, HTTPStatus.GONE):
+        if response.status in {HTTPStatus.NOT_FOUND, HTTPStatus.GONE}:
             return FetchError(response.status, "Issue not found.")
         if response.status != HTTPStatus.OK:
             return FetchError(response.status, "Error while fetching issue.")
@@ -107,7 +112,11 @@ class Github(commands.Cog):
         # from issues: if the 'issues' key is present in the response then we can pull the data we
         # need from the initial API call.
         if "issues" in json_data["html_url"]:
-            emoji = Emojis.issue_open if json_data.get("state") == "open" else Emojis.issue_closed
+            emoji = (
+                Emojis.issue_open
+                if json_data.get("state") == "open"
+                else Emojis.issue_closed
+            )
 
         # If the 'issues' key is not contained in the API response and there is no error code, then
         # we know that a PR has been requested and a call to the pulls API endpoint is necessary
@@ -126,7 +135,9 @@ class Github(commands.Cog):
 
         issue_url = json_data.get("html_url")
 
-        return IssueState(repository, number, issue_url, json_data.get("title", ""), emoji)
+        return IssueState(
+            repository, number, issue_url, json_data.get("title", ""), emoji
+        )
 
     @staticmethod
     def format_embed(results: list[IssueState | FetchError]) -> discord.Embed:
@@ -141,7 +152,9 @@ class Github(commands.Cog):
             elif isinstance(result, FetchError):
                 description_list.append(f":x: [{result.return_code}] {result.message}")
 
-        resp = discord.Embed(colour=Colours.bright_green, description="\n".join(description_list))
+        resp = discord.Embed(
+            colour=Colours.bright_green, description="\n".join(description_list)
+        )
 
         resp.set_author(name="GitHub")
         return resp
@@ -166,7 +179,9 @@ class Github(commands.Cog):
 
         issues = [
             FoundIssue(*match.group("org", "repo", "number"))
-            for match in AUTOMATIC_REGEX.finditer(self.remove_codeblocks(message.content))
+            for match in AUTOMATIC_REGEX.finditer(
+                self.remove_codeblocks(message.content)
+            )
         ]
         links = []
 
@@ -210,7 +225,9 @@ class Github(commands.Cog):
             return await response.json(), response
 
     @github_group.command(name="user", aliases=("userinfo",))
-    async def github_user_info(self: Self, ctx: commands.Context, username: str) -> None:
+    async def github_user_info(
+        self: Self, ctx: commands.Context, username: str
+    ) -> None:
         """Fetch a user's GitHub information."""
         async with ctx.typing():
             user_data, _ = await self.fetch_data(f"{GITHUB_API_URL}/users/{username}")
@@ -227,7 +244,10 @@ class Github(commands.Cog):
                 return
 
             org_data, _ = await self.fetch_data(user_data["organizations_url"])
-            orgs = [f"[{org['login']}](https://github.com/{org['login']})" for org in org_data]
+            orgs = [
+                f"[{org['login']}](https://github.com/{org['login']})"
+                for org in org_data
+            ]
             orgs_to_add = " | ".join(orgs)
 
             gists = user_data["public_gists"]
@@ -242,10 +262,14 @@ class Github(commands.Cog):
 
             embed = discord.Embed(
                 title=f"`{user_data['login']}`'s GitHub profile info",
-                description=f"```\n{user_data['bio']}\n```\n" if user_data["bio"] else "",
+                description=f"```\n{user_data['bio']}\n```\n"
+                if user_data["bio"]
+                else "",
                 colour=discord.Colour.og_blurple(),
                 url=user_data["html_url"],
-                timestamp=datetime.strptime(user_data["created_at"], "%Y-%m-%dT%H:%M:%SZ"),
+                timestamp=datetime.strptime(
+                    user_data["created_at"], "%Y-%m-%dT%H:%M:%SZ"
+                ),
             )
             embed.set_thumbnail(url=user_data["avatar_url"])
             embed.set_footer(text="Account created at")
@@ -298,7 +322,9 @@ class Github(commands.Cog):
             return
 
         async with ctx.typing():
-            repo_data, _ = await self.fetch_data(f"{GITHUB_API_URL}/repos/{quote(repo)}")
+            repo_data, _ = await self.fetch_data(
+                f"{GITHUB_API_URL}/repos/{quote(repo)}"
+            )
 
             # There won't be a message key if this repo exists
             if "message" in repo_data:
@@ -321,7 +347,9 @@ class Github(commands.Cog):
         # If it's a fork, then it will have a parent key
         try:
             parent = repo_data["parent"]
-            embed.description += f"\n\nForked from [{parent['full_name']}]({parent['html_url']})"
+            embed.description += (
+                f"\n\nForked from [{parent['full_name']}]({parent['html_url']})"
+            )
         except KeyError:
             log.debug("Repository is not a fork.")
 
@@ -333,8 +361,12 @@ class Github(commands.Cog):
             icon_url=repo_owner["avatar_url"],
         )
 
-        repo_created_at = datetime.strptime(repo_data["created_at"], "%Y-%m-%dT%H:%M:%SZ").strftime("%d/%m/%Y")
-        last_pushed = datetime.strptime(repo_data["pushed_at"], "%Y-%m-%dT%H:%M:%SZ").strftime("%d/%m/%Y at %H:%M")
+        repo_created_at = datetime.strptime(
+            repo_data["created_at"], "%Y-%m-%dT%H:%M:%SZ"
+        ).strftime("%d/%m/%Y")
+        last_pushed = datetime.strptime(
+            repo_data["pushed_at"], "%Y-%m-%dT%H:%M:%SZ"
+        ).strftime("%d/%m/%Y at %H:%M")
 
         embed.set_footer(
             text=(

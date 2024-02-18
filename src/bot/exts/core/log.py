@@ -36,7 +36,9 @@ class Log(Cog):
     ) -> Context:
         """Generate log embed and send to logging channel."""
         # Truncate string directly here to avoid removing newlines
-        embed = discord.Embed(description=text[:4093] + "..." if len(text) > 4096 else text)
+        embed = discord.Embed(
+            description=text[:4093] + "..." if len(text) > 4096 else text
+        )
 
         if title and icon_url:
             embed.set_author(name=title, icon_url=icon_url)
@@ -51,7 +53,11 @@ class Log(Cog):
             embed.set_thumbnail(url=thumbnail)
 
         if ping_mods:
-            content = f"<@&{Roles.moderators}> {content}" if content else f"<@&{Roles.moderators}>"
+            content = (
+                f"<@&{Roles.moderators}> {content}"
+                if content
+                else f"<@&{Roles.moderators}>"
+            )
 
         # Truncate content to 2000 characters and append an ellipsis.
         if content and len(content) > 2000:
@@ -64,7 +70,9 @@ class Log(Cog):
             for additional_embed in additional_embeds:
                 await channel.send(embed=additional_embed)
 
-        return await self.bot.get_context(log_message)  # Optionally return for use with antispam
+        return await self.bot.get_context(
+            log_message
+        )  # Optionally return for use with antispam
 
 
 async def setup(bot: Bot) -> None:

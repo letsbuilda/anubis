@@ -41,7 +41,9 @@ class WebhookRemover(Cog):
         """Get current instance of `Log`."""
         return self.bot.get_cog("Log")
 
-    async def delete_and_respond(self: Self, message: Message, matches: Match[str]) -> None:
+    async def delete_and_respond(
+        self: Self, message: Message, matches: Match[str]
+    ) -> None:
         """Delete `message` and send a warning that it contained a Discord webhook."""
         webhook_url = matches[0]
         redacted_url = matches[1] + "xxx"
@@ -68,11 +70,15 @@ class WebhookRemover(Cog):
         try:
             await message.delete()
         except NotFound:
-            log.debug(f"Failed to remove webhook in message {message.id}: message already deleted.")
+            log.debug(
+                f"Failed to remove webhook in message {message.id}: message already deleted."
+            )
             return
 
         # Log to user
-        await message.channel.send(ALERT_MESSAGE_TEMPLATE.format(user=message.author.mention))
+        await message.channel.send(
+            ALERT_MESSAGE_TEMPLATE.format(user=message.author.mention)
+        )
 
         if deleted_successfully:
             delete_state = "The webhook was successfully deleted."

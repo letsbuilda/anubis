@@ -7,7 +7,9 @@ from typing import Self
 class APIError(Exception):
     """Raised when an external API (eg. Wikipedia) returns an error response."""
 
-    def __init__(self: Self, api: str, status_code: int, error_msg: str | None = None) -> None:
+    def __init__(
+        self: Self, api: str, status_code: int, error_msg: str | None = None
+    ) -> None:
         super().__init__()
         self.api = api
         self.status_code = status_code

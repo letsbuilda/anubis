@@ -11,7 +11,7 @@ COMMANDS
     install-dev       install local package in editable mode
     update-deps       update the dependencies
     upgrade-deps      upgrade the dependencies
-    lint              run `pre-commit` and `black` and `ruff`
+    lint              run `pre-commit` and `ruff` and `mypy`
     test              run `pytest`
     build-dist        run `python -m build`
     clean             delete generated content
@@ -40,29 +40,29 @@ function Invoke-Install-Dev
 
 function Invoke-Update-Deps
 {
-    python -m pip install --upgrade --editable ".[dev, tests, docs]"
     python -m pip install --upgrade pip-tools
-    pip-compile --output-file requirements/requirements.txt requirements/requirements.in
-    pip-compile --output-file requirements/requirements-dev.txt requirements/requirements-dev.in
-    pip-compile --output-file requirements/requirements-tests.txtrequirements/requirements-tests.in
-    pip-compile --output-file requirements/requirements-docs.txt requirements/requirements-docs.in
+    pip-compile requirements/requirements.in
+    pip-compile requirements/requirements-dev.in
+    pip-compile requirements/requirements-tests.in
+    pip-compile requirements/requirements-docs.in
 }
 
 function Invoke-Upgrade-Deps
 {
     python -m pip install --upgrade pip-tools pre-commit
     pre-commit autoupdate
-    pip-compile --upgrade --output-file requirements/requirements.txt requirements/requirements.in
-    pip-compile --upgrade --output-file requirements/requirements-dev.txt requirements/requirements-dev.in
-    pip-compile --upgrade --output-file requirements/requirements-tests.txtrequirements/requirements-tests.in
-    pip-compile --upgrade --output-file requirements/requirements-docs.txt requirements/requirements-docs.in
+    pip-compile --upgrade requirements/requirements.in
+    pip-compile --upgrade requirements/requirements-dev.in
+    pip-compile --upgrade requirements/requirements-tests.in
+    pip-compile --upgrade requirements/requirements-docs.in
 }
 
 function Invoke-Lint
 {
     pre-commit run --all-files
-    python -m black .
     python -m ruff --fix .
+    python -m ruff format .
+    python -m mypy --strict src/
 }
 
 function Invoke-Test

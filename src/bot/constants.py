@@ -94,7 +94,7 @@ Roles = _Roles()
 class _Guild(EnvConfig, env_prefix="guild_"):
     """Guild constants."""
 
-    id: int = 1033456860864466995  # - variable is nested
+    id: int = 1033456860864466995
 
     moderation_roles: tuple[int, ...] = (Roles.administrators, Roles.moderators)
     staff_roles: tuple[int, ...] = (Roles.administrators, Roles.moderators, Roles.staff)

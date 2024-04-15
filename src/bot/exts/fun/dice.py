@@ -24,9 +24,7 @@ class Dice(commands.Cog):
         number_of_sides: int,
     ) -> None:
         """Roll dice."""
-        rolls = ", ".join([
-            str(randint(1, number_of_sides)) for _ in range(number_of_dice)
-        ])
+        rolls = ", ".join([str(randint(1, number_of_sides)) for _ in range(number_of_dice)])
         await interaction.response.send_message(rolls)
 
 

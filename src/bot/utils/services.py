@@ -70,13 +70,13 @@ async def send_to_paste_service(
 
         if "message" in response_json:
             log.warning(
-                f"Paste service returned error {response_json['message']} with status code {response.status}, "
+                f"Paste service returned error {response_json["message"]} with status code {response.status}, "
                 f"trying again ({attempt}/{FAILED_REQUEST_ATTEMPTS}).",
             )
             continue
         if "key" in response_json:
             log.info(
-                f"Successfully uploaded contents to paste service behind key {response_json['key']}."
+                f"Successfully uploaded contents to paste service behind key {response_json["key"]}.",
             )
 
             paste_link = URLs.paste_service.format(key=response_json["key"]) + extension

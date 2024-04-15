@@ -82,7 +82,10 @@ class Github(commands.Cog):
         return CODE_BLOCK_RE.sub("", message)
 
     async def fetch_issue(
-        self: Self, number: int, repository: str, user: str
+        self: Self,
+        number: int,
+        repository: str,
+        user: str,
     ) -> IssueState | FetchError:
         """
         Retrieve an issue from a GitHub repository.
@@ -112,11 +115,7 @@ class Github(commands.Cog):
         # from issues: if the 'issues' key is present in the response then we can pull the data we
         # need from the initial API call.
         if "issues" in json_data["html_url"]:
-            emoji = (
-                Emojis.issue_open
-                if json_data.get("state") == "open"
-                else Emojis.issue_closed
-            )
+            emoji = Emojis.issue_open if json_data.get("state") == "open" else Emojis.issue_closed
 
         # If the 'issues' key is not contained in the API response and there is no error code, then
         # we know that a PR has been requested and a call to the pulls API endpoint is necessary
@@ -136,7 +135,11 @@ class Github(commands.Cog):
         issue_url = json_data.get("html_url")
 
         return IssueState(
-            repository, number, issue_url, json_data.get("title", ""), emoji
+            repository,
+            number,
+            issue_url,
+            json_data.get("title", ""),
+            emoji,
         )
 
     @staticmethod
@@ -153,7 +156,8 @@ class Github(commands.Cog):
                 description_list.append(f":x: [{result.return_code}] {result.message}")
 
         resp = discord.Embed(
-            colour=Colours.bright_green, description="\n".join(description_list)
+            colour=Colours.bright_green,
+            description="\n".join(description_list),
         )
 
         resp.set_author(name="GitHub")
@@ -180,7 +184,7 @@ class Github(commands.Cog):
         issues = [
             FoundIssue(*match.group("org", "repo", "number"))
             for match in AUTOMATIC_REGEX.finditer(
-                self.remove_codeblocks(message.content)
+                self.remove_codeblocks(message.content),
             )
         ]
         links = []
@@ -226,7 +230,9 @@ class Github(commands.Cog):
 
     @github_group.command(name="user", aliases=("userinfo",))
     async def github_user_info(
-        self: Self, ctx: commands.Context, username: str
+        self: Self,
+        ctx: commands.Context,
+        username: str,
     ) -> None:
         """Fetch a user's GitHub information."""
         async with ctx.typing():
@@ -244,10 +250,7 @@ class Github(commands.Cog):
                 return
 
             org_data, _ = await self.fetch_data(user_data["organizations_url"])
-            orgs = [
-                f"[{org['login']}](https://github.com/{org['login']})"
-                for org in org_data
-            ]
+            orgs = [f"[{org["login"]}](https://github.com/{org["login"]})" for org in org_data]
             orgs_to_add = " | ".join(orgs)
 
             gists = user_data["public_gists"]
@@ -256,19 +259,18 @@ class Github(commands.Cog):
             if user_data["blog"].startswith("http"):  # Blog link is complete
                 blog = user_data["blog"]
             elif user_data["blog"]:  # Blog exists but the link is not complete
-                blog = f"https://{user_data['blog']}"
+                blog = f"https://{user_data["blog"]}"
             else:
                 blog = "No website link available"
 
             embed = discord.Embed(
-                title=f"`{user_data['login']}`'s GitHub profile info",
-                description=f"```\n{user_data['bio']}\n```\n"
-                if user_data["bio"]
-                else "",
+                title=f"`{user_data["login"]}`'s GitHub profile info",
+                description=f"```\n{user_data["bio"]}\n```\n" if user_data["bio"] else "",
                 colour=discord.Colour.og_blurple(),
                 url=user_data["html_url"],
                 timestamp=datetime.strptime(
-                    user_data["created_at"], "%Y-%m-%dT%H:%M:%SZ"
+                    user_data["created_at"],
+                    "%Y-%m-%dT%H:%M:%SZ",
                 ),
             )
             embed.set_thumbnail(url=user_data["avatar_url"])
@@ -277,26 +279,26 @@ class Github(commands.Cog):
             if user_data["type"] == "User":
                 embed.add_field(
                     name="Followers",
-                    value=f"[{user_data['followers']}]({user_data['html_url']}?tab=followers)",
+                    value=f"[{user_data["followers"]}]({user_data["html_url"]}?tab=followers)",
                 )
                 embed.add_field(
                     name="Following",
-                    value=f"[{user_data['following']}]({user_data['html_url']}?tab=following)",
+                    value=f"[{user_data["following"]}]({user_data["html_url"]}?tab=following)",
                 )
 
             embed.add_field(
                 name="Public repos",
-                value=f"[{user_data['public_repos']}]({user_data['html_url']}?tab=repositories)",
+                value=f"[{user_data["public_repos"]}]({user_data["html_url"]}?tab=repositories)",
             )
 
             if user_data["type"] == "User":
                 embed.add_field(
                     name="Gists",
-                    value=f"[{gists}](https://gist.github.com/{quote(username, safe='')})",
+                    value=f"[{gists}](https://gist.github.com/{quote(username, safe="")})",
                 )
 
                 embed.add_field(
-                    name=f"Organization{'s' if len(orgs) != 1 else ''}",
+                    name=f"Organization{"s" if len(orgs) != 1 else ""}",
                     value=orgs_to_add if orgs else "No organizations.",
                 )
             embed.add_field(name="Website", value=blog)
@@ -323,7 +325,7 @@ class Github(commands.Cog):
 
         async with ctx.typing():
             repo_data, _ = await self.fetch_data(
-                f"{GITHUB_API_URL}/repos/{quote(repo)}"
+                f"{GITHUB_API_URL}/repos/{quote(repo)}",
             )
 
             # There won't be a message key if this repo exists
@@ -347,9 +349,7 @@ class Github(commands.Cog):
         # If it's a fork, then it will have a parent key
         try:
             parent = repo_data["parent"]
-            embed.description += (
-                f"\n\nForked from [{parent['full_name']}]({parent['html_url']})"
-            )
+            embed.description += f"\n\nForked from [{parent["full_name"]}]({parent["html_url"]})"
         except KeyError:
             log.debug("Repository is not a fork.")
 
@@ -362,16 +362,18 @@ class Github(commands.Cog):
         )
 
         repo_created_at = datetime.strptime(
-            repo_data["created_at"], "%Y-%m-%dT%H:%M:%SZ"
+            repo_data["created_at"],
+            "%Y-%m-%dT%H:%M:%SZ",
         ).strftime("%d/%m/%Y")
         last_pushed = datetime.strptime(
-            repo_data["pushed_at"], "%Y-%m-%dT%H:%M:%SZ"
+            repo_data["pushed_at"],
+            "%Y-%m-%dT%H:%M:%SZ",
         ).strftime("%d/%m/%Y at %H:%M")
 
         embed.set_footer(
             text=(
-                f"{repo_data['forks_count']} ⑂ "
-                f"• {repo_data['stargazers_count']} ⭐ "
+                f"{repo_data["forks_count"]} ⑂ "
+                f"• {repo_data["stargazers_count"]} ⭐ "
                 f"• Created At {repo_created_at} "
                 f"• Last Commit {last_pushed}"
             ),

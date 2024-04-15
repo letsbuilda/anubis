@@ -55,7 +55,10 @@ def setup() -> None:
         log_file = Path("logs", "bot.log")
         log_file.parent.mkdir(exist_ok=True)
         file_handler = handlers.RotatingFileHandler(
-            log_file, maxBytes=5242880, backupCount=7, encoding="utf8"
+            log_file,
+            maxBytes=5242880,
+            backupCount=7,
+            encoding="utf8",
         )
         file_handler.setFormatter(log_format)
         root_log.addHandler(file_handler)
@@ -88,7 +91,8 @@ def setup() -> None:
 def setup_sentry() -> None:
     """Set up the Sentry logging integrations."""
     sentry_logging = LoggingIntegration(
-        level=logging.DEBUG, event_level=logging.WARNING
+        level=logging.DEBUG,
+        event_level=logging.WARNING,
     )
 
     sentry_sdk.init(

@@ -65,7 +65,7 @@ class Uwu(Cog):
         if text:
             converted_text = newufy(text)
             converted_text = helpers.suppress_links(converted_text)
-            converted_text = f">>> {converted_text.lstrip('> ')}"
+            converted_text = f">>> {converted_text.lstrip("> ")}"
         else:
             converted_text = None
 

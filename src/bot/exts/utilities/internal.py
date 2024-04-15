@@ -120,16 +120,12 @@ class Internal(Cog):
 
         else:
             if isinstance(out, str) and out.startswith(
-                "Traceback (most recent call last):\n"
+                "Traceback (most recent call last):\n",
             ):
                 # Leave out the traceback message
                 out = "\n" + "\n".join(out.split("\n")[1:])
 
-            pretty = (
-                out
-                if isinstance(out, str)
-                else pprint.pformat(out, compact=True, width=60)
-            )
+            pretty = out if isinstance(out, str) else pprint.pformat(out, compact=True, width=60)
 
             if pretty != str(out):
                 # We're using the pretty version, start on the next line
@@ -213,7 +209,9 @@ async def func():  # (None,) -> Any
         if len(out) > truncate_index:
             try:
                 paste_link = await send_to_paste_service(
-                    self.bot.http_session, out, extension="py"
+                    self.bot.http_session,
+                    out,
+                    extension="py",
                 )
             except PasteTooLongError:
                 paste_text = "too long to upload to paste service."
@@ -241,7 +239,10 @@ async def func():  # (None,) -> Any
     @internal_group.command(name="eval", aliases=("e",))
     @has_any_role(Roles.administrators)
     async def eval(
-        self: Self, ctx: Context, *, code: str
+        self: Self,
+        ctx: Context,
+        *,
+        code: str,
     ) -> None:  # - uh... good point
         """Run eval in a REPL-like format."""
         code = code.strip("`")
@@ -256,7 +257,7 @@ async def func():  # (None,) -> Any
             )
             and len(code.split("\n")) == 1
         ):
-            code = "_ = " + code
+            code += "_ = "
 
         await self._eval(ctx, code)
 

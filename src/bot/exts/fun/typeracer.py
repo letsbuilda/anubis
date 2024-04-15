@@ -1,5 +1,6 @@
 """Typeracer game."""
 
+import operator
 from asyncio import TimeoutError
 from collections import defaultdict
 from typing import Self
@@ -61,18 +62,17 @@ class Race:
     def check_message(self: Self, message: Message) -> bool:
         """Check function for processing valid inputs."""
         return (
-            message.content == self.word_list[self.i]
-            or message.content == self._word_display()
+            message.content == self.word_list[self.i] or message.content == self._word_display()
         ) and message.channel == self.ctx.channel
 
     def scoreboard_embed(self: Self) -> Embed:
         """Build the scoreboard embed."""
         embed = Embed(title="Final Scoreboard", colour=Colour.blue())
-        scoreboard_list = [
-            (self.players[user_id], self.scores[user_id]) for user_id in self.players
-        ]
+        scoreboard_list = [(self.players[user_id], self.scores[user_id]) for user_id in self.players]
         scoreboard_list = sorted(
-            scoreboard_list, key=lambda pair: pair[1], reverse=True
+            scoreboard_list,
+            key=operator.itemgetter(1),
+            reverse=True,
         )
         prev = None
         offset = 0
@@ -136,11 +136,13 @@ class Typeracer(commands.Cog):
             try:
                 # only process messages that satisfy the check function
                 answer = await self.bot.wait_for(
-                    "message", check=race.check_message, timeout=30
+                    "message",
+                    check=race.check_message,
+                    timeout=30,
                 )
             except TimeoutError:
                 await message.edit(
-                    content=message.content + "\n\nThe game has timed out!"
+                    content=message.content + "\n\nThe game has timed out!",
                 )
                 # display scoreboard if game times out
                 if race.scores:

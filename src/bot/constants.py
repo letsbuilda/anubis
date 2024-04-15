@@ -236,17 +236,19 @@ class _Icons(EnvConfig, env_prefix="icons_"):
 
     filtering: str = "https://cdn.discordapp.com/emojis/472472638594482195.png"
 
-    green_checkmark: str = "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-checkmark-dist.png"
-    green_questionmark: str = "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-question-mark-dist.png"
+    green_checkmark: str = (
+        "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-checkmark-dist.png"
+    )
+    green_questionmark: str = (
+        "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-question-mark-dist.png"
+    )
     guild_update: str = "https://cdn.discordapp.com/emojis/469954765141442561.png"
 
     hash_blurple: str = "https://cdn.discordapp.com/emojis/469950142942806017.png"
     hash_green: str = "https://cdn.discordapp.com/emojis/469950144918585344.png"
     hash_red: str = "https://cdn.discordapp.com/emojis/469950145413251072.png"
 
-    message_bulk_delete: str = (
-        "https://cdn.discordapp.com/emojis/469952898994929668.png"
-    )
+    message_bulk_delete: str = "https://cdn.discordapp.com/emojis/469952898994929668.png"
     message_delete: str = "https://cdn.discordapp.com/emojis/472472641320648704.png"
     message_edit: str = "https://cdn.discordapp.com/emojis/472472638976163870.png"
 
@@ -264,9 +266,7 @@ class _Icons(EnvConfig, env_prefix="icons_"):
     superstarify: str = "https://cdn.discordapp.com/emojis/636288153044516874.png"
     unsuperstarify: str = "https://cdn.discordapp.com/emojis/636288201258172446.png"
 
-    token_removed: str = (
-        "https://cdn.discordapp.com/emojis/470326273298792469.png"  # - false positive
-    )
+    token_removed: str = "https://cdn.discordapp.com/emojis/470326273298792469.png"  # - false positive
 
     user_ban: str = "https://cdn.discordapp.com/emojis/469952898026045441.png"
     user_timeout: str = "https://cdn.discordapp.com/emojis/472472640100106250.png"

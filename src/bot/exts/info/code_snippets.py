@@ -62,11 +62,16 @@ class CodeSnippets(Cog):
         ]
 
     async def _fetch_response(
-        self: Self, url: str, response_format: str, **kwargs: dict
+        self: Self,
+        url: str,
+        response_format: str,
+        **kwargs: dict,
     ) -> str | dict | None:
         """Make http requests using aiohttp."""
         async with self.bot.http_session.get(
-            url, raise_for_status=True, **kwargs
+            url,
+            raise_for_status=True,
+            **kwargs,
         ) as response:
             if response_format == "text":
                 return await response.text()
@@ -87,7 +92,11 @@ class CodeSnippets(Cog):
         return ref, file_path
 
     async def _fetch_github_snippet(
-        self: Self, repo: str, path: str, start_line: str, end_line: str
+        self: Self,
+        repo: str,
+        path: str,
+        start_line: str,
+        end_line: str,
     ) -> str:
         """Fetch a snippet from a GitHub repo."""
         # Search the GitHub API for the specified branch
@@ -97,7 +106,9 @@ class CodeSnippets(Cog):
             headers=GITHUB_HEADERS,
         )
         tags = await self._fetch_response(
-            f"https://api.github.com/repos/{repo}/tags", "json", headers=GITHUB_HEADERS
+            f"https://api.github.com/repos/{repo}/tags",
+            "json",
+            headers=GITHUB_HEADERS,
         )
         refs = branches + tags
         ref, file_path = self._find_ref(path, refs)
@@ -108,7 +119,10 @@ class CodeSnippets(Cog):
             headers=GITHUB_HEADERS,
         )
         return self._snippet_to_codeblock(
-            file_contents, file_path, start_line, end_line
+            file_contents,
+            file_path,
+            start_line,
+            end_line,
         )
 
     async def _fetch_github_gist_snippet(
@@ -134,12 +148,19 @@ class CodeSnippets(Cog):
                     "text",
                 )
                 return self._snippet_to_codeblock(
-                    file_contents, gist_file, start_line, end_line
+                    file_contents,
+                    gist_file,
+                    start_line,
+                    end_line,
                 )
         return ""
 
     async def _fetch_gitlab_snippet(
-        self: Self, repo: str, path: str, start_line: str, end_line: str
+        self: Self,
+        repo: str,
+        path: str,
+        start_line: str,
+        end_line: str,
     ) -> str:
         """Fetch a snippet from a GitLab repo."""
         enc_repo = quote_plus(repo)
@@ -150,7 +171,8 @@ class CodeSnippets(Cog):
             "json",
         )
         tags = await self._fetch_response(
-            f"https://gitlab.com/api/v4/projects/{enc_repo}/repository/tags", "json"
+            f"https://gitlab.com/api/v4/projects/{enc_repo}/repository/tags",
+            "json",
         )
         refs = branches + tags
         ref, file_path = self._find_ref(path, refs)
@@ -162,7 +184,10 @@ class CodeSnippets(Cog):
             "text",
         )
         return self._snippet_to_codeblock(
-            file_contents, file_path, start_line, end_line
+            file_contents,
+            file_path,
+            start_line,
+            end_line,
         )
 
     async def _fetch_bitbucket_snippet(
@@ -179,11 +204,18 @@ class CodeSnippets(Cog):
             "text",
         )
         return self._snippet_to_codeblock(
-            file_contents, file_path, start_line, end_line
+            file_contents,
+            file_path,
+            start_line,
+            end_line,
         )
 
     def _snippet_to_codeblock(
-        self: Self, file_contents: str, file_path: str, start_line: str, end_line: str
+        self: Self,
+        file_contents: str,
+        file_path: str,
+        start_line: str,
+        end_line: str,
     ) -> str:
         """
         Given the entire file contents and target lines, creates a code block.
@@ -247,9 +279,7 @@ class CodeSnippets(Cog):
                 except ClientResponseError as error:
                     error_message = error.message
                     log.log(
-                        logging.DEBUG
-                        if error.status == HTTPStatus.NOT_FOUND
-                        else logging.ERROR,
+                        logging.DEBUG if error.status == HTTPStatus.NOT_FOUND else logging.ERROR,
                         f"Failed to fetch code snippet from {match[0]!r}: {error.status} "
                         f"{error_message} for GET {error.request_info.real_url.human_repr()}",
                     )

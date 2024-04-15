@@ -1,9 +1,11 @@
+"""Logging."""
+
 from discord import Embed
 from discord.ext.commands import Cog
 from pydis_core.utils import scheduling
 
 from bot.bot import Bot
-from bot.constants import Channels, DEBUG_MODE
+from bot.constants import DEBUG_MODE, Channels
 from bot.log import get_logger
 
 log = get_logger(__name__)
@@ -12,7 +14,7 @@ log = get_logger(__name__)
 class Logging(Cog):
     """Debug logging module."""
 
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
         scheduling.create_task(self.startup_greeting())

@@ -7,7 +7,6 @@ By default, the values defined in the classes are used, these can be overridden 
 """
 
 from os import getenv
-from typing import Self
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -300,6 +299,7 @@ class _Colours(EnvConfig, env_prefix="colours_"):
     python_yellow: int = 0xFFD43B
     grass_green: int = 0x66FF00
     gold: int = 0xE6C200
+
 
 Colours = _Colours()
 

@@ -5,10 +5,10 @@ import asyncio
 import aiohttp
 import discord
 from discord.ext import commands
-from bot.log import get_logger, setup_sentry
+
 from bot import constants
 from bot.bot import Bot
-
+from bot.log import setup_sentry
 
 
 async def main() -> None:
@@ -19,7 +19,6 @@ async def main() -> None:
     intents = discord.Intents.default()
     intents.message_content = True
 
- 
     bot = Bot(
         guild_id=constants.Guild.id,
         http_session=aiohttp.ClientSession(),

@@ -5,7 +5,6 @@ from operator import attrgetter
 from textwrap import dedent
 from typing import Literal, NamedTuple, Self
 
-from aiohttp import ClientSession
 from discord import (
     AllowedMentions,
     HTTPException,
@@ -18,16 +17,14 @@ from discord import (
     ui,
 )
 from discord.ext.commands import Cog, Command, Context, Converter, command, guild_only
-from pydis_core.utils import interactions
+from pydis_core.utils import interactions, paste_service
+from pydis_core.utils.paste_service import PasteFile, send_to_paste_service
 from pydis_core.utils.regex import FORMATTED_CODE_REGEX, RAW_CODE_REGEX
 
 from bot.bot import Bot
 from bot.constants import MODERATION_ROLES, TXT_LIKE_FILES, BaseURLs, Emojis, URLs
 from bot.log import get_logger
-
 from bot.utils.lock import LockedResourceError, lock_arg
-from pydis_core.utils.paste_service import PasteFile, send_to_paste_service
-from pydis_core.utils import interactions, paste_service
 
 from ._eval import EvalJob, EvalResult
 from ._io import FileAttachment

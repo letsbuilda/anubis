@@ -11,8 +11,7 @@ import sentry_sdk
 from pydis_core.utils import logging as core_logging
 from sentry_sdk.integrations.asyncio import AsyncioIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
-from sentry_sdk.integrations.redis import RedisIntegration
-from bot import constants
+
 from bot import constants
 
 get_logger = core_logging.get_logger
@@ -34,7 +33,7 @@ def setup() -> None:
             **coloredlogs.DEFAULT_LEVEL_STYLES,
             "trace": {"color": 246},
             "critical": {"background": "red"},
-            "debug": coloredlogs.DEFAULT_LEVEL_STYLES["info"]
+            "debug": coloredlogs.DEFAULT_LEVEL_STYLES["info"],
         }
 
     if "COLOREDLOGS_LOG_FORMAT" not in os.environ:
@@ -51,7 +50,7 @@ def setup_sentry() -> None:
     """Set up the Sentry logging integrations."""
     sentry_logging = LoggingIntegration(
         level=logging.DEBUG,
-        event_level=logging.WARNING
+        event_level=logging.WARNING,
     )
 
     sentry_sdk.init(

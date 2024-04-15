@@ -16,7 +16,7 @@ from discord.ext.commands import Cog, Context, group, has_any_role, is_owner
 from pydis_core.utils.paste_service import PasteFile, PasteTooLongError, PasteUploadError, send_to_paste_service
 
 from bot.bot import Bot
-from bot.constants import BaseURLs, DEBUG_MODE, Roles
+from bot.constants import DEBUG_MODE, BaseURLs, Roles
 from bot.log import get_logger
 from bot.utils import find_nth_occurrence
 
@@ -26,7 +26,7 @@ log = get_logger(__name__)
 class Internal(Cog):
     """Administrator and Core Developer commands."""
 
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
         self.env = {}
         self.ln = 0
@@ -85,12 +85,11 @@ class Internal(Cog):
                 # to indent it.
                 start = "...: ".rjust(len(str(self.ln)) + 7)
 
-            if i == len(lines) - 2:
-                if line.startswith("return"):
-                    line = line[6:].strip()
+            if i == len(lines) - 2 and line.startswith("return"):
+                line = line[6:].strip()
 
             # Combine everything
-            res += (start + line + "\n")
+            res += start + line + "\n"
 
         self.stdout.seek(0)
         text = self.stdout.read()
@@ -98,7 +97,7 @@ class Internal(Cog):
         self.stdout = StringIO()
 
         if text:
-            res += (text + "\n")
+            res += text + "\n"
 
         if out is None:
             # No output, return the input statement
@@ -112,14 +111,11 @@ class Internal(Cog):
             res = (res, out)
 
         else:
-            if (isinstance(out, str) and out.startswith("Traceback (most recent call last):\n")):
+            if isinstance(out, str) and out.startswith("Traceback (most recent call last):\n"):
                 # Leave out the traceback message
                 out = "\n" + "\n".join(out.split("\n")[1:])
 
-            if isinstance(out, str):
-                pretty = out
-            else:
-                pretty = pprint.pformat(out, compact=True, width=60)
+            pretty = out if isinstance(out, str) else pprint.pformat(out, compact=True, width=60)
 
             if pretty != str(out):
                 # We're using the pretty version, start on the next line
@@ -129,9 +125,11 @@ class Internal(Cog):
                 # Text too long, shorten
                 li = pretty.split("\n")
 
-                pretty = ("\n".join(li[:3])  # First 3 lines
-                          + "\n ...\n"  # Ellipsis to indicate removed lines
-                          + "\n".join(li[-3:]))  # last 3 lines
+                pretty = (
+                    "\n".join(li[:3])  # First 3 lines
+                    + "\n ...\n"  # Ellipsis to indicate removed lines
+                    + "\n".join(li[-3:])
+                )  # last 3 lines
 
             # Add the output
             res += pretty
@@ -158,7 +156,7 @@ class Internal(Cog):
             "bot": self.bot,
             "inspect": inspect,
             "discord": discord,
-            "contextlib": contextlib
+            "contextlib": contextlib,
         }
 
         self.env.update(env)
@@ -212,9 +210,8 @@ async def func():  # (None,) -> Any
                 paste_text = f"full contents at {resp.link}"
 
             await ctx.send(
-                f"```py\n{out[:truncate_index]}\n```"
-                f"... response truncated; {paste_text}",
-                embed=embed
+                f"```py\n{out[:truncate_index]}\n```... response truncated; {paste_text}",
+                embed=embed,
             )
             return None
 
@@ -224,7 +221,7 @@ async def func():  # (None,) -> Any
     @group(name="internal", aliases=("int",))
     @has_any_role(Roles.administrators, Roles.core_developers)
     async def internal_group(self, ctx: Context) -> None:
-        """Internal commands. Top secret!"""
+        """Internal commands. Top secret!."""
         if not ctx.invoked_subcommand:
             await ctx.send_help(ctx.command)
 
@@ -236,16 +233,20 @@ async def func():  # (None,) -> Any
         if re.match("py(thon)?\n", code):
             code = "\n".join(code.split("\n")[1:])
 
-        if not re.search(  # Check if it's an expression
-                r"^(return|import|for|while|def|class|"
-                r"from|exit|[a-zA-Z0-9]+\s*=)", code, re.M) and len(
-                    code.split("\n")) == 1:
-            code = "_ = " + code
+        if (
+            not re.search(  # Check if it's an expression
+                r"^(return|import|for|while|def|class|from|exit|[a-zA-Z0-9]+\s*=)",
+                code,
+                re.MULTILINE,
+            )
+            and len(code.split("\n")) == 1
+        ):
+            code += "_ = "
 
         await self._eval(ctx, code)
 
     @internal_group.command(name="socketstats", aliases=("socket", "stats"))
-    @has_any_role(Roles.administrators,  Roles.core_developers)
+    @has_any_role(Roles.administrators, Roles.core_developers)
     async def socketstats(self, ctx: Context) -> None:
         """Fetch information on the socket events received from Discord."""
         running_s = (arrow.utcnow() - self.socket_since).total_seconds()
@@ -255,7 +256,7 @@ async def func():  # (None,) -> Any
         stats_embed = discord.Embed(
             title="WebSocket statistics",
             description=f"Receiving {per_s:0.2f} events per second.",
-            color=discord.Color.og_blurple()
+            color=discord.Color.og_blurple(),
         )
 
         for event_type, count in self.socket_events.most_common(25):

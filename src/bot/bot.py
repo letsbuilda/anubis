@@ -25,7 +25,7 @@ class Bot(BotBase):
     def __init__(self: Self, *args: list, **kwargs: dict) -> None:
         super().__init__(*args, **kwargs)
 
-    async def load_extension(self, name: str, *args, **kwargs) -> None:
+    async def load_extension(self, name: str, *args: list, **kwargs: dict) -> None:
         """Extend D.py's load_extension function to also record sentry performance stats."""
         with start_transaction(op="cog-load", name=name):
             await super().load_extension(name, *args, **kwargs)

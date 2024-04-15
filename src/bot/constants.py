@@ -9,7 +9,6 @@ By default, the values defined in the classes are used, these can be overridden 
 from os import getenv
 from typing import Self
 
-from pydantic import root_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -302,14 +301,6 @@ class _Colours(EnvConfig, env_prefix="colours_"):
     python_yellow: int = 0xFFD43B
     grass_green: int = 0x66FF00
     gold: int = 0xE6C200
-
-    @root_validator(pre=True)
-    def parse_hex_values(cls: type[Self], values: dict[str, int]) -> dict[str, int]:  # noqa: N805 - check this
-        """Verify that colors are valid hex."""
-        for key, value in values.items():
-            values[key] = int(value, 16)
-        return values
-
 
 Colours = _Colours()
 

@@ -47,8 +47,6 @@ idna==3.7
     #   requests
     #   tldextract
     #   yarl
-imsosorry==1.2.1
-    # via -r requirements/requirements.in
 multidict==6.0.5
     # via
     #   aiohttp
@@ -107,7 +105,5 @@ urllib3==2.2.1
     # via
     #   requests
     #   sentry-sdk
-wonderwords==2.2.0
-    # via -r requirements/requirements.in
 yarl==1.9.4
     # via aiohttp

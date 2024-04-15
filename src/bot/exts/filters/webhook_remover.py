@@ -42,7 +42,9 @@ class WebhookRemover(Cog):
         return self.bot.get_cog("Log")
 
     async def delete_and_respond(
-        self: Self, message: Message, matches: Match[str]
+        self: Self,
+        message: Message,
+        matches: Match[str],
     ) -> None:
         """Delete `message` and send a warning that it contained a Discord webhook."""
         webhook_url = matches[0]
@@ -71,13 +73,13 @@ class WebhookRemover(Cog):
             await message.delete()
         except NotFound:
             log.debug(
-                f"Failed to remove webhook in message {message.id}: message already deleted."
+                f"Failed to remove webhook in message {message.id}: message already deleted.",
             )
             return
 
         # Log to user
         await message.channel.send(
-            ALERT_MESSAGE_TEMPLATE.format(user=message.author.mention)
+            ALERT_MESSAGE_TEMPLATE.format(user=message.author.mention),
         )
 
         if deleted_successfully:
@@ -87,7 +89,7 @@ class WebhookRemover(Cog):
 
         # Display Bot icon as thumbnail
         if webhook_metadata.get("avatar") is not None:
-            thumb = f"https://cdn.discordapp.com/avatars/{webhook_metadata['id']}/{webhook_metadata['avatar']}.webp"
+            thumb = f"https://cdn.discordapp.com/avatars/{webhook_metadata["id"]}/{webhook_metadata["avatar"]}.webp"
         else:
             thumb = message.author.display_avatar.url
 

@@ -13,10 +13,6 @@ sentry-sdk
 rapidfuzz
 coloredlogs
 
-# Database
-psycopg[binary]
-SQLAlchemy
-
 # Utilities
 # utils/helpers
 tldextract
@@ -26,7 +22,3 @@ tldextract
 arrow
 # exts/utilities/snekbox
 regex
-# exts/fun/typeracer
-wonderwords
-# exts/fun/uwu
-imsosorry

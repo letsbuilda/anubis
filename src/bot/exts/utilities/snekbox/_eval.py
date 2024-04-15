@@ -160,7 +160,8 @@ class EvalResult:
 
     @classmethod
     def from_dict(
-        cls: type[Self], data: dict[str, str | int | list[dict[str, str]]]
+        cls: type[Self],
+        data: dict[str, str | int | list[dict[str, str]]],
     ) -> Self:
         """Create an EvalResult from a dict."""
         res = cls(

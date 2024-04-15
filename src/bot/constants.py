@@ -7,9 +7,7 @@ By default, the values defined in the classes are used, these can be overridden 
 """
 
 from os import getenv
-from typing import Self
 
-from pydantic import root_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -41,7 +39,6 @@ class _Bot(EnvConfig, env_prefix="bot_"):
     """Bot data."""
 
     prefix: str = "!"
-    database_dsn: str = "postgresql+psycopg://postgres:postgres@localhost:5432/anubis"
     token: str = ""
     trace_loggers: str = "*"
 
@@ -94,7 +91,7 @@ Roles = _Roles()
 class _Guild(EnvConfig, env_prefix="guild_"):
     """Guild constants."""
 
-    id: int = 1033456860864466995  # - variable is nested
+    id: int = 1033456860864466995
 
     moderation_roles: tuple[int, ...] = (Roles.administrators, Roles.moderators)
     staff_roles: tuple[int, ...] = (Roles.administrators, Roles.moderators, Roles.staff)
@@ -117,7 +114,7 @@ class _BaseURLs(EnvConfig, env_prefix="urls_"):
 
     github_bot_repo: str = "https://github.com/letsbuilda/anubis"
 
-    paste: str = "https://paste.pythondiscord.com"
+    paste_url: str = "https://paste.pythondiscord.com"
 
 
 BaseURLs = _BaseURLs()
@@ -131,7 +128,6 @@ class _URLs(_BaseURLs):
     connect_max_retries: int = 3
     connect_cooldown: int = 5
 
-    paste_service: str = f"{BaseURLs.paste}/{{key}}"
     site_logs_view: str = "https://pythondiscord.com/staff/bot/logs"
 
 
@@ -236,17 +232,19 @@ class _Icons(EnvConfig, env_prefix="icons_"):
 
     filtering: str = "https://cdn.discordapp.com/emojis/472472638594482195.png"
 
-    green_checkmark: str = "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-checkmark-dist.png"
-    green_questionmark: str = "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-question-mark-dist.png"
+    green_checkmark: str = (
+        "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-checkmark-dist.png"
+    )
+    green_questionmark: str = (
+        "https://raw.githubusercontent.com/python-discord/branding/main/icons/checkmark/green-question-mark-dist.png"
+    )
     guild_update: str = "https://cdn.discordapp.com/emojis/469954765141442561.png"
 
     hash_blurple: str = "https://cdn.discordapp.com/emojis/469950142942806017.png"
     hash_green: str = "https://cdn.discordapp.com/emojis/469950144918585344.png"
     hash_red: str = "https://cdn.discordapp.com/emojis/469950145413251072.png"
 
-    message_bulk_delete: str = (
-        "https://cdn.discordapp.com/emojis/469952898994929668.png"
-    )
+    message_bulk_delete: str = "https://cdn.discordapp.com/emojis/469952898994929668.png"
     message_delete: str = "https://cdn.discordapp.com/emojis/472472641320648704.png"
     message_edit: str = "https://cdn.discordapp.com/emojis/472472638976163870.png"
 
@@ -264,9 +262,7 @@ class _Icons(EnvConfig, env_prefix="icons_"):
     superstarify: str = "https://cdn.discordapp.com/emojis/636288153044516874.png"
     unsuperstarify: str = "https://cdn.discordapp.com/emojis/636288201258172446.png"
 
-    token_removed: str = (
-        "https://cdn.discordapp.com/emojis/470326273298792469.png"  # - false positive
-    )
+    token_removed: str = "https://cdn.discordapp.com/emojis/470326273298792469.png"  # - false positive
 
     user_ban: str = "https://cdn.discordapp.com/emojis/469952898026045441.png"
     user_timeout: str = "https://cdn.discordapp.com/emojis/472472640100106250.png"
@@ -302,13 +298,6 @@ class _Colours(EnvConfig, env_prefix="colours_"):
     python_yellow: int = 0xFFD43B
     grass_green: int = 0x66FF00
     gold: int = 0xE6C200
-
-    @root_validator(pre=True)
-    def parse_hex_values(cls: type[Self], values: dict[str, int]) -> dict[str, int]:  # noqa: N805 - check this
-        """Verify that colors are valid hex."""
-        for key, value in values.items():
-            values[key] = int(value, 16)
-        return values
 
 
 Colours = _Colours()

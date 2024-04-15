@@ -72,7 +72,9 @@ class FileAttachment:
 
     @classmethod
     def from_dict(
-        cls: type[Self], data: dict, size_limit: int = FILE_SIZE_LIMIT
+        cls: type[Self],
+        data: dict,
+        size_limit: int = FILE_SIZE_LIMIT,
     ) -> Self:
         """Create a FileAttachment from a dict response."""
         size = data.get("size")

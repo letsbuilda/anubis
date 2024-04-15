@@ -22,10 +22,13 @@ docs = { file = ["requirements/requirements-docs.txt"] }
 [tool.ruff]
 preview = true
 unsafe-fixes = true
-target-version = "py311"
+target-version = "py312"
+line-length = 120
 
 [tool.ruff.lint]
-select = ["ALL"]
+select = [
+  "ALL",
+]
 ignore = [
   "CPY001", # (Missing copyright notice at top of file)
   "ERA001", # (Found commented-out code) - Porting features a piece at a time

@@ -98,7 +98,7 @@ def lock(
                 id_ = resource_id
 
             log.trace(
-                f"{name}: getting the lock object for resource {namespace!r}:{id_!r}"
+                f"{name}: getting the lock object for resource {namespace!r}:{id_!r}",
             )
 
             # Get the lock for the ID. Create a lock if one doesn't exist yet.
@@ -111,13 +111,13 @@ def lock(
             #   3. awaits only yield execution to the event loop at actual I/O boundaries
             if wait or not lock_.locked():
                 log.debug(
-                    f"{name}: acquiring lock for resource {namespace!r}:{id_!r}..."
+                    f"{name}: acquiring lock for resource {namespace!r}:{id_!r}...",
                 )
                 async with lock_:
                     return await func(*args, **kwargs)
             else:
                 log.info(
-                    f"{name}: aborted because resource {namespace!r}:{id_!r} is locked"
+                    f"{name}: aborted because resource {namespace!r}:{id_!r} is locked",
                 )
                 if raise_error:
                     raise LockedResourceError(str(namespace), id_)

@@ -22,11 +22,12 @@ from pydis_core.utils import interactions
 from pydis_core.utils.regex import FORMATTED_CODE_REGEX, RAW_CODE_REGEX
 
 from bot.bot import Bot
-from bot.constants import MODERATION_ROLES, TXT_LIKE_FILES, Emojis, URLs
+from bot.constants import MODERATION_ROLES, TXT_LIKE_FILES, BaseURLs, Emojis, URLs
 from bot.log import get_logger
 from bot.utils import send_to_paste_service
 from bot.utils.lock import LockedResourceError, lock_arg
-from bot.utils.services import PasteTooLongError, PasteUploadError
+from pydis_core.utils.paste_service import PasteFile, send_to_paste_service
+from pydis_core.utils import interactions, paste_service
 
 from ._eval import EvalJob, EvalResult
 from ._io import FileAttachment
@@ -223,21 +224,21 @@ class Snekbox(Cog):
         ) as resp:
             return EvalResult.from_dict(await resp.json())
 
-    @staticmethod
-    async def upload_output(http_session: ClientSession, output: str) -> str | None:
+    async def upload_output(self, output: str) -> str | None:
         """Upload the job's output to a paste service and return a URL to it if successful."""
         log.trace("Uploading full output to paste service...")
 
+        file = PasteFile(content=output, lexer="text")
         try:
-            return await send_to_paste_service(
-                http_session,
-                output,
-                extension="txt",
-                max_length=MAX_PASTE_LENGTH,
+            paste_response = await send_to_paste_service(
+                files=[file],
+                http_session=self.bot.http_session,
+                paste_url=BaseURLs.paste_url,
             )
-        except PasteTooLongError:
+            return paste_response.link
+        except paste_service.PasteTooLongError:
             return "too long to upload"
-        except PasteUploadError:
+        except paste_service.PasteUploadError:
             return "unable to upload"
 
     @staticmethod
@@ -279,10 +280,7 @@ class Snekbox(Cog):
             output = output.replace("<!@", "<!@\u200b")  # Zero-width space
 
         if ESCAPE_REGEX.findall(output):
-            paste_link = await self.upload_output(
-                self.bot.http_session,
-                original_output,
-            )
+            paste_link = await self.upload_output(original_output)
             return (
                 "Code block escape attempt detected; will not output result",
                 paste_link,
@@ -308,10 +306,7 @@ class Snekbox(Cog):
             output = f"{output[:max_chars]}\n... (truncated - too long)"
 
         if truncated:
-            paste_link = await self.upload_output(
-                self.bot.http_session,
-                original_output,
-            )
+            paste_link = await self.upload_output(original_output)
 
         if output_default and not output:
             output = output_default

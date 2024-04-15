@@ -13,10 +13,6 @@ sentry-sdk
 rapidfuzz
 coloredlogs
 
-# Database
-psycopg[binary]
-SQLAlchemy
-
 # Utilities
 # utils/helpers
 tldextract

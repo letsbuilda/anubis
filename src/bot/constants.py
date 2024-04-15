@@ -39,7 +39,6 @@ class _Bot(EnvConfig, env_prefix="bot_"):
     """Bot data."""
 
     prefix: str = "!"
-    database_dsn: str = "postgresql+psycopg://postgres:postgres@localhost:5432/anubis"
     token: str = ""
     trace_loggers: str = "*"
 

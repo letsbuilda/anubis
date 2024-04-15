@@ -24,7 +24,7 @@ from pydis_core.utils.regex import FORMATTED_CODE_REGEX, RAW_CODE_REGEX
 from bot.bot import Bot
 from bot.constants import MODERATION_ROLES, TXT_LIKE_FILES, BaseURLs, Emojis, URLs
 from bot.log import get_logger
-from bot.utils import send_to_paste_service
+
 from bot.utils.lock import LockedResourceError, lock_arg
 from pydis_core.utils.paste_service import PasteFile, send_to_paste_service
 from pydis_core.utils import interactions, paste_service

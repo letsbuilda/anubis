@@ -3,7 +3,7 @@
 from typing import Self
 
 from pydis_core import BotBase
-from sentry_sdk import push_scope
+from sentry_sdk import push_scope, start_transaction
 
 from bot import exts
 from bot.log import get_logger
@@ -24,6 +24,11 @@ class Bot(BotBase):
 
     def __init__(self: Self, *args: list, **kwargs: dict) -> None:
         super().__init__(*args, **kwargs)
+
+    async def load_extension(self, name: str, *args, **kwargs) -> None:
+        """Extend D.py's load_extension function to also record sentry performance stats."""
+        with start_transaction(op="cog-load", name=name):
+            await super().load_extension(name, *args, **kwargs)
 
     async def setup_hook(self: Self) -> None:
         """Default async initialisation method for discord.py."""  # noqa: D401

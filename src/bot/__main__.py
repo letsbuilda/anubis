@@ -5,21 +5,26 @@ import asyncio
 import aiohttp
 import discord
 from discord.ext import commands
-
+from bot.log import get_logger, setup_sentry
 from bot import constants
 from bot.bot import Bot
 
-intents = discord.Intents.default()
-intents.message_content = True
 
 
 async def main() -> None:
     """Run the bot."""
+    setup_sentry()
+
+    allowed_roles = list({discord.Object(id_) for id_ in constants.MODERATION_ROLES})
+    intents = discord.Intents.default()
+    intents.message_content = True
+
+ 
     bot = Bot(
         guild_id=constants.Guild.id,
         http_session=aiohttp.ClientSession(),
-        allowed_roles=list({discord.Object(id_) for id_ in constants.MODERATION_ROLES}),
-        command_prefix=commands.when_mentioned,
+        allowed_roles=allowed_roles,
+        command_prefix=commands.when_mentioned_or(constants.Bot.prefix),
         intents=intents,
     )
 

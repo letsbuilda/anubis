@@ -116,7 +116,7 @@ class _BaseURLs(EnvConfig, env_prefix="urls_"):
 
     github_bot_repo: str = "https://github.com/letsbuilda/anubis"
 
-    paste: str = "https://paste.pythondiscord.com"
+    paste_url: str = "https://paste.pythondiscord.com"
 
 
 BaseURLs = _BaseURLs()
@@ -130,7 +130,6 @@ class _URLs(_BaseURLs):
     connect_max_retries: int = 3
     connect_cooldown: int = 5
 
-    paste_service: str = f"{BaseURLs.paste}/{{key}}"
     site_logs_view: str = "https://pythondiscord.com/staff/bot/logs"
 
 

@@ -6,7 +6,7 @@
 #
 aiodns==3.1.1
     # via pydis-core
-aiohttp==3.9.4
+aiohttp==3.9.5
     # via
     #   -r requirements/requirements.in
     #   discord-py
@@ -53,9 +53,9 @@ multidict==6.0.5
     # via
     #   aiohttp
     #   yarl
-psycopg[binary]==3.1.18
+psycopg[binary]==3.1.19
     # via -r requirements/requirements.in
-psycopg-binary==3.1.18
+psycopg-binary==3.1.19
     # via psycopg
 pycares==4.4.0
     # via aiodns
@@ -75,9 +75,9 @@ python-dateutil==2.8.2
     # via arrow
 python-dotenv==1.0.1
     # via pydantic-settings
-rapidfuzz==3.8.1
+rapidfuzz==3.9.3
     # via -r requirements/requirements.in
-regex==2023.12.25
+regex==2024.5.15
     # via -r requirements/requirements.in
 requests==2.31.0
     # via
@@ -85,11 +85,11 @@ requests==2.31.0
     #   tldextract
 requests-file==2.0.0
     # via tldextract
-sentry-sdk==1.45.0
+sentry-sdk==2.3.1
     # via -r requirements/requirements.in
 six==1.16.0
     # via python-dateutil
-sqlalchemy==2.0.29
+sqlalchemy==2.0.30
     # via -r requirements/requirements.in
 statsd==4.0.1
     # via pydis-core

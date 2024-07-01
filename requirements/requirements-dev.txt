@@ -18,7 +18,7 @@ filelock==3.13.1
     #   virtualenv
 identify==2.5.34
     # via pre-commit
-mypy==1.9.0
+mypy==1.10.1
     # via -r requirements/requirements-dev.in
 mypy-extensions==1.0.0
     # via mypy
@@ -30,7 +30,7 @@ pip-tools==7.4.1
     # via -r requirements/requirements-dev.in
 platformdirs==4.2.0
     # via virtualenv
-pre-commit==3.7.0
+pre-commit==3.7.1
     # via -r requirements/requirements-dev.in
 pyproject-hooks==1.0.0
     # via
@@ -38,7 +38,7 @@ pyproject-hooks==1.0.0
     #   pip-tools
 pyyaml==6.0.1
     # via pre-commit
-ruff==0.3.7
+ruff==0.5.0
     # via -r requirements/requirements-dev.in
 typing-extensions==4.9.0
     # via

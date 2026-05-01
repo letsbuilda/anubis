@@ -8,11 +8,13 @@ iniconfig==2.0.0
     # via pytest
 packaging==23.2
     # via pytest
-pluggy==1.4.0
+pluggy==1.6.0
     # via pytest
-pytest==8.1.1
+pygments==2.20.0
+    # via pytest
+pytest==9.0.3
     # via
     #   -r requirements/requirements-tests.in
     #   pytest-randomly
-pytest-randomly==3.15.0
+pytest-randomly==4.1.0
     # via -r requirements/requirements-tests.in

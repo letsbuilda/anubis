@@ -5,10 +5,10 @@
       "resolved": "ghcr.io/devcontainers/features/powershell@sha256:0dd4e0352cc77ef586f7cca2414d3e8a7c506ad6df9ecd2221d078a961425bd6",
       "integrity": "sha256:0dd4e0352cc77ef586f7cca2414d3e8a7c506ad6df9ecd2221d078a961425bd6"
     },
-    "ghcr.io/devcontainers/features/python:1": {
-      "version": "1.4.2",
-      "resolved": "ghcr.io/devcontainers/features/python@sha256:bf021f1800543f08bf029c449a3f25341be782b620802befa1f8e6ee51cf6cf6",
-      "integrity": "sha256:bf021f1800543f08bf029c449a3f25341be782b620802befa1f8e6ee51cf6cf6"
+    "ghcr.io/devcontainers/features/python:": {
+      "version": "1.8.0",
+      "resolved": "ghcr.io/devcontainers/features/python@sha256:fbcad6955caeecc5ad3f7886baf652e25cba5225a6c4c2287c536de2e5607511",
+      "integrity": "sha256:fbcad6955caeecc5ad3f7886baf652e25cba5225a6c4c2287c536de2e5607511"
     }
   }
 }

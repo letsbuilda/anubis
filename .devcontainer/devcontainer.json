@@ -5,6 +5,6 @@
       "version": "3.12",
       "installTools": false
     },
-    "ghcr.io/devcontainers/features/powershell:1": {}
+    "ghcr.io/devcontainers/features/powershell:2": {}
   }
 }
